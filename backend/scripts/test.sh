@@ -3,4 +3,4 @@
 set -e
 set -x
 
-pytest -s --cov=app --cov-report=term-missing app/tests "${@}"
+poetry run pytest -s --cov=app --cov-report=term-missing app/tests "${@}"
