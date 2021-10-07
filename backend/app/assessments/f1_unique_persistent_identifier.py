@@ -1,5 +1,4 @@
-from app.models.assessment import AssessmentModel
-from app.models.evaluation import EvaluationModel
+from app.models import AssessmentModel, EvaluationModel
 import os
 from urllib.parse import urlparse
 

@@ -13,20 +13,20 @@ class Settings(BaseSettings):
     # Those defaults are used by GitHub Actions for testing
     # The settings used by Docker deployment are in the .env file
     PROJECT_NAME: str = 'FAIR enough API'
-    SERVER_NAME: str = 'backend'
-    SERVER_HOST: AnyHttpUrl = 'http://localhost'
+    # SERVER_NAME: str = 'localhost'
+    # SERVER_HOST: AnyHttpUrl = 'http://localhost'
+
+    ORCID_CLIENT_ID: Optional[str]
+    ORCID_CLIENT_SECRET: Optional[str]
+    OAUTH_REDIRECT_URI: str = 'http://localhost/api/auth'
+
+    MONGODB_URL: str = f'mongodb://root:{SECRET_KEY}@mongodb:27017/'
 
 
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
-
-    ORCID_CLIENT_ID: Optional[str]
-    ORCID_CLIENT_SECRET: Optional[str]
-    OAUTH_REDIRECT_URI: str = 'http://localhost/api/auth'
-
-    MONGODB_URL: str = 'mongodb://root:oursecretpassword@mongodb:27017/'
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

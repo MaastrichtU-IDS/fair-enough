@@ -1,10 +1,9 @@
-from app.models.assessment import AssessmentModel
-from app.models.evaluation import EvaluationModel
+from app.models import AssessmentModel, EvaluationModel
 import os
 import extruct
 import requests
 import html
-from app.utils import parseRDF, mime_types
+from app.utils import mime_types
 
 class Assessment(AssessmentModel):
     fair_type = 'f'
@@ -87,7 +86,7 @@ and extract metadata from the HTML landing page using extruct"""
                 # https://rdflib.readthedocs.io/en/stable/plugin_parsers.html
                 # rdflib_formats = ['turtle', 'json-ld', 'ntriples', 'nquads', 'xml', 'trig', 'n3']
                 # print(rdf_data)
-                g = parseRDF(rdf_data, mime_type, msg='content negotiation RDF', assessment=self)
+                g = self.parseRDF(rdf_data, mime_type, msg='content negotiation RDF')
                 # self.log('RDF metadata size: ' + str(len(g)))
                 break # Only parse the first RDF metadata file entry
         else:

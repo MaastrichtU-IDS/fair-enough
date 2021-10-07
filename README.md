@@ -1,12 +1,12 @@
-# FAIR enough API
+# ♻️ FAIR enough 🎯
 
-[![Run tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test.yml)
+[![Run backend tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml)
 
-An API to run evaluations to assess the FAIRness of a resource.
+An OpenAPI where anyone can run evaluations to assess how compliant to the FAIR principles is a resource, given the resource identifier (URI/URL).
 
-Using FastAPI and MongoDB
+Using [FastAPI](https://fastapi.tiangolo.com/), [Pydantic](https://pydantic-docs.helpmanual.io/) and [MongoDB](https://www.mongodb.com/)
 
-## Requirements
+## 📥️ Requirements
 
 * [Docker](https://www.docker.com/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
@@ -14,15 +14,38 @@ Using FastAPI and MongoDB
 
 * Node.js (with `npm`) if you need to do frontend development
 
-## Edit the assessments
-
-Most of the Python code for the API is in https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app
+## 📝 Add an assessment
 
 All assessments used to run evaluations are python scripts defined in the same folder: https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments
 
-## Backend local development
+Feel free to add new assessments and send a pull request!  To create a new assessment:
 
-Start the stack for development locally with Docker Compose:
+* Optionally, create a folder if you want to group multiple assessments under a same category 
+
+* Copy an existing assessment to get started
+
+* Change the attributes of this assessment to describe it so that users can easily understand what your assessment do. Provide your email in the `author` attribute.
+
+* Add the code in the `evaluate()` function, 2 variables are passed to the assessment, plus you can access the assessment object itself to log what the test is trying to do, and why it success or fail:
+
+  * `eval`: evaluation object that you can use to pass data between assessments (e.g. to pass the license URL, or JSON-LD metadata your assessment retrieves)
+
+  * `g`: RDFLib graph of the RDF retrieved when searching for the resource metadata
+
+  * `self`: the assessment object itself, can be used to perform various logging actions related to the test (don't use `print` otherwise it will not show up in the evaluation results returned by the API)
+
+    ```python
+    self.log('This print a regular event', '✔️') # 2nd arg (prefix added to the log) is optional
+    self.success('This will also increase the score of the assessment by 1')
+    self.bonus('This will also increase the bonus score of the assessment by 1')
+    self.error('This will print a failure while running the assessment')
+    ```
+
+> Most of the Python code for the API is in https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app
+
+## 🐳 Backend local development
+
+Start the stack for development locally with Docker Compose from the root folder of this repository:
 
 ```bash
 docker-compose up -d
@@ -30,9 +53,9 @@ docker-compose up -d
 
 Now you can open your browser and interact with these URLs:
 
-* Automatic interactive documentation with Swagger UI (from the OpenAPI backend): http://localhost/docs
+* Automatic OpenAPI documentation with Swagger UI: http://localhost/docs
 
-* Alternative automatic documentation with ReDoc (from the OpenAPI backend): http://localhost/redoc
+* Alternative OpenAPI documentation with ReDoc: http://localhost/redoc
 * GraphQL endpoint with Strawberry: http://localhost/graphql
 
 * Backend, JSON based web API based on OpenAPI: http://localhost/api/
@@ -47,7 +70,7 @@ To check the logs of a specific service, run:
 docker-compose logs backend
 ```
 
-To delete the volume to reset the database, run:
+To delete the volume and reset the database, run:
 
 ```bash
 docker-compose down
@@ -67,8 +90,6 @@ docker-compose down
 sudo rm -rf **/__pycache__
 docker-compose build --no-cache
 ```
-
-## Backend local development, additional details
 
 ### General workflow
 
@@ -172,7 +193,7 @@ To run the tests in a running stack with coverage HTML reports:
 docker-compose exec backend bash /app/tests-start.sh --cov-report=html
 ```
 
-## Frontend development
+## 🖥️ Frontend development
 
 * Enter the `frontend` directory, install the NPM packages and start the live server using the `npm` scripts:
 
@@ -186,7 +207,7 @@ Then open your browser at http://localhost:8080
 
 If you have Vue CLI installed, you can also run `vue ui` to control, configure, serve, and analyze your application using a nice local web user interface.
 
-## Deployment
+## 🚀 Deployment 
 
 ### Traefik network
 
@@ -206,7 +227,7 @@ Change `traefik-public` to the name of the used Traefik network. And then update
 TRAEFIK_PUBLIC_NETWORK=traefik-public
 ```
 
-## Docker Compose files and env vars
+## ➕ Docker Compose files and env vars
 
 There is a main `docker-compose.yml` file with all the configurations that apply to the whole stack, it is used automatically by `docker-compose`.
 
@@ -222,7 +243,7 @@ They are designed to have the minimum repetition of code and configurations, so 
 
 Also, if you want to have another deployment environment, say `preprod`, you just have to change environment variables, but you can keep using the same Docker Compose files.
 
-## Links
+## 🔗 Links
 
 Livestream logs:
 

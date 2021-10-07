@@ -1,8 +1,6 @@
 from urllib.parse import urlparse
-from app.models.assessment import AssessmentModel
-from app.models.evaluation import EvaluationModel
+from app.models import AssessmentModel, EvaluationModel
 import json
-from app.utils import parseRDF
 import rdflib
 # JSON-LD workaround 
 # from pyld import jsonld
@@ -23,7 +21,7 @@ class Assessment(AssessmentModel):
         if 'content_negotiation' in eval.data.keys():
             self.check('Check metadata available from content negotiation already retrieved by f2_machine_readable_metadata: ' + ', '.join(eval.data['content_negotiation'].keys()))
             for mime_type, rdf_data in eval.data['content_negotiation'].items():                   
-                g = parseRDF(rdf_data, mime_type, msg='content negotiation RDF', assessment=self)
+                g = self.parseRDF(rdf_data, mime_type, msg='content negotiation RDF')
 
                 # print(g.serialize(format='turtle', indent=2))
                 if len(g) > 1:

@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 from typing import Optional, List
-# from bson import ObjectId
-# import motor.motor_asyncio
+import datetime
+import json
+from rdflib import ConjunctiveGraph
 
 from app import models
 from app.models.evaluation import EvaluationModel
-import datetime
 # import logging
 
 # logging.basicConfig(level=logging.INFO)
@@ -45,6 +45,32 @@ class AssessmentModel(BaseModel):
             self.error('Error running test ' + self.filename + '. Getting: ' + str(e))
             eval.results.append(self.dict())
         return eval, g
+
+
+    def parseRDF(self, rdf_data, mime_type: str = 'No mime type', msg: str = ''):
+        rdflib_formats = ['turtle', 'json-ld', 'xml', 'ntriples', 'nquads', 'trig', 'n3']
+
+        if type(rdf_data) == dict:
+            # JSON-LD should work, it was added to RDFLib 6.0.1: https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.plugins.parsers.html#module-rdflib.plugins.parsers.jsonld
+            rdf_data = json.dumps(rdf_data)
+            # jsonld from RDFLib 6.0.1 broken: https://github.com/RDFLib/rdflib/issues/1423
+            # rdf_data = json.dumps(rdf_data, indent=2).encode('utf-8')
+            # jsonld from pyld broken with schema.org: https://github.com/digitalbazaar/pyld/issues/154
+            # rdf_data = json.dumps(jsonld.expand(rdf_data))
+            rdflib_formats = ['json-ld']
+
+        g = ConjunctiveGraph()
+        for rdf_format in rdflib_formats:
+            try:
+                # print(type(rdf_data))
+                g.parse(data=rdf_data, format=rdf_format)
+                # print(g.serialize(format='turtle', indent=2))
+                self.log('Metadata from ' + mime_type + ' ' + msg + ' parsed with RDFLib parser ' + rdf_format, '☑️')
+                break
+            except Exception as e:
+                self.warning('Could not parse ' + mime_type + ' metadata from ' + msg + ' with RDFLib parser ' + rdf_format)
+                print(e)
+        return g
 
 
     def log(self, log_msg: str, prefix: str = None):

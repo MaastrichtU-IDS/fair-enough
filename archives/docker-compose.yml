@@ -74,8 +74,8 @@ services:
     volumes:
       - mongodb-data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: oursecretpassword
+      # MONGO_INITDB_ROOT_USERNAME: root
+      # MONGO_INITDB_ROOT_PASSWORD: oursecretkey
       MONGO_INITDB_DATABASE: evaluations
 
   queue:
@@ -93,12 +93,12 @@ services:
       - mongodb
     env_file:
       - .env
-    environment:
-      - SERVER_NAME=${DOMAIN?Variable not set}
-      - SERVER_HOST=https://${DOMAIN?Variable not set}
+    # environment:
+    #   - SERVER_NAME=${DOMAIN?Variable not set}
+    #   - SERVER_HOST=https://${DOMAIN?Variable not set}
       # Allow explicit env var override for tests
       # - SMTP_HOST=${SMTP_HOST}
-      # - MONGODB_URL=mongodb://root:oursecretpassword@mongodb:27017/
+      # - MONGODB_URL=mongodb://root:oursecretkey@mongodb:27017/
     build:
       context: ./backend
       dockerfile: backend.dockerfile

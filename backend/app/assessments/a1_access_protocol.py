@@ -1,5 +1,4 @@
-from app.models.assessment import AssessmentModel
-from app.models.evaluation import EvaluationModel
+from app.models import AssessmentModel, EvaluationModel
 import os
 import requests
 from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS

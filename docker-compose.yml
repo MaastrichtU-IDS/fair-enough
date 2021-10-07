@@ -23,6 +23,10 @@ services:
       - --log
       # Enable the Dashboard and API
       - --api
+    environment:
+      - VIRTUAL_HOST=fair-enough.semanticscience.org
+      - LETSENCRYPT_HOST=fair-enough.semanticscience.org
+      - VIRTUAL_PORT=80
 
 
   mongodb:
@@ -32,26 +36,30 @@ services:
       - mongodb-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: oursecretpassword
+      MONGO_INITDB_ROOT_PASSWORD: ${SECRET_KEY-oursecretkey}
+      # MONGO_INITDB_ROOT_PASSWORD: oursecretkey
       MONGO_INITDB_DATABASE: evaluations
 
   backend:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
-    depends_on:
-      - mongodb
-    env_file:
-      - .env
-    environment:
-      - SERVER_NAME=${DOMAIN?Variable not set}
-      - SERVER_HOST=https://${DOMAIN?Variable not set}
-      # Allow explicit env var override for tests
-      # - SMTP_HOST=${SMTP_HOST}
-      # - MONGODB_URL=mongodb://root:oursecretpassword@mongodb:27017/
     build:
       context: ./backend
       dockerfile: backend.dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    environment:
+      - VIRTUAL_HOST=api.fair-enough.semanticscience.org
+      - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
+      - VIRTUAL_PORT=80
+    #   - SERVER_NAME=${DOMAIN?Variable not set}
+    #   - SERVER_HOST=https://${DOMAIN?Variable not set}
+    #   # Allow explicit env var override for tests
+    #   - SMTP_HOST=${SMTP_HOST}
+    #   - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
 
 
 volumes:
