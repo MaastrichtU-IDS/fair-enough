@@ -1,26 +1,19 @@
 from app.models.assessment import AssessmentModel
 from app.models.evaluation import EvaluationModel
-import os
 import requests
 from rdflib import Literal, RDF, URIRef
 from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS, FOAF
 
-"""
-R1: Accessible Usage License
-"""
 class Assessment(AssessmentModel):
     fair_type = 'r'
     metric_id = '1'
     title = 'Accessible Usage License'
     description = """The existence of a license document, for BOTH (independently) the data and its associated metadata, and the ability to retrieve those documents
-Resolve the licenses IRI
-"""
-    filename = os.path.basename(__file__)
+Resolve the licenses IRI"""
     max_score = 1
     max_bonus = 1
 
     def evaluate(self, eval: EvaluationModel, g):
-        uri = eval.resource_uri
         found_license = False
 
         self.check('Checking for license in RDF metadata. To do: DataCite and extruct')

@@ -1,5 +1,7 @@
 # FAIR enough API
 
+[![Run tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test.yml)
+
 An API to run evaluations to assess the FAIRness of a resource.
 
 Using FastAPI and MongoDB

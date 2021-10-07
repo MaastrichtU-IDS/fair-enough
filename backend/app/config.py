@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
 
+    # Those defaults are used by GitHub Actions for testing
+    # The settings used by Docker deployment are in the .env file
     PROJECT_NAME: str = 'FAIR enough API'
     SERVER_NAME: str = 'backend'
     SERVER_HOST: AnyHttpUrl = 'http://localhost'

@@ -1,8 +1,6 @@
 from urllib.parse import urlparse
 from app.models.assessment import AssessmentModel
 from app.models.evaluation import EvaluationModel
-import os
-import requests
 import json
 from app.utils import parseRDF
 import rdflib
@@ -11,20 +9,16 @@ import rdflib
 # from rdflib import ConjunctiveGraph
 # from rdflib.serializer import Serializer
 
-"""
-I1: Use a Knowledge Representation Language
-"""
 class Assessment(AssessmentModel):
     fair_type = 'i'
     metric_id = '1'
     title = 'Metadata uses a formal knowledge representation language'
     description = "Parse resource metadata found as RDF using rdflib"
-    filename = os.path.basename(__file__)
     max_score = 1
     max_bonus = 1
 
-    # https://github.com/vemonet/fuji/blob/master/fuji_server/helper/preprocessor.py#L190
-    def evaluate(self, eval: EvaluationModel, g):        
+    def evaluate(self, eval: EvaluationModel, g):
+        # https://github.com/vemonet/fuji/blob/master/fuji_server/helper/preprocessor.py#L190
 
         if 'content_negotiation' in eval.data.keys():
             self.check('Check metadata available from content negotiation already retrieved by f2_machine_readable_metadata: ' + ', '.join(eval.data['content_negotiation'].keys()))

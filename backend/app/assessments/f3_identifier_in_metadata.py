@@ -1,9 +1,7 @@
 from app.models.assessment import AssessmentModel
 from app.models.evaluation import EvaluationModel
-import os
 from rdflib import Literal, RDF, URIRef
 from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS, FOAF
-from app.utils import mime_types
 
 class Assessment(AssessmentModel):
     fair_type = 'f'
@@ -11,9 +9,8 @@ class Assessment(AssessmentModel):
     title = 'Resource Identifier is in Metadata'
     description = """Whether the metadata document contains the globally unique and persistent identifier for the digital resource.
 Parsing the metadata for the given digital resource GUID."""
-    filename = os.path.basename(__file__)
     max_score = 1
-    # max_bonus = 1
+    max_bonus = 0
 
     def evaluate(self, eval: EvaluationModel, g):
         alt_uris = eval.data['alternative_uris']

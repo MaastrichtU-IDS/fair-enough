@@ -4,18 +4,14 @@ import os
 import requests
 from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS
 
-"""
-A1: Access Protocol
-"""
 class Assessment(AssessmentModel):
     fair_type = 'a'
     metric_id = '1'
     title = 'Access Protocol'
     description = """The access protocol and authorization (if content restricted).
 For the protocol , do an HTTP get on the URL to see if it returns a valid document.
-Find information about authorization in metadata
-"""
-    filename = os.path.basename(__file__)
+Find information about authorization in metadata"""
+    author = 'vincent.emonet@gmail.com'
     max_score = 2
     max_bonus = 0
 

@@ -3,15 +3,12 @@ from app.models.evaluation import EvaluationModel
 import os
 from urllib.parse import urlparse
 
-"""
-F1.2: Check identifier is unique and persistence
-"""
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '1'
     title = 'Resource identifier is unique and persistent'
     description = 'Check if the identifier of the resource is unique (HTTP) and persistent (some HTTP domains)'
-    filename = os.path.basename(__file__)
+    author = 'vincent.emonet@gmail.com'
     max_score = 2
     max_bonus = 0
 

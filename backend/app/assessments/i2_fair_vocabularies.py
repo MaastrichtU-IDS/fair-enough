@@ -3,9 +3,6 @@ from app.models.evaluation import EvaluationModel
 import os
 import requests
 
-"""
-I2: Parse RDF metadata
-"""
 class Assessment(AssessmentModel):
     fair_type = 'i'
     metric_id = '2'
@@ -13,9 +10,7 @@ class Assessment(AssessmentModel):
     description = """The metadata values and qualified relations should 
 themselves be FAIR, for example, terms from open, community-accepted 
 vocabularies published in an appropriate knowledge-exchange format. 
-Resolve IRIs, check FAIRness of the returned documents
-"""
-    filename = os.path.basename(__file__)
+Resolve IRIs, check FAIRness of the returned documents."""
     max_score = 1
     max_bonus = 0
 
@@ -27,7 +22,6 @@ Resolve IRIs, check FAIRness of the returned documents
 
 
         self.check('Checking RDF metadata vocabularies')
-        # print(str(g.namespace_manager.namespaces()))
         all_ns = [n for n in g.namespace_manager.namespaces()]
         print(all_ns)
 

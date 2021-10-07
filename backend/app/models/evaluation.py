@@ -1,8 +1,8 @@
-import os
 from pydantic import BaseModel, Field
-from bson import ObjectId
 from typing import Optional, List
+from bson import ObjectId
 import strawberry
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -34,6 +34,7 @@ class EvaluationResults(BaseModel):
     max_bonus: int = 1
     logs: List[str] = []
 
+
 class EvaluationData(BaseModel):
     alternative_uris: List[str] = []
     resource_title: Optional[str]
@@ -45,12 +46,14 @@ class EvaluationData(BaseModel):
     content_negotiation: Optional[dict]
     identifier_in_metadata: Optional[dict]
 
+
 class EvaluationScore(BaseModel):
     total_score: int = 0
     total_score_max: int = 0
     total_bonus: int = 0
     total_bonus_max: int = 0
     percent: Optional[str]
+
 
 # @strawberry.type
 class EvaluationModel(BaseModel):
@@ -101,6 +104,7 @@ class CreateEvaluationModel(BaseModel):
                 "collection": "fair-metrics"
             }
         }
+
 
 class UpdateEvaluationModel(BaseModel):
     resource_uri: Optional[str]

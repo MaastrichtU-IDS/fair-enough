@@ -6,24 +6,22 @@ import requests
 import html
 from app.utils import parseRDF, mime_types
 
-"""
-F2: Machine-readability of metadata
-"""
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '2'
     title = 'Metadata is machine-readable'
-    # message = 'The resource has machine-readable metadata'
-    description = """Search for structured metadata at the resource URI. 
-    Use HTTP requests with content-negotiation (RDF, JSON-LD, JSON), 
-    and extract metadata from the HTML landing page using extruct"""
-    filename = os.path.basename(__file__)
+    description = """This assessment will try to extract as much metadata it can from the resource URI, and put it in eval.data
+It can be useful to put it at the start of your collection, and then search for properties in the metadata extracted.
+Search for structured metadata at the resource URI. 
+Use HTTP requests with content-negotiation (RDF, JSON-LD, JSON), 
+and extract metadata from the HTML landing page using extruct"""
     max_score = 1
     max_bonus = 2
 
     def evaluate(self, eval: EvaluationModel, g):
         uri = eval.resource_uri
-        check_mime_types = [ mime_types['turtle'], 'text/turtle', mime_types['rdf'], mime_types['jsonld'], mime_types['json'] ]
+        check_mime_types = [ mime_types['rdf'], 'text/turtle', mime_types['jsonld'] ]
+        # mime_types['turtle'], mime_types['json']
 
         r = requests.head(uri)
         print('REQUESTS HEADERS')

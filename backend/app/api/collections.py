@@ -1,10 +1,8 @@
-import os
 from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, Field, AnyUrl
-from bson import ObjectId
-from typing import Optional, List
+from typing import List
+from pymongo.errors import DuplicateKeyError
 
 from app import models
 from app.api import login, assessments
@@ -12,7 +10,6 @@ from app.db import get_db
 from app.config import settings
 from app.models.collection import CollectionModel, CreateCollectionModel, UpdateCollectionModel
 
-from pymongo.errors import DuplicateKeyError
 
 router = APIRouter()
 db = get_db()
@@ -36,12 +33,12 @@ async def create_collection(
         'assessments': collection['assessments'],
         'author': current_user['id']
     }
+    print(collec_obj)
+    # {
+    #     # "@id": 
+    #     "@context"
 
-    {
-        # "@id": 
-        "@context"
-
-    }
+    # }
 
     try:
         new_collection = await db["collections"].insert_one(collec_obj)

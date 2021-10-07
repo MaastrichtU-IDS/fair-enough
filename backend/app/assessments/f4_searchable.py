@@ -1,35 +1,23 @@
 from app.models.assessment import AssessmentModel
 from app.models.evaluation import EvaluationModel
-import os
 import requests
 from googlesearch import search
 
-# re3data_api = https://re3data.org/api/beta/repositories
-# spdx_license_github = https://raw.github.com/spdx/license-list-data/master/json/licenses.json
-# datacite_api_repo = https://api.datacite.org/repositories
-# metadata_catalog = https://rdamsc.bath.ac.uk/api/m
-# lov_api = https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list
-# lod_cloudnet = https://lod-cloud.net/lod-data.json
-
-"""
-F4: Indexed in a searchable resource
-"""
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '4'
     title = 'The resource Indexed in a searchable resource'
-    description = "Search for metadata about the resource URI in data repositories, such as DataCite, RE3data. And search engines (e.g. google)"
-    filename = os.path.basename(__file__)
+    description = """Search for existing metadata about the resource URI in data repositories, such as DataCite, RE3data. 
+Search for the URI using the resource title in search engines (Google)"""
     max_score = 1
     max_bonus = 1
 
     def evaluate(self, eval: EvaluationModel, g):
-        uri = eval.resource_uri
         datacite_endpoint = 'https://api.datacite.org/repositories'
         re3data_endpoint = 'https://re3data.org/api/beta/repositories'
         datacite_dois_api = 'https://api.datacite.org/dois/'
-        headers = {"Accept": "application/json"}
-
+        # metadata_catalog = https://rdamsc.bath.ac.uk/api/m
+        # headers = {"Accept": "application/json"}
 
         # If DOI: check for metadata in DataCite API
         try:

@@ -1,9 +1,11 @@
 from app.config import settings
 import motor.motor_asyncio
 
+
 def get_db():
     client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGODB_URL)
     return client.evaluations
+
 
 def init_db() -> None:
     db = get_db()

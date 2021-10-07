@@ -1,15 +1,9 @@
-import os
-from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field, AnyUrl
-from bson import ObjectId
 from typing import Optional, List
+from bson import ObjectId
 import strawberry
 
 from app.config import settings
-
-router = APIRouter()
 
 class PyObjectId(ObjectId):
     @classmethod

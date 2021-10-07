@@ -1,9 +1,6 @@
-from typing import TYPE_CHECKING
-
-# from sqlalchemy import Boolean, Column, Integer, String
-# from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field
 from typing import Optional, List
+
 
 class User(BaseModel):
     id: str

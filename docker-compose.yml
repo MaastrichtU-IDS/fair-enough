@@ -45,7 +45,7 @@ services:
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=https://${DOMAIN?Variable not set}
       # Allow explicit env var override for tests
-      - SMTP_HOST=${SMTP_HOST}
+      # - SMTP_HOST=${SMTP_HOST}
       # - MONGODB_URL=mongodb://root:oursecretpassword@mongodb:27017/
     build:
       context: ./backend

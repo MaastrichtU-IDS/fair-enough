@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OpenIdConnect
+import requests
 
 from app import models
 from app.config import settings
@@ -10,7 +11,6 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from authlib.integrations.starlette_client import OAuth, OAuthError
 
-import requests
 
 # Main issues discussing implementing OpenID Connect / OAuth2 in FastAPI:
 # https://github.com/tiangolo/fastapi/tree/master/fastapi/security
