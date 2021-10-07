@@ -15,6 +15,7 @@ class Assessment(AssessmentModel):
 For the protocol , do an HTTP get on the URL to see if it returns a valid document.
 Find information about authorization in metadata
 """
+    filename = os.path.basename(__file__)
     max_score = 2
     max_bonus = 0
 

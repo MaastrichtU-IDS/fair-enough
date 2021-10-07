@@ -27,6 +27,7 @@ class User:
     name: str
     age: int
 
+#  strawberry.field(resolver=get_books)
 @strawberry.type
 class Query:
     @strawberry.field
@@ -37,6 +38,7 @@ schema = strawberry.Schema(query=Query)
 graphql_app = GraphQL(schema)
 
 
+
 app = FastAPI(
     title=settings.PROJECT_NAME, 
     openapi_url=f"{settings.API_PATH}/openapi.json",
@@ -44,14 +46,27 @@ app = FastAPI(
     
 You will need to login with [ORCID](https://orcid.org) to create new collections of assessments.
 
-To login, click on the **Authorize 🔓️** button, and use the 2nd option: **OpenIdConnect (OAuth2, implicit)**""",
+To login, click on the **Authorize 🔓️** button, and use the 2nd option: **OpenIdConnect (OAuth2, implicit)**
+
+[Source code](https://github.com/MaastrichtU-IDS/fair-enough)
+""",
     swagger_ui_init_oauth = {
         # https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/
         # "usePkceWithAuthorizationCodeGrant": True,
         "clientId": settings.ORCID_CLIENT_ID,
         "scopes": "/authenticate",
         "appName": "FAIR enough"
-    }
+    },
+    # terms_of_service = "https://github.com/MaastrichtU-IDS/fair-enough/blob/main/LICENSE",
+    license_info = {
+        "name": "MIT license",
+        "url": "https://github.com/MaastrichtU-IDS/fair-enough/blob/main/LICENSE"
+    },
+    contact = {
+        "name": "Vincent Emonet",
+        "email": "vincent.emonet@gmail.com",
+        # "url": "https://github.com/vemonet",
+    },
 )
 
 app.add_route("/graphql", graphql_app)

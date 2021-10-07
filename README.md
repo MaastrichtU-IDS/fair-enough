@@ -12,6 +12,12 @@ Using FastAPI and MongoDB
 
 * Node.js (with `npm`) if you need to do frontend development
 
+## Edit the assessments
+
+Most of the Python code for the API is in https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app
+
+All assessments used to run evaluations are python scripts defined in the same folder: https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments
+
 ## Backend local development
 
 Start the stack for development locally with Docker Compose:
@@ -108,10 +114,28 @@ docker-compose exec backend bash
 
 ### Backend tests
 
+#### Test running stack
+
+If your stack is already up and you just want to run the tests, you can use:
+
+```bash
+docker-compose exec backend /app/tests-start.sh
+```
+
+That `/app/tests-start.sh` script just calls `pytest` after making sure that the rest of the stack is running. If you need to pass extra arguments to `pytest`, you can pass them to that command and they will be forwarded.
+
+For example, to stop on first error:
+
+```bash
+docker-compose exec backend bash /app/tests-start.sh -x
+```
+
+#### Test new stack
+
 To test the backend run:
 
 ```console
-$ DOMAIN=backend sh ./scripts/test.sh
+DOMAIN=backend sh ./scripts/test.sh
 ```
 
 The file `./scripts/test.sh` has the commands to generate a testing `docker-stack.yml` file, start the stack and test it.
@@ -128,22 +152,6 @@ You can rerun the test on live code:
 
 ```Bash
 docker-compose exec backend /app/tests-start.sh
-```
-
-#### Test running stack
-
-If your stack is already up and you just want to run the tests, you can use:
-
-```bash
-docker-compose exec backend /app/tests-start.sh
-```
-
-That `/app/tests-start.sh` script just calls `pytest` after making sure that the rest of the stack is running. If you need to pass extra arguments to `pytest`, you can pass them to that command and they will be forwarded.
-
-For example, to stop on first error:
-
-```bash
-docker-compose exec backend bash /app/tests-start.sh -x
 ```
 
 #### Test Coverage

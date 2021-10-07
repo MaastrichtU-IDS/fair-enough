@@ -69,7 +69,7 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
 
   mongodb:
-    image: mongo
+    image: mongo:5.0
     restart: always
     volumes:
       - mongodb-data:/data/db
