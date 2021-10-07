@@ -34,6 +34,12 @@ jobs:
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
+    - name: Install dependencies
+      run: |
+        cd backend
+        pip install poetry
+        poetry install
+
     - name: Run tests
       env:
         MONGODB_URL: 'mongodb://localhost:27017/'
@@ -41,8 +47,6 @@ jobs:
         # MONGODB_URL: 'mongodb://root:oursecretpassword@localhost:27017/'
       run: |
         cd backend
-        pip install poetry
-        poetry install
         ./tests-start.sh
         # pytest --cov=app --cov-report=term-missing tests
 
