@@ -11,7 +11,7 @@ Parsing the metadata to search for the given digital resource GUID.
 And retrieving informations about this resource (title, description, date created, etc)"""
     author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
-    max_bonus = 0
+    max_bonus = 1
 
     def evaluate(self, eval: EvaluationModel, g):
         alt_uris = eval.data['alternative_uris']
@@ -42,6 +42,7 @@ And retrieving informations about this resource (title, description, date create
                 self.success('Found links to the URI ' + alt_uri + ' in the metadata: ' 
                     + ', '.join(list(eval.data['identifier_in_metadata']['properties'].keys()) + list(eval.data['identifier_in_metadata']['linked_to'].keys()))
                 )
+                break
             else: 
                 self.warning('Could not find links to the resource URI ' + alt_uri + ' in the metadata')
 

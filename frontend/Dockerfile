@@ -1,28 +1,20 @@
-# Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM tiangolo/node-frontend:10 as build-stage
+FROM node:12-alpine
 
-WORKDIR /app
+WORKDIR /webapp
 
-COPY package*.json /app/
+# Only install NPM packages if package.json or yarn.lock change
+COPY package.json package.json
+COPY yarn.lock yarn.lock
+RUN yarn install
 
-RUN npm install
+COPY . .
 
-COPY ./ /app/
+# Build in /web-build folder
+RUN yarn build
 
-ARG FRONTEND_ENV=production
+## Serving directly does not work with router:
+# expo web --no-dev
 
-ENV VUE_APP_ENV=${FRONTEND_ENV}
+EXPOSE 5000
 
-# Comment out the next line to disable tests
-RUN npm run test:unit
-
-RUN npm run build
-
-
-# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
-FROM nginx:1.15
-
-COPY --from=build-stage /app/dist/ /usr/share/nginx/html
-
-COPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx-backend-not-found.conf /etc/nginx/extra-conf.d/backend-not-found.conf
+ENTRYPOINT [ "yarn", "serve" ]

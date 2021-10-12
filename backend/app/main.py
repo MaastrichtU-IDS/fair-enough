@@ -49,16 +49,19 @@ You can also query FAIR enough using the experimental GraphQL endpoint at [/grap
 app.add_route("/graphql", graphql_app)
 app.add_websocket_route("/graphql", graphql_app)
 
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+
+app.include_router(api_router, prefix=settings.API_PATH)
+
+print(settings.BACKEND_CORS_ORIGINS)
+
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        # allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
-
-app.include_router(api_router, prefix=settings.API_PATH)

@@ -1,74 +1,48 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "homepage": "https://maastrichtu-ids.github.io/fair-enough",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "dev": "expo web",
+    "eject": "expo eject",
+    "build": "expo build:web",
+    "serve": "serve -s web-build",
+    "start": "npm run build && npm run serve",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d web-build"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.2.5",
-    "axios": "^0.18.0",
-    "core-js": "^3.4.3",
-    "register-service-worker": "^1.0.0",
-    "typesafe-vuex": "^3.1.1",
-    "vee-validate": "^2.1.7",
-    "vue": "^2.5.22",
-    "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.3.0",
-    "vue-router": "^3.0.2",
-    "vuetify": "^1.4.4",
-    "vuex": "^3.1.0"
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@solid/react": "^1.10.0",
+    "axios": "^0.20.0",
+    "chart.js": "=2.9.4",
+    "chartjs-plugin-datalabels": "^0.7.0",
+    "expo": "~39.0.0",
+    "highlight.js": "^11.2.0",
+    "react": "~16.13.0",
+    "react-chartjs-2": "^2.10.0",
+    "react-dom": "~16.13.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
+    "react-native-web": "0.13.13",
+    "react-router-dom": "^5.2.0",
+    "react-router-native": "^5.1.2"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.13",
-    "@vue/cli-plugin-babel": "^4.1.1",
-    "@vue/cli-plugin-pwa": "^4.1.1",
-    "@vue/cli-plugin-typescript": "^4.1.1",
-    "@vue/cli-plugin-unit-jest": "^4.1.1",
-    "@vue/cli-service": "^4.1.1",
-    "@vue/test-utils": "^1.0.0-beta.28",
-    "babel-core": "7.0.0-bridge.0",
-    "ts-jest": "^23.10.5",
-    "typescript": "^3.2.4",
-    "vue-cli-plugin-vuetify": "^2.0.2",
-    "vue-template-compiler": "^2.5.22"
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 10"
-  ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "vue",
-      "ts",
-      "tsx"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testMatch": [
-      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
-    ],
-    "testURL": "http://localhost/"
+    "@babel/core": "7.9.0",
+    "@types/axios": "^0.14.0",
+    "@types/chart.js": "^2.9.25",
+    "@types/highlight.js": "^10.1.0",
+    "@types/material-ui": "^0.21.8",
+    "@types/react": "^16.9.51",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-native": "^0.63.25",
+    "@types/react-router-dom": "^5.1.6",
+    "expo-cli": "^3.27.13",
+    "gh-pages": "^3.1.0",
+    "serve": "^11.3.2",
+    "typescript": "^4.0.3"
   }
 }

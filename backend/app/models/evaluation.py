@@ -54,8 +54,8 @@ class EvaluationScore(BaseModel):
     total_score_max: int = 0
     total_bonus: int = 0
     total_bonus_max: int = 0
-    percent: Optional[str] = "0%"
-    bonus_percent: Optional[str] = "0%"
+    percent: Optional[int] = 0
+    bonus_percent: Optional[int] = 0
 
 
 # @strawberry.type
@@ -65,7 +65,7 @@ class EvaluationModel(BaseModel):
     # id: str = Field(..., alias="_id")
     resource_uri: str = Field(...)
     collection: str = Field(...)
-    title: Optional[str] = Field(..., default=None)
+    title: Optional[str] = Field(...)
     author: Optional[str] = None
     score: Optional[EvaluationScore] = EvaluationScore()
     results: Optional[List[EvaluationResults]] = []
@@ -96,7 +96,7 @@ class CreateEvaluationModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     resource_uri: str = Field(...)
     collection: str = Field(...)
-    title: Optional[str] = Field(..., default=None)
+    title: Optional[str] = Field(...)
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True

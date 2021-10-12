@@ -151,3 +151,7 @@ class AssessmentModel(BaseModel):
     def check(self, log_msg: str):
         self.log(log_msg, '🔎')
 
+
+    def advice(self, log_msg: str):
+        self.log(log_msg, 'ℹ️')
+

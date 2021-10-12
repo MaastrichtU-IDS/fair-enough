@@ -31,15 +31,18 @@ Find information about authorization in metadata"""
 
         self.check('Authorization: checking for dct:accessRights in metadata')
         found_access_rights = False
-        for s, p, accessRights in g.triples((None,  DCTERMS.accessRights, None)):
-            self.log('Found authorization informations with dcterms:accessRights: ' + str(accessRights))
-            eval.data['accessRights'] = str(accessRights)
-            found_access_rights = True
+        access_rights_preds = [DCTERMS.accessRights]
+        for pred in access_rights_preds:
+            for s, p, accessRights in g.triples((None,  pred, None)):
+                self.log('Found authorization informations with dcterms:accessRights: ' + str(accessRights))
+                eval.data['accessRights'] = str(accessRights)
+                found_access_rights = True
 
         if found_access_rights:
             self.success('Found dcterms:accessRights in metadata: ' + str(accessRights))
         else:
             self.error('Could not find dcterms:accessRights information in metadata')
+            self.advice('Make sure your metadata contains informations about access rights using one of those predicates: ' + ', '.join(access_rights_preds))
 
         return eval, g
 

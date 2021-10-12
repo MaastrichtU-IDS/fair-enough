@@ -93,11 +93,11 @@ async def create_evaluation(
         eval.score.total_bonus += result['bonus_score']
         eval.score.total_bonus_max += result['max_bonus']
     if eval.score.total_score_max > 0:
-        eval.score.percent = str(int(eval.score.total_score * 100 / eval.score.total_score_max)) + '%'
-        eval.score.bonus_percent = str(int(eval.score.total_bonus * 100 / eval.score.total_bonus_max)) + '%'
+        eval.score.percent = int(eval.score.total_score * 100 / eval.score.total_score_max)
+        eval.score.bonus_percent = int(eval.score.total_bonus * 100 / eval.score.total_bonus_max)
     else:
-        eval.score.percent = '0%'
-        eval.score.bonus_percent = '0%'
+        eval.score.percent = 0
+        eval.score.bonus_percent = 0
 
     # print(eval.dict(by_alias=True))
     new_evaluation = await db["evaluations"].insert_one(eval.dict(by_alias=True))

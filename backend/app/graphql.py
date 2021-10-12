@@ -51,8 +51,8 @@ class EvaluationScore:
     total_score_max: int = 0
     total_bonus: int = 0
     total_bonus_max: int = 0
-    percent: Optional[str] = "0%"
-    bonus_percent: Optional[str] = "0%"
+    percent: Optional[int] = 0
+    bonus_percent: Optional[int] = 0
 
 @strawberry.type
 class EvaluationModel:
