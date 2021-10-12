@@ -1,17 +1,21 @@
-from fastapi import FastAPI, APIRouter, Body, HTTPException, status
+from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from typing import List
+from typing import List, Optional
 from app.db import get_db
 from rdflib import ConjunctiveGraph
-from app.models.evaluation import EvaluationData, CreateEvaluationModel, EvaluationModel, EvaluationResults, EvaluationScore, UpdateEvaluationModel
+from app.models import CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
+from app.api.login import get_current_user, reusable_oauth2
+from app.config import settings
 
 router = APIRouter()
 db = get_db()
 
 
 @router.post("/evaluations", 
-    description="""Try also:
+    description="""You can run this evaluation without being authenticated, but if you are authenticated your ORCID will be added as author of the evaluation.
+
+Examples of resources to evaluate:
 * FAIR principle publication: https://doi.org/10.1038/sdata.2016.18
 * Zenodo RDFLib library: https://doi.org/10.5281/zenodo.1486394
 * Wikidata DOI: https://doi.org/10.1016/J.JBI.2019.103292
@@ -24,11 +28,22 @@ db = get_db()
 * SIO Ontology: http://semanticscience.org/ontology/sio.owl
 * Kaggle: https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge 
 * RIVM data repository: https://data.rivm.nl/meta/srv/eng/rdf.metadata.get?uuid=1c0fcd57-1102-4620-9cfa-441e93ea5604&approved=true
-* NeuroDKG publication: https://doi.org/10.5281/zenodo.5541440""",
+* NeuroDKG publication: https://doi.org/10.5281/zenodo.5541440
+* ORCID profile: https://orcid.org/0000-0002-1501-1082""",
     response_description="Add a new evaluation", 
     response_model={})
-async def create_evaluation(evaluation: CreateEvaluationModel = Body(...)):
+async def create_evaluation(
+        evaluation: CreateEvaluationModel = Body(...),
+        current_user: Optional[User] = Depends(get_current_user)
+    ):
     evaluation = jsonable_encoder(evaluation)
+
+    # print(str(reusable_oauth2))
+    # current_user = get_current_user(str(reusable_oauth2))
+    if current_user:
+        print('USER!!!')
+        print(str(current_user))
+
     collection = await db["collections"].find_one({"_id": evaluation['collection']})
     if collection is None:
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
@@ -41,8 +56,16 @@ async def create_evaluation(evaluation: CreateEvaluationModel = Body(...)):
         'collection': evaluation['collection'],
         'data': {
             'alternative_uris': [evaluation['resource_uri']]
-        }
+        },
+        '@id': f'{settings.BASE_URI}/evaluation/{evaluation["_id"]}',
+        '@context': settings.CONTEXT
     }
+    if current_user:
+        print('USER!!!')
+        print(str(current_user))
+        init_eval['author'] = current_user['id']
+    else:
+        init_eval['author'] = None
     eval = EvaluationModel(**init_eval)
     g = ConjunctiveGraph()
 
@@ -58,10 +81,8 @@ async def create_evaluation(evaluation: CreateEvaluationModel = Body(...)):
         try: 
             eval, g = assess.runEvaluate(eval, g)
         except Exception as e:
-            print('❌ Error running the test ' + assess_name)
+            print('❌ Error running the assessment ' + assess_name)
             print(e)
-
-    print(eval)
 
     # Calculate the total score
     # for fair_type in ['f', 'a', 'i', 'r']:
@@ -73,10 +94,12 @@ async def create_evaluation(evaluation: CreateEvaluationModel = Body(...)):
         eval.score.total_bonus_max += result['max_bonus']
     if eval.score.total_score_max > 0:
         eval.score.percent = str(int(eval.score.total_score * 100 / eval.score.total_score_max)) + '%'
+        eval.score.bonus_percent = str(int(eval.score.total_bonus * 100 / eval.score.total_bonus_max)) + '%'
     else:
         eval.score.percent = '0%'
+        eval.score.bonus_percent = '0%'
 
-    print(eval.dict(by_alias=True))
+    # print(eval.dict(by_alias=True))
     new_evaluation = await db["evaluations"].insert_one(eval.dict(by_alias=True))
     created_evaluation = await db["evaluations"].find_one({"_id": new_evaluation.inserted_id})
     created_evaluation['_id'] = str(created_evaluation['_id'])

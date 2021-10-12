@@ -17,6 +17,7 @@ class Assessment(AssessmentModel):
 
 
         self.check('Checking RDF metadata for prov and pav metadata')
+        # Author, contributor, creationDate
 
             
         return eval, g

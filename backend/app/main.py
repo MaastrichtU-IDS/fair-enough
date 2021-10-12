@@ -3,40 +3,15 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import strawberry
 from strawberry.asgi import GraphQL
+from typing import List, Optional
 
 from app.api.api import api_router
 from app.config import settings
+from app.graphql import Query
 
-from app.api.collections import list_collections, show_collection
-from app.models import EvaluationModel, CollectionModel
-from typing import List, Optional
-
-# @strawberry.type
-# class Query:
-#     @strawberry.field
-#     async def collections(self, id: str =None) -> List[CollectionModel]:
-#         if id:
-#             collection = await show_collection(id)
-#             print(collection)
-#             print(type(collection))
-#             return collection
-#         return await list_collections()
-
-@strawberry.type
-class User:
-    name: str
-    age: int
-
-#  strawberry.field(resolver=get_books)
-@strawberry.type
-class Query:
-    @strawberry.field
-    def user(self) -> User:
-        return User(name="Patrick", age=100)
 
 schema = strawberry.Schema(query=Query)
 graphql_app = GraphQL(schema)
-
 
 
 app = FastAPI(
@@ -47,6 +22,8 @@ app = FastAPI(
 You will need to login with [ORCID](https://orcid.org) to create new collections of assessments.
 
 To login, click on the **Authorize 🔓️** button, and use the 2nd option: **OpenIdConnect (OAuth2, implicit)**
+
+You can also query FAIR enough using the experimental GraphQL endpoint at [/graphql](/graphql?query=query%20%7B%0A%09evaluations%20%7B%0A%20%20%20%20title%0A%20%20%20%20resourceUri%0A%20%20%20%20collection%0A%20%20%20%20score%20%7B%0A%20%20%20%20%20%20totalScore%0A%20%20%20%20%20%20totalScoreMax%0A%20%20%20%20%20%20percent%0A%20%20%20%20%20%20totalBonus%0A%20%20%20%20%20%20totalBonusMax%0A%20%20%20%20%20%20bonusPercent%0A%20%20%20%20%7D%0A%20%20%20%20results%20%7B%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20fairType%0A%20%20%20%20%20%20metricId%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20maxScore%0A%20%20%20%20%20%20bonusScore%0A%20%20%20%20%20%20maxBonus%0A%20%20%20%20%20%20logs%0A%20%20%20%20%7D%0A%20%20%20%20data%0A%20%20%7D%0A%7D)
 
 [Source code](https://github.com/MaastrichtU-IDS/fair-enough)
 """,

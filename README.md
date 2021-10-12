@@ -24,7 +24,7 @@ Feel free to add new assessments and send a pull request!  To create a new asses
 
 * Copy an existing assessment to get started
 
-* Change the attributes of this assessment to describe it so that users can easily understand what your assessment do. Provide your email in the `author` attribute.
+* Change the attributes of this assessment to describe it so that users can easily understand what your assessment do. Provide your ORCID URL in the `author` attribute,
 
 * Add the code in the `evaluate()` function, 2 variables are passed to the assessment, plus you can access the assessment object itself to log what the test is trying to do, and why it success or fail:
 
@@ -39,6 +39,7 @@ Feel free to add new assessments and send a pull request!  To create a new asses
     self.success('This will also increase the score of the assessment by 1')
     self.bonus('This will also increase the bonus score of the assessment by 1')
     self.error('This will print a failure while running the assessment')
+    g = self.parseRDF(rdf_data, 'text/turtle', msg='content negotiation RDF')
     ```
 
 > Most of the Python code for the API is in https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app

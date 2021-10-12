@@ -8,6 +8,7 @@ class Assessment(AssessmentModel):
     title = 'The resource Indexed in a searchable resource'
     description = """Search for existing metadata about the resource URI in data repositories, such as DataCite, RE3data. 
 Search for the URI using the resource title in search engines (Google)"""
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
     max_bonus = 1
 
@@ -61,8 +62,8 @@ Search for the URI using the resource title in search engines (Google)"""
             
             resource_uris = eval.data['alternative_uris']
 
-            self.check('Run Google search for: ' + resource_title)
-            search_results = list(search(resource_title, tld="co.in", num=20, stop=1, pause=1))
+            self.check('Running Google search for: ' + resource_title)
+            search_results = list(search(resource_title, tld="co.in", num=20, stop=20, pause=1))
             print(search_results)
 
             found_uris = list(set(resource_uris).intersection(search_results))

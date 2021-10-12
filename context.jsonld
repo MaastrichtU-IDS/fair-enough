@@ -1,0 +1,5 @@
+{
+    "title": "http://purl.org/dc/terms/title",
+    "description": "http://purl.org/dc/terms/description",
+    "collections": "https://w3id.org/fair-enough/collections"
+}

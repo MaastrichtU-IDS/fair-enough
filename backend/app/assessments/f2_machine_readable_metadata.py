@@ -14,6 +14,7 @@ It can be useful to put it at the start of your collection, and then search for 
 Search for structured metadata at the resource URI. 
 Use HTTP requests with content-negotiation (RDF, JSON-LD, JSON), 
 and extract metadata from the HTML landing page using extruct"""
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
     max_bonus = 2
 
@@ -34,6 +35,7 @@ and extract metadata from the HTML landing page using extruct"""
         
         print(r.headers)
         found_signposting = False
+        self.check('Checking if Signposting links can be found in the resource URI headers at ' + uri)
         if 'link' in r.headers.keys():
             signposting_links = r.headers['link']
             found_signposting = True
@@ -46,9 +48,9 @@ and extract metadata from the HTML landing page using extruct"""
         else:
             self.warning('Could not find Signposting links')
 
-        self.check('Check if machine readable data (e.g. RDF, JSON-LD) can be retrieved using content-negotiation at ' + uri)
+        found_content_negotiation = False
+        self.check('Checking if machine readable data (e.g. RDF, JSON-LD) can be retrieved using content-negotiation at ' + uri)
         # self.check('Trying (in this order): ' + ', '.join(check_mime_types))
-        found_metadata_negotiation = False
         for mime_type in check_mime_types:
             try:
                 r = requests.get(uri, headers={'accept': mime_type})
@@ -65,38 +67,30 @@ and extract metadata from the HTML landing page using extruct"""
                     # If return JSON-LD
                     eval.data['content_negotiation'][contentType] = r.json()
 
-                    # TODO: quick fix to get alternative ID from JSON-LD
+                    # TODO: use rdflib, instead of this quick fix to get alternative ID from JSON-LD
                     if 'url' in r.json():
                         eval.data['alternative_uris'].append(r.json()['url'])
                         # url': 'https://doi.pangaea.de/10.1594/PANGAEA.908011
-
                 except:
                     # If returns RDF, such as turtle
                     eval.data['content_negotiation'][contentType] = r.text
-                found_metadata_negotiation = True
+                found_content_negotiation = True
                 break
-
             except Exception as e:
                 self.warning('Could not find metadata with content-negotiation when asking for: ' + mime_type + '. Getting: ' + e.args[0])
 
-        if found_metadata_negotiation:
+        if found_content_negotiation:
             self.success('Found metadata in ' + ', '.join(eval.data['content_negotiation'].keys()) + ' format using content-negotiation')
             # Parse RDF metadata
             for mime_type, rdf_data in eval.data['content_negotiation'].items():
-                # https://rdflib.readthedocs.io/en/stable/plugin_parsers.html
-                # rdflib_formats = ['turtle', 'json-ld', 'ntriples', 'nquads', 'xml', 'trig', 'n3']
-                # print(rdf_data)
                 g = self.parseRDF(rdf_data, mime_type, msg='content negotiation RDF')
-                # self.log('RDF metadata size: ' + str(len(g)))
                 break # Only parse the first RDF metadata file entry
         else:
             self.warning('Could not find metadata using content-negotiation, checking metadata embedded in HTML with extruct')
 
 
-        # Extract metadata embedded  in HTML with extruct, if nothing found with content negotiation
-        # if len(g) < 1:
+        self.check('Checking for metadata embedded in the HTML page returned by the resource URI ' + uri + ' using extruct')
         try:
-            self.check('Checking for metadata embedded in the HTML page returned by the resource URI ' + uri + ' using extruct')
             get_uri = requests.get(uri, headers={'Accept': 'text/html'})
             html_text = html.unescape(get_uri.text)
             found_metadata_extruct = False
@@ -107,18 +101,14 @@ and extract metadata from the HTML landing page using extruct"""
                     if extracted[extruct_type]:
                         if 'extruct' not in eval.data.keys():
                             eval.data['extruct'] = {}
-
                         if extruct_type == 'dublincore' and extracted[extruct_type] == [{"namespaces": {}, "elements": [], "terms": []}]:
-                            # Handle issue where extruct generate empty dict
+                            # Handle case where extruct generate empty dict
                             continue
-
                         eval.data['extruct'][extruct_type] = extracted[extruct_type]
                         found_metadata_extruct = True
 
             except Exception as e:
                 self.warning('Error when parsing HTML embedded microdata or JSON from ' + uri + ' using extruct. Getting: ' + str(e.args[0]))
-
-            self.log('Extruct DONE')
 
             if found_metadata_extruct:
                 self.success('Found embedded metadata in the resource URI HTML page: ' + ', '.join(eval.data['extruct'].keys()))
@@ -127,7 +117,6 @@ and extract metadata from the HTML landing page using extruct"""
         except Exception as e:
             self.warning('Error when running extruct on ' + uri + '. Getting: ' + str(e.args[0]))
 
-        # TODO: extract signposting metadata
 
         return eval, g
 

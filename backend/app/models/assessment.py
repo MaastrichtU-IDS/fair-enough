@@ -1,11 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 import datetime
 import json
 from rdflib import ConjunctiveGraph
+from rdflib.term import URIRef
+# Plugin and serializer required for rdflib-jsonld
+# from rdflib import ConjunctiveGraph, Graph, plugin
+# from rdflib.serializer import Serializer
+from pyld import jsonld
 
 from app import models
 from app.models.evaluation import EvaluationModel
+from app.config import settings
 # import logging
 
 # logging.basicConfig(level=logging.INFO)
@@ -18,17 +24,20 @@ class AssessmentModel(BaseModel):
     file_url: Optional[str]
     fair_type: str
     metric_id: str
-    author: str = 'vincent.emonet@gmail.com'
+    author: str = 'https://orcid.org/0000-0002-1501-1082'
     score: int = 0
     max_score: int = 1
     bonus_score: int = 0
     max_bonus: int = 0
     logs: List[str] = []
+    uri: Optional[str] = Field(alias="@id")
+    context: str = Field(settings.CONTEXT, alias="@context")
 
 
     def __init__(self, filename: str) -> None:
         super().__init__()
         self.id = filename
+        self.uri = f"{settings.BASE_URI}/assessment/{self.id}"
         self.file_url = 'https://github.com/MaastrichtU-IDS/fair-enough/blob/main/backend/app/assessments/' + filename + '.py'
 
 
@@ -40,37 +49,63 @@ class AssessmentModel(BaseModel):
         try:
             eval, g = self.evaluate(eval, g)
             # Adding output of this assessment to the evaluation results
-            eval.results.append(self.dict())
+            eval.results.append(self.dict(by_alias=True))
         except Exception as e:
-            self.error('Error running test ' + self.filename + '. Getting: ' + str(e))
-            eval.results.append(self.dict())
+            self.error('Error running assessment ' + self.id + '. Getting: ' + str(e))
+            eval.results.append(self.dict(by_alias=True))
         return eval, g
 
 
     def parseRDF(self, rdf_data, mime_type: str = 'No mime type', msg: str = ''):
+        # https://rdflib.readthedocs.io/en/stable/plugin_parsers.html
         rdflib_formats = ['turtle', 'json-ld', 'xml', 'ntriples', 'nquads', 'trig', 'n3']
 
         if type(rdf_data) == dict:
-            # JSON-LD should work, it was added to RDFLib 6.0.1: https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.plugins.parsers.html#module-rdflib.plugins.parsers.jsonld
+            if '@context' in rdf_data.keys() and (rdf_data['@context'].startswith('http://schema.org') or rdf_data['@context'].startswith('https://schema.org')):
+                # Regular content negotiation dont work with schema.org: https://github.com/schemaorg/schemaorg/issues/2578
+                rdf_data['@context'] = 'https://schema.org/docs/jsonldcontext.json'
+            self.log('Convert dict ton JSON string before RDF parsing')
+            # RDFLib JSON-LD has issue with encoding: https://github.com/RDFLib/rdflib/issues/1416
+            rdf_data = jsonld.expand(rdf_data)
             rdf_data = json.dumps(rdf_data)
-            # jsonld from RDFLib 6.0.1 broken: https://github.com/RDFLib/rdflib/issues/1423
-            # rdf_data = json.dumps(rdf_data, indent=2).encode('utf-8')
-            # jsonld from pyld broken with schema.org: https://github.com/digitalbazaar/pyld/issues/154
-            # rdf_data = json.dumps(jsonld.expand(rdf_data))
+            # rdf_data = json.dumps(rdf_data).encode('utf-8').decode('utf-8')
             rdflib_formats = ['json-ld']
 
+        # self.log(rdf_data)
         g = ConjunctiveGraph()
         for rdf_format in rdflib_formats:
             try:
                 # print(type(rdf_data))
                 g.parse(data=rdf_data, format=rdf_format)
-                # print(g.serialize(format='turtle', indent=2))
-                self.log('Metadata from ' + mime_type + ' ' + msg + ' parsed with RDFLib parser ' + rdf_format, '☑️')
+                self.log(str(len(g)) + ' triples parsed. Metadata from ' + mime_type + ' ' + msg + ' parsed with RDFLib parser ' + rdf_format, '☑️')
+                # self.log(str(g.serialize(format='turtle', indent=2)))
                 break
             except Exception as e:
-                self.warning('Could not parse ' + mime_type + ' metadata from ' + msg + ' with RDFLib parser ' + rdf_format)
-                print(e)
+                self.warning('Could not parse ' + mime_type + ' metadata from ' + msg + ' with RDFLib parser ' + rdf_format + ' ' + str(e))
         return g
+
+
+    def extract_property(self, property, preds: List, eval: EvaluationModel, g, multi_results: bool = False):
+        # self.log(str(preds))
+        for resource_uri in eval.data['alternative_uris']:
+            uri_ref = URIRef(resource_uri)
+            for pred in preds:
+                if multi_results:
+                    for s, p, o in g.triples((uri_ref,  pred, None)):
+                        if property not in eval.data.keys():
+                            eval.data[property] = []
+                        eval.data[property].append(str(o))
+                        self.log(f'Found a {property} with predicate {str(pred)} in the resource metadata: {str(o)}')
+                
+                else:
+                    # Single result
+                    if property not in eval.data.keys():
+                        prop_value = g.value(uri_ref, pred)
+                        if prop_value:
+                            eval.data[property] = prop_value
+                            self.log(f'Found a {property} with predicate {str(pred)} in the resource metadata: {eval.data[property]}')
+                            break
+        return eval, g
 
 
     def log(self, log_msg: str, prefix: str = None):
@@ -98,7 +133,7 @@ class AssessmentModel(BaseModel):
     def success(self, log_msg: str):
         if self.score >= self.max_score:
             self.bonus('Assessment score already at the max (' + str(self.score) + '), adding as a bonus point: ' + log_msg)
-            self.warning('Could not increase assessment ' + self.filename + ' score: already at ' + str(self.score) + ', the same value as the max score. Fix the scoring of this assessment')
+            # self.warning('Could not increase assessment ' + self.id + ' score: already at ' + str(self.score) + ', the same value as the max score. Fix the scoring of this assessment')
         else:
             self.score += 1
         self.log(log_msg, '✅')
@@ -106,7 +141,7 @@ class AssessmentModel(BaseModel):
 
     def bonus(self, log_msg: str):
         # if self.bonus_score >= self.max_bonus:
-        #     self.warning('Could not increase assessment ' + self.filename + ' bonus score: already at ' + str(self.score) + ', the same value as the max bonus score. Fix the scoring of this assessment')
+        #     self.warning('Could not increase assessment ' + self.id + ' bonus score: already at ' + str(self.score) + ', the same value as the max bonus score. Fix the scoring of this assessment')
         # else:
         #     self.bonus_score += 1
         self.bonus_score += 1

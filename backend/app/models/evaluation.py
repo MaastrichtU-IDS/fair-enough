@@ -3,7 +3,7 @@ from typing import Optional, List
 from bson import ObjectId
 import strawberry
 
-
+# @strawberry.type
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
@@ -19,12 +19,14 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
-
+# @strawberry.type
 class EvaluationResults(BaseModel):
     # Same as AssessmentModel in api/assessments.py
+    id: str
     title: str
     description: str
-    filename: str
+    # filename: str
+    author: Optional[str] = None
     file_url: Optional[str]
     fair_type: str
     metric_id: str
@@ -46,13 +48,14 @@ class EvaluationData(BaseModel):
     content_negotiation: Optional[dict]
     identifier_in_metadata: Optional[dict]
 
-
+# @strawberry.type
 class EvaluationScore(BaseModel):
     total_score: int = 0
     total_score_max: int = 0
     total_bonus: int = 0
     total_bonus_max: int = 0
-    percent: Optional[str]
+    percent: Optional[str] = "0%"
+    bonus_percent: Optional[str] = "0%"
 
 
 # @strawberry.type
@@ -61,16 +64,17 @@ class EvaluationModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     # id: str = Field(..., alias="_id")
     resource_uri: str = Field(...)
-    title: str = Field(...)
     collection: str = Field(...)
-    # results: dict
-    # data: dict
-    # score: dict
-    results: Optional[List[EvaluationResults]] = []
-    data: dict = {}
-    # data: Optional[EvaluationData] = EvaluationData()
+    title: Optional[str] = Field(..., default=None)
+    author: Optional[str] = None
     score: Optional[EvaluationScore] = EvaluationScore()
+    results: Optional[List[EvaluationResults]] = []
+    data: dict = Field(default={})
+    # data: Optional[EvaluationData] = EvaluationData()
+    uri: str = Field(..., alias="@id")
+    context: str = Field(..., alias="@context")
 
+    # @strawberry.type
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
@@ -80,7 +84,7 @@ class EvaluationModel(BaseModel):
                 "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
                 "title": "FAIR metrics dataset evaluation",
                 "collection": "fair-metrics",
-                'results': {'f': [], 'a': [], 'i': [], 'r': []},
+                'results':[],
                 'data': {},
                 'score': {}
             }
@@ -91,8 +95,8 @@ class CreateEvaluationModel(BaseModel):
     # id: str = Field(default_factory=PyObjectId, alias="_id")
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     resource_uri: str = Field(...)
-    title: str = Field(...)
     collection: str = Field(...)
+    title: Optional[str] = Field(..., default=None)
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True

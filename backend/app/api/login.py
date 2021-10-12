@@ -19,6 +19,7 @@ from authlib.integrations.starlette_client import OAuth, OAuthError
 
 reusable_oauth2 = OpenIdConnect(
     openIdConnectUrl='https://orcid.org/.well-known/openid-configuration',
+    auto_error=False
     # flow='implicit' not working
 )
 # reusable_oauth2 = OAuth2PasswordBearer(
@@ -34,9 +35,12 @@ def get_current_user(
     token: str = Depends(reusable_oauth2)
 ) -> models.User:
     # curl -i -L -H "Accept: application/json" -H "Authorization: Bearer aa4629f3-b0a2-4edd-b77a-398d7afe3c90" 'https://sandbox.orcid.org/oauth/userinfo'
-    orcid_user = requests.get('https://orcid.org/oauth/userinfo',
-                        headers={'Accept': 'application/json',
-                                'Authorization': 'Bearer ' + token})
+    if token:
+        orcid_user = requests.get('https://orcid.org/oauth/userinfo',
+                            headers={'Accept': 'application/json',
+                                    'Authorization': 'Bearer ' + token})
+    else:
+        return None
     return orcid_user.json()
 
 

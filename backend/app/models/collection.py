@@ -24,12 +24,22 @@ class PyObjectId(ObjectId):
 class CollectionModel(BaseModel):
     # id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     id: str = Field(..., alias="_id")
+    # allow_population_by_field_name: bool = True
     title: str = Field(...)
     description: Optional[str] = None
     homepage: Optional[str] = None
     # homepage: Optional[AnyUrl] = None
     assessments: List[str] = []
     author: str = Field(...)
+    uri: str = Field(..., alias="@id")
+    context: str = Field(..., alias="@context")
+
+    # def __init__(self):
+        # super().__init__()
+        # print(self)
+        # self.uri = 'toto'
+        # self.context = {'title': 'dc:title'}
+
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True

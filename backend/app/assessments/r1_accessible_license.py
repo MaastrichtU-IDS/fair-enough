@@ -9,6 +9,7 @@ class Assessment(AssessmentModel):
     title = 'Accessible Usage License'
     description = """The existence of a license document, for BOTH (independently) the data and its associated metadata, and the ability to retrieve those documents
 Resolve the licenses IRI"""
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
     max_bonus = 1
 
@@ -19,11 +20,13 @@ Resolve the licenses IRI"""
         if 'license' in eval.data.keys():
             found_license = True
         else:
+            license_uris = [DCTERMS.license, URIRef('http://schema.org/license')]
             # Get license from RDF metadata
-            for s, p, license in g.triples((None,  DCTERMS.license, None)):
-                self.log('Found license with dcterms:license: ' + str(license))
-                eval.data['license'] = str(license)
-                found_license = True
+            for license_uri in license_uris:
+                for s, p, license in g.triples((None,  license_uri, None)):
+                    self.log(f'Found license with {license_uri}: {str(license)}')
+                    eval.data['license'] = str(license)
+                    found_license = True
 
         if found_license:
             self.success('Found license in metadata: ' + str(license))

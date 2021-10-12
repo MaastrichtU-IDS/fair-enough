@@ -7,7 +7,9 @@ class Assessment(AssessmentModel):
     metric_id = '3'
     title = 'Resource Identifier is in Metadata'
     description = """Whether the metadata document contains the globally unique and persistent identifier for the digital resource.
-Parsing the metadata for the given digital resource GUID."""
+Parsing the metadata to search for the given digital resource GUID.
+And retrieving informations about this resource (title, description, date created, etc)"""
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
     max_bonus = 0
 
@@ -43,15 +45,15 @@ Parsing the metadata for the given digital resource GUID."""
             else: 
                 self.warning('Could not find links to the resource URI ' + alt_uri + ' in the metadata')
 
-            # Try to extract title from RDF metadata
-            title_preds = [ DC.title, DCTERMS.title, URIRef('https://schema.org/name')]
-            for title_pred in title_preds:
-                if 'resource_title' not in eval.data.keys():
-                    if g.value(uri_ref, title_pred):
-                        print(g.value(uri_ref, title_pred))
-                        eval.data['resource_title'] = g.value(uri_ref, title_pred)
-                        self.log('Found a title with predicate ' + str(title_pred) + ' in the resource metadata: ' + eval.data['resource_title'])
-                        break
-            
+            # Try to extract some metadata from the parsed RDF
+            title_preds = [ DC.title, DCTERMS.title, RDFS.label, URIRef('http://schema.org/name')]
+            eval, g = self.extract_property('resource_title', title_preds, eval, g)
+
+            description_preds = [ DCTERMS.description, URIRef('http://schema.org/description')]
+            eval, g = self.extract_property('resource_description', description_preds, eval, g)
+
+            date_created_preds = [ DCTERMS.created, URIRef('http://schema.org/dateCreated')]
+            eval, g = self.extract_property('date_created', date_created_preds, eval, g)
+
         return eval, g
 

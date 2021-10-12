@@ -10,7 +10,7 @@ class Assessment(AssessmentModel):
     description = """The access protocol and authorization (if content restricted).
 For the protocol , do an HTTP get on the URL to see if it returns a valid document.
 Find information about authorization in metadata"""
-    author = 'vincent.emonet@gmail.com'
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 2
     max_bonus = 0
 

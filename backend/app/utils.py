@@ -1,5 +1,5 @@
-import json
-import rdflib
+# import json
+# import rdflib
 # from rdflib import ConjunctiveGraph
 # from app.config import settings
 
@@ -21,37 +21,6 @@ mime_types = {
     'rdf': 'application/ld+json;q=0.9, text/turtle, application/turtle, application/x-turtle;q=0.8, application/rdf+xml, text/n3, text/rdf+n3;q=0.7',
     'default': '*/*'
 }
-
-
-def parseRDF(rdf_data, mime_type: str = None, assessment = None, msg: str = ''):
-    rdflib_formats = ['turtle', 'json-ld', 'xml', 'ntriples', 'nquads', 'trig', 'n3']
-
-    if type(rdf_data) == dict:
-        # JSON-LD should work, added to RDFLib 6.0.1: https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.plugins.parsers.html#module-rdflib.plugins.parsers.jsonld
-        rdf_data = json.dumps(rdf_data)
-        # jsonld from RDFLib 6.0.1 broken: https://github.com/RDFLib/rdflib/issues/1423
-        # rdf_data = json.dumps(rdf_data, indent=2).encode('utf-8')
-        # jsonld from pyld broken with schema.org: https://github.com/digitalbazaar/pyld/issues/154
-        # rdf_data = json.dumps(jsonld.expand(rdf_data))
-        rdflib_formats = ['json-ld']
-        # print(rdf_data)
-
-    g = rdflib.ConjunctiveGraph()
-    for rdf_format in rdflib_formats:
-        try:
-            # print(type(rdf_data))
-            g.parse(data=rdf_data, format=rdf_format)
-            # print(g.serialize(format='turtle', indent=2))
-            if assessment:
-                assessment.log('Metadata from ' + mime_type + ' ' + msg + ' parsed with RDFLib parser ' + rdf_format, '☑️')
-            break
-        except Exception as e:
-            if assessment:
-                assessment.warning('Could not parse ' + mime_type + ' metadata from ' + msg + ' with RDFLib parser ' + rdf_format)
-            print(e)
-    return g
-
-
 
 
 

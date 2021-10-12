@@ -22,23 +22,27 @@ async def create_collection(
     
     collection = jsonable_encoder(collection)
     # Check if given assessments exist
-    if not all(item in collection['assessments'] for item in assessments.get_assessments()):
-        raise HTTPException(status_code=404, detail=f"Assessment {collection['assessments']} not found")
+    # all_assessments = await 
+    all_assessments = await assessments.list_assessments()
+    all_assess_names = []
+    for assess in all_assessments:
+        all_assess_names.append(assess['id'])
+    print(collection['assessments'])
+    print(all_assess_names)
+    if not all(item in all_assess_names for item in collection['assessments']):
+        raise HTTPException(status_code=404, detail=f"Assessment {', '.join(collection['assessments'])} not found")
 
+    print(f'{settings.BASE_URI}/collections/{collection["_id"]}')
     collec_obj = {
         '_id': collection['_id'],
         'title': collection['title'],
         'description': collection['description'],
         'homepage': collection['homepage'],
         'assessments': collection['assessments'],
-        'author': current_user['id']
+        'author': current_user['id'],
+        '@id': f'{settings.BASE_URI}/collection/{collection["_id"]}',
+        '@context': settings.CONTEXT
     }
-    print(collec_obj)
-    # {
-    #     # "@id": 
-    #     "@context"
-
-    # }
 
     try:
         new_collection = await db["collections"].insert_one(collec_obj)
@@ -51,7 +55,13 @@ async def create_collection(
 @router.get(
     "/", 
     response_description="List all collections", 
-    response_model=List[CollectionModel]
+    response_model=List[CollectionModel],
+    responses={
+        200: {
+            "content": {"application/ld+json": {}},
+            "description": "Return as JSON-LD.",
+        }
+    },
 )
 async def list_collections() -> List[CollectionModel]:
     return await db["collections"].find().to_list(1000)
@@ -74,7 +84,7 @@ async def update_collection(
         collection: UpdateCollectionModel = Body(...),
         current_user: models.User = Depends(login.get_current_user) ):
 
-    collection = {k: v for k, v in collection.dict().items() if v is not None}
+    collection = {k: v for k, v in collection.dict(by_alias=True).items() if v is not None}
     
     existing_collection = await db["collections"].find_one({"_id": id})
 

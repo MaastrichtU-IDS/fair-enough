@@ -10,6 +10,7 @@ class Assessment(AssessmentModel):
 themselves be FAIR, for example, terms from open, community-accepted 
 vocabularies published in an appropriate knowledge-exchange format. 
 Resolve IRIs, check FAIRness of the returned documents."""
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
     max_bonus = 0
 

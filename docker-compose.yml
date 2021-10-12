@@ -55,11 +55,11 @@ services:
       - VIRTUAL_HOST=api.fair-enough.semanticscience.org
       - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
       - VIRTUAL_PORT=80
+      - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
     #   - SERVER_NAME=${DOMAIN?Variable not set}
     #   - SERVER_HOST=https://${DOMAIN?Variable not set}
     #   # Allow explicit env var override for tests
     #   - SMTP_HOST=${SMTP_HOST}
-    #   - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
 
 
 volumes:

@@ -6,6 +6,7 @@ from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, v
 
 class Settings(BaseSettings):
     API_PATH: str = "/api"
+    BASE_URI: str = "https://w3id.org/fair-enough"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -22,6 +23,8 @@ class Settings(BaseSettings):
 
     MONGODB_URL: str = f'mongodb://root:{SECRET_KEY}@mongodb:27017/'
 
+    CONTEXT = 'https://raw.githubusercontent.com/MaastrichtU-IDS/fair-enough/main/context.jsonld'
+    
 
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \

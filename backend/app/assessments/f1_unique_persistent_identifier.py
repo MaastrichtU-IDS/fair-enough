@@ -7,7 +7,7 @@ class Assessment(AssessmentModel):
     metric_id = '1'
     title = 'Resource identifier is unique and persistent'
     description = 'Check if the identifier of the resource is unique (HTTP) and persistent (some HTTP domains)'
-    author = 'vincent.emonet@gmail.com'
+    author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 2
     max_bonus = 0
 
@@ -16,7 +16,6 @@ class Assessment(AssessmentModel):
 
         self.check('Checking if the given resource URI ' + eval.resource_uri + ' is a valid URL using urllib.urlparse')
         result = urlparse(eval.resource_uri)
-        print(result)
         if result.scheme and result.netloc:
             # Get URI protocol retrieved in f1_1_assess_unique_identifier
             eval.data['uri_protocol'] = result.scheme
