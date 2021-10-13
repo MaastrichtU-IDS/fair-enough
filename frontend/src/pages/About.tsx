@@ -1,8 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Container, Typography } from "@material-ui/core";
+import { makeStyles } from '@mui/styles';
+import { Container, Typography } from "@mui/material";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: any) => ({
   link: {
     textDecoration: 'none',
     color: theme.palette.primary.main,

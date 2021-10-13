@@ -2,12 +2,15 @@ import React from "react";
 import { View } from "react-native";
 import { HashRouter } from "react-router-dom";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { createTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
+// import { ThemeProvider } from '@mui/styles';
+// import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import blue from '@mui/material/colors/blue';
 import './src/App.css';
 import NavBar from "./src/components/NavBar";
 import Footer from "./src/components/Footer";
-import Evaluations from "./src/pages/Evaluations";
+import RunEvaluations from "./src/pages/RunEvaluations";
+import Evaluation from "./src/pages/Evaluation";
 import About from "./src/pages/About";
 
 // Change theme color and typography here
@@ -31,27 +34,29 @@ const theme = createTheme({
     "fontWeightMedium": 500,
     "fontSize": 11
   },
-  overrides: {
-    MuiTooltip: {
-        tooltip: {
-            fontSize: "1em",
-        },
-    },
-  },
+  // spacing: 2
+  // overrides: {
+  //   MuiTooltip: {
+  //       tooltip: {
+  //           fontSize: "1em",
+  //       },
+  //   },
+  // },
 });
 
 const App = () => (
-  <MuiThemeProvider theme={theme}>
+  <ThemeProvider theme={theme}>
     {/* <Router basename="/fairificator/"> */}
     <HashRouter>
       <View style={{height: '100%', backgroundColor: '#eceff1'}}>
         <NavBar />
 
-        <Route exact path="/" component={Evaluations} />
+        <Route exact path="/evaluation/:id" component={Evaluation} />
         <Route path="/about" component={About} />
+        <Route exact path="/" component={RunEvaluations} />
         <Footer />
       </View>
     </HashRouter>
-  </MuiThemeProvider>
+  </ThemeProvider>
 );
 export default App;

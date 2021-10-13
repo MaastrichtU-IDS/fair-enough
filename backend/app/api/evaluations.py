@@ -4,13 +4,19 @@ from fastapi.encoders import jsonable_encoder
 from typing import List, Optional
 from app.db import get_db
 from rdflib import ConjunctiveGraph
-from app.models import CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
+from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
 from app.api.login import get_current_user, reusable_oauth2
 from app.config import settings
 
 router = APIRouter()
 db = get_db()
 
+# @router.websocket("/evaluations")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     while True:
+#         data = await websocket.receive_text()
+#         await websocket.send_text(f"Message text was: {data}")
 
 @router.post("/evaluations", 
     description="""You can run this evaluation without being authenticated, but if you are authenticated your ORCID will be added as author of the evaluation.
@@ -101,6 +107,8 @@ async def create_evaluation(
 
     # print(eval.dict(by_alias=True))
     new_evaluation = await db["evaluations"].insert_one(eval.dict(by_alias=True))
+    print(type(new_evaluation.inserted_id))
+    print(new_evaluation.inserted_id)
     created_evaluation = await db["evaluations"].find_one({"_id": new_evaluation.inserted_id})
     created_evaluation['_id'] = str(created_evaluation['_id'])
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_evaluation)
@@ -117,8 +125,10 @@ async def list_evaluations():
 @router.get(
     "/evaluations/{id}", response_description="Get a single evaluation", response_model=EvaluationModel
 )
-async def show_evaluation(id: str):
+async def show_evaluation(id: PyObjectId) -> EvaluationModel:
+    print(id)
     evaluation = await db["evaluations"].find_one({"_id": id})
+    print(evaluation)
     if evaluation is not None:
         return evaluation
 

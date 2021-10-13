@@ -1,16 +1,23 @@
 import React from 'react';
-import { useLocation } from "react-router-dom";
-import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
-import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@material-ui/core";
-import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@material-ui/core";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import DownloadJsonIcon from '@material-ui/icons/GetApp';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PassIcon from '@material-ui/icons/CheckCircle';
-import FailIcon from '@material-ui/icons/Error';
-// import EvaluationIcon from '@material-ui/icons/Send';
-// import EvaluationIcon from '@material-ui/icons/PlaylistAddCheck';
-import EvaluationIcon from '@material-ui/icons/NetworkCheck';
+import { useLocation, useParams } from "react-router-dom";
+// import { useParams } from 'react-router';
+import { useTheme } from '@mui/material/styles';
+import { makeStyles, withStyles } from '@mui/styles';
+// import { makeStyles, useTheme, withStyles } from '@mui/styles';
+import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
+import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DownloadJsonIcon from '@mui/icons-material/GetApp';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PassIcon from '@mui/icons-material/CheckCircle';
+import FailIcon from '@mui/icons-material/Error';
+// import EvaluationIcon from '@mui/icons-material/Send';
+// import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
+import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+
+import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
+import { useDemoData } from '@mui/x-data-grid-generator';
+// import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
 // import { Doughnut } from 'react-chartjs-2';
@@ -38,39 +45,41 @@ hljs.registerLanguage("pythonlogging",function(e){return {
   ]
 }});
 
-const useStyles = makeStyles(theme => ({
-  link: {
-    color: theme.palette.primary.main,
-    textDecoration: 'none',
-    // color: 'inherit',
-    '&:hover': {
-      color: theme.palette.primary.light,
-      textDecoration: 'none',
-    },
-  },
-  submitButton: {
-    textTransform: 'none',
-    margin: theme.spacing(2, 2),
-  },
-  fullWidth: {
-    width: '100%',
-  },
-  autocomplete: {
-    marginRight: theme.spacing(2)
-  },
-  formInput: {
-    background: 'white',
-    width: '100%'
-  },
-  paperPadding: {
-    padding: theme.spacing(2, 2),
-    margin: theme.spacing(2, 2),
-  },
-}))
-
 export default function Evaluation() {
-  const classes = useStyles();
   const theme = useTheme();
+
+  const useStyles = makeStyles(() => ({
+    link: {
+      color: theme.palette.primary.main,
+      textDecoration: 'none',
+      // color: 'inherit',
+      '&:hover': {
+        color: theme.palette.primary.light,
+        textDecoration: 'none',
+      },
+    },
+    submitButton: {
+      textTransform: 'none',
+      margin: theme.spacing(2, 2),
+    },
+    fullWidth: {
+      width: '100%',
+    },
+    autocomplete: {
+      marginRight: theme.spacing(2)
+    },
+    formInput: {
+      background: 'white',
+      width: '100%'
+    },
+    paperPadding: {
+      padding: theme.spacing(2, 2),
+      margin: theme.spacing(2, 2),
+    },
+  }))
+
+  const classes = useStyles(theme);
+  const { id } = useParams();
   // useLocation hook to get URL params
   let location = useLocation();  
   let evaluationResults: any = null;
@@ -87,6 +96,7 @@ export default function Evaluation() {
     resourceMetadata: resourceMetadata,
     logLevel: 'all',
     evaluationRunning: false,
+    evaluationsList: [],
     metadata_service_type: 'oai_pmh',
     metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
     use_datacite: true,
@@ -111,7 +121,7 @@ export default function Evaluation() {
     setOpen(false);
     setAnchorEl(anchorEl ? null : anchorEl);
   };
-  const id = open ? 'simple-popper' : undefined;
+  // const id = open ? 'simple-popper' : undefined;
   
 
   // Run on page init
@@ -126,7 +136,29 @@ export default function Evaluation() {
       updateState({ urlToEvaluate: urlToEvaluate })
       doEvaluateUrl(urlToEvaluate)
     }
-  }, [])
+    // get evaluation
+    if (state.evaluationsList.length < 1) {
+      axios.get(state.apiUrl + '/evaluations/' + id, {
+        headers: {'Content-Type': 'application/json'},
+      })
+        .then((res: any) => {
+          console.log(res.data)
+          let evaluationsList: any = []
+          // res.data.map((evaluation: any, key: number) => {
+          //   evaluation['id'] = evaluation['_id']
+          //   evaluation['score_percent'] = evaluation['score']['percent']
+          //   evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
+          //   evaluationsList.push(evaluation)
+          // })
+          updateState({ evaluationResults: res.data })
+          hljs.highlightAll();
+          // console.log("state.evaluationsList")
+          // console.log(evaluationsList)
+          // console.log(state.evaluationsList)
+          // const evaluationsList = res.data
+        })
+    }
+  }, [state.evaluationsList])
   // }, [state.apiUrl, state.evaluationRunning])
 
   const colors: any = {
@@ -203,94 +235,6 @@ export default function Evaluation() {
       })
   }
 
-  const buildCharts  = (evaluationResults: any) => {
-    const scores = evaluationResults['summary']['score_percent']
-    const config = {
-      type: 'doughnut',
-      data: {
-        datasets: [
-        // Outer doughnut data starts
-        {
-          data: [ 25, 25, 25, 25 ],
-          backgroundColor: [colors.a, colors.i, colors.r, colors.f],
-          label: 'FAIR principles',
-          labels: [
-            scores.A + "% Accessible 📬️",
-            scores.I + "% Interoperable ⚙️",
-            scores.R + "% Reusable ♻️",
-            scores.F + "% Findable 🔍️"
-          ]
-        },
-        // Outer doughnut data ends, inner doughnut data starts
-        {
-          data: [
-            25,
-            12.5, 12.5,
-            6.25, 6.25, 6.25, 6.25,
-            6.25, 6.25, 6.25, 6.25,
-          ],
-          backgroundColor: [
-            colorsLight['Accessible'],
-            colorsLight['Interoperable'], colorsLight['Interoperable'],
-            colorsLight['Reusable'], colorsLight['Reusable'], colorsLight['Reusable'], colorsLight['Reusable'],
-            colorsLight['Findable'], colorsLight['Findable'], colorsLight['Findable'], colorsLight['Findable'],
-          ],
-          label: 'Score to subcategories',
-          labels: [
-            scores.A1 + '%'+ " Standard protocol",
-            scores.I1 + '%' + " Knowledge representation",
-            scores.I3 + '%' + " Model linked to data",
-            scores.R1 + '%' + " Content described",
-            scores['R1.1'] + '%' + " License",
-            scores['R1.2'] + '%'+ " Provenance",
-            scores['R1.3'] + '%' + " Community standard",
-            scores.F1 + '%'+ " Persistent identifier",
-            scores.F2 + '%'+ " Findability metadata",
-            scores.F3 + '%'+ " Data identifier",
-            scores.F4 + '%'+ " Programmatic retrieval",
-          ]
-        }
-        // Inner doughnut data ends
-        ],
-        labels: [ "Accessible", "Interoperable", "Reusable", "Findable" ]
-      },
-      options: {
-        responsive: true,
-        legend: { position: 'top', display: true },
-        animation: { animateScale: true, animateRotate: true },
-        tooltips: {
-          // callbacks: {
-          //   label: function(item, data) {
-          //       console.log(data.datasets[item.datasetIndex])
-          //       return data.datasets[item.datasetIndex].label+ ": "+ data.labels[item.index]+ ": "+ data.datasets[item.datasetIndex].data[item.index];
-          //   }
-          // }
-          callbacks: {
-            label: function(tooltipItem: any, data: any) {
-              var dataset = data.datasets[tooltipItem.datasetIndex];
-              var index = tooltipItem.index;
-              return dataset.labels[index];
-            }
-          }
-        },
-        plugins: {
-          datalabels: {
-            color: 'black',
-            formatter: function(value: any, context: any) {
-              if (context.datasetIndex == 0) {
-                context.font = "bold 20em Montserrat";
-                return context.dataset.labels[context.dataIndex];
-              } else {
-                return context.dataset.labels[context.dataIndex];
-              }
-            }
-          }
-        }
-      }
-    };
-    return config;
-  }
-
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Set the TextField input to the state variable corresponding to the field id  
     updateState({[event.target.id]: event.target.value})
@@ -323,20 +267,6 @@ export default function Evaluation() {
       return (log.startsWith('❌') || log.startsWith('ℹ️'))
     }
   }
-  // const filterLogs = (logs: [string]) => {
-  //   filteredLogs = []
-  //   hasLogs = false
-  //   logs.map((item: any, key: number) => (
-  //     const 
-  //   ))
-  //   if (state.logLevel == 'all') {
-  //     return true
-  //   } else if (state.logLevel == 'warning') {
-  //     return (log.startsWith('❌') || log.startsWith('⚠️'))
-  //   } else if (state.logLevel == 'error') {
-  //     return log.startsWith('❌')
-  //   }
-  // }
 
   const getBadgeTestStatus  = (status: string) => {
     if (status == 'pass') {
@@ -370,6 +300,69 @@ export default function Evaluation() {
   //     // backgroundColor: hex ? internalColor : undefined
   //   }
   // })(LinearProgress);
+
+  // const { data } = useDemoData({
+  //   dataSet: 'Commodity',
+  //   rowLength: 100,
+  //   maxColumns: 6,
+  // });
+
+  // const { data } = {
+  //   columns: [
+  //     {
+  //       field: "id",​​​
+  //       headerName: "ID",
+  //       width: 110
+  //     },
+  //     {
+  //       field: "title",​​​
+  //       headerName: "Title",
+  //       width: 110
+  //     }
+  //   ],
+  //   rows: state.evaluationsList
+  //   // dataSet: 'Commodity',
+  //   // rowLength: 100,
+  //   // maxColumns: 6,
+  // };
+
+  const columns: GridColumns = [
+    { field: '@id', headerName: 'ID', hide: true },
+    { 
+      field: 'id', headerName: 'Evaluation ID', flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <Button href={'/evaluation/' + params.value as string}
+            variant="contained" 
+            className={classes.submitButton} 
+            startIcon={<EvaluationIcon />}
+            color="primary">
+          Evaluation
+        </Button>)
+    },
+    { field: 'title', headerName: 'Title', flex: 1 },
+    {
+      field: 'resource_uri', headerName: 'Resource URI', flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {getUrlHtml(params.value as string)}
+        </>)
+    },
+    {
+      field: 'score_percent', headerName: 'Score', flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}%
+        </>)
+    },
+    {
+      field: 'bonus_percent', headerName: 'Bonus', flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}%
+        </>)
+    }
+  ]
+  
 
   const getResultsForCategory  = (category: string) => {
     const emojiMap: any = {
@@ -485,96 +478,17 @@ export default function Evaluation() {
     </>
   }
 
-  const skipMetadataArray = ['title', 'summary']
+  // const skipMetadataArray = ['title', 'summary']
 
   return(
     <Container className='mainContainer'>
-      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-        ⚖️ Evaluate how FAIR is a resource 🔗
-      </Typography>
-
-      {/* Form to provide the URL to evaludate */}
-      <form onSubmit={handleSubmit}>
-        <Box display="flex" style={{margin: theme.spacing(0, 6)}}>
-          <TextField
-            id='urlToEvaluate'
-            label='URL of the resource to evaluate'
-            placeholder='URL of the resource to evaluate'
-            value={state.urlToEvaluate}
-            className={classes.fullWidth}
-            variant="outlined"
-            onChange={handleTextFieldChange}
-            // size='small'
-            InputProps={{
-              className: classes.formInput
-            }}
-          />
-
-          {/* <Tooltip  title='Evaluator settings'>
-            <Button style={{margin: theme.spacing(1)}} onClick={handleClick}>
-              <SettingsIcon />
-            </Button>
-          </Tooltip> */}
-          <Popper open={open} anchorEl={anchorEl}>
-            <ClickAwayListener onClickAway={handleClickAway}>
-              <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'center'}}>
-                {/* <Typography variant="h6" style={{textAlign: 'center'}}>
-                  Evaluator settings
-                </Typography> */}
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <Tooltip title='By default, the FAIR Enough evaluator uses content negociation based on the DOI URL to retrieve DataCite JSON metadata. If you uncheck this option F-UJI will try to use the landing page URL instead.'>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={state.use_datacite}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                              updateState({[event.target.name]: event.target.checked});
-                            }}
-                            name="use_datacite"
-                            color="primary"
-                          />
-                        }
-                        label="Use DataCite"
-                      />
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Tooltip title='OAI-PMH (Open Archives Initiative Protocol for Metadata Harvesting) endpoint to use when searching for metadata about this resource.'>
-                      <TextField
-                        id='metadata_service_endpoint'
-                        label='OAI-PMH metadata endpoint URL'
-                        placeholder='OAI-PMH metadata endpoint URL'
-                        value={state.metadata_service_endpoint}
-                        className={classes.fullWidth}
-                        variant="outlined"
-                        onChange={handleTextFieldChange}
-                        // size='small'
-                        InputProps={{
-                          className: classes.formInput
-                        }}
-                      />
-                    </Tooltip>
-                    <FormHelperText>List of OAI-PMH providers: {getUrlHtml('https://www.openarchives.org/Register/BrowseSites')}</FormHelperText>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
-        </Box>
-
-        <Button type="submit" 
-          variant="contained" 
-          className={classes.submitButton} 
-          startIcon={<EvaluationIcon />}
-          color="secondary" >
-            Start the FAIR evaluation
-        </Button>
-      </form>
 
       {state.evaluationResults &&
         // Display results from the JSON from the API
         <>
+          <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
+            {state.evaluationResults['resource_uri']}
+          </Typography>
           {/* {state.resourceMetadata &&
             // Display resources metadata if found
             <>
@@ -682,11 +596,27 @@ export default function Evaluation() {
             startIcon={<DownloadJsonIcon />}>
               Download the evaluation results JSON file
           </Button>
+
+
         </>
       }
 
       {state.evaluationRunning && 
         <CircularProgress style={{marginTop: theme.spacing(5)}} />
+      }
+
+      {state.evaluationsList.length > 0 && 
+        <div style={{ height: 400, width: '100%' }}>
+          {console.log(state.evaluationsList)}
+          <DataGrid
+            columns={columns}
+            rows={state.evaluationsList}
+            // {...state.evaluationsList}
+            components={{
+              Toolbar: GridToolbar,
+            }}
+          />
+        </div>
       }
     </Container>
   )
