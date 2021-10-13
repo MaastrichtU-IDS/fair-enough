@@ -25,6 +25,7 @@ Examples of resources to evaluate:
 * FAIR principle publication: https://doi.org/10.1038/sdata.2016.18
 * Zenodo RDFLib library: https://doi.org/10.5281/zenodo.1486394
 * Wikidata DOI: https://doi.org/10.1016/J.JBI.2019.103292
+* Dataverse NL: https://doi.org/10.34894/DR3I2A
 * FAIR Data Point distribution: https://purl.org/fairdatapoint/app/distribution/54a43c3e-8a6f-4a75-95c0-a2cb1e8c74ab
 * FAIR sharing: https://doi.org/10.25504/FAIRsharing.jptb1m
 * Pangea data repository: https://doi.org/10.1594/PANGAEA.908011

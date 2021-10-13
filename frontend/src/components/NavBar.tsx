@@ -6,6 +6,7 @@ import { AppBar, Toolbar, Button, Tooltip } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
 import ApiIcon from '@mui/icons-material/Http';
+import GraphqlIcon from '@mui/icons-material/Code';
 
 // @ts-ignore
 import iconImage from '../../assets/icon.png';
@@ -63,11 +64,18 @@ export default function NavBar() {
         </Link>
         <div className="flexGrow"></div>
 
-        <Tooltip title='Access the API used by this web interface'>
+        <Tooltip title='Access the OpenAPI documentation of the API used by this web interface'>
           <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
           href="/api">
             <ApiIcon style={{ marginRight: theme.spacing(1)}} />
             API
+          </Button>
+        </Tooltip>
+        <Tooltip title='Access the GraphQL API used by this web interface'>
+          <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
+          href="/graphql">
+            <GraphqlIcon style={{ marginRight: theme.spacing(1)}} />
+            GraphQL
           </Button>
         </Tooltip>
         <Link to="/about" className={classes.linkButton}>

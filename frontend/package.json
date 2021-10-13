@@ -1,5 +1,5 @@
 {
-  "homepage": "https://maastrichtu-ids.github.io/fair-enough",
+  "homepage": ".",
   "private": true,
   "scripts": {
     "android": "expo start --android",

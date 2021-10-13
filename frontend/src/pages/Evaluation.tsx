@@ -109,20 +109,6 @@ export default function Evaluation() {
     setState(stateRef.current);
   }, [setState]);
 
-  // Settings for Popper
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl]: any = React.useState(null);
-  const handleClick = (event: any) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    // setAnchorEl(anchorEl ? null : document.body);
-    setOpen((prev) => !prev);
-  };
-  const handleClickAway = () => {
-    setOpen(false);
-    setAnchorEl(anchorEl ? null : anchorEl);
-  };
-  // const id = open ? 'simple-popper' : undefined;
-  
 
   // Run on page init
   React.useEffect(() => {
@@ -137,29 +123,27 @@ export default function Evaluation() {
       doEvaluateUrl(urlToEvaluate)
     }
     // get evaluation
-    if (state.evaluationsList.length < 1) {
-      axios.get(state.apiUrl + '/evaluations/' + id, {
-        headers: {'Content-Type': 'application/json'},
+    axios.get(state.apiUrl + '/evaluations/' + id, {
+      headers: {'Content-Type': 'application/json'},
+    })
+      .then((res: any) => {
+        console.log(res.data)
+        let evaluationsList: any = []
+        // res.data.map((evaluation: any, key: number) => {
+        //   evaluation['id'] = evaluation['_id']
+        //   evaluation['score_percent'] = evaluation['score']['percent']
+        //   evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
+        //   evaluationsList.push(evaluation)
+        // })
+        updateState({ evaluationResults: res.data })
+        hljs.highlightAll();
+        // console.log("state.evaluationsList")
+        // console.log(evaluationsList)
+        // console.log(state.evaluationsList)
+        // const evaluationsList = res.data
       })
-        .then((res: any) => {
-          console.log(res.data)
-          let evaluationsList: any = []
-          // res.data.map((evaluation: any, key: number) => {
-          //   evaluation['id'] = evaluation['_id']
-          //   evaluation['score_percent'] = evaluation['score']['percent']
-          //   evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
-          //   evaluationsList.push(evaluation)
-          // })
-          updateState({ evaluationResults: res.data })
-          hljs.highlightAll();
-          // console.log("state.evaluationsList")
-          // console.log(evaluationsList)
-          // console.log(state.evaluationsList)
-          // const evaluationsList = res.data
-        })
-    }
-  }, [state.evaluationsList])
-  // }, [state.apiUrl, state.evaluationRunning])
+
+  }, [])
 
   const colors: any = {
     f: '#81d4fa', // blue
@@ -235,17 +219,17 @@ export default function Evaluation() {
       })
   }
 
-  const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Set the TextField input to the state variable corresponding to the field id  
-    updateState({[event.target.id]: event.target.value})
-  }
+  // const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   // Set the TextField input to the state variable corresponding to the field id  
+  //   updateState({[event.target.id]: event.target.value})
+  // }
+  // const handleSubmit  = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   doEvaluateUrl(state.urlToEvaluate)
+  // }
   const handleLogLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateState({'logLevel': event.target.value})
     hljs.highlightAll();
-  }
-  const handleSubmit  = (event: React.FormEvent) => {
-    event.preventDefault();
-    doEvaluateUrl(state.urlToEvaluate)
   }
   const downloadEvaluation  = (event: React.FormEvent) => {
     event.preventDefault();
@@ -449,21 +433,6 @@ export default function Evaluation() {
                               }).join("\n")}
                             </code>
                           </pre>
-                          {/* <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                              <Typography variant="h6">
-                                Tests logs
-                              </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              {console.log(item.logs)}
-                              <pre>
-                                <code className="language-pythonlogging" style={{whiteSpace: 'pre-wrap', overflowX: 'auto'}}>
-                                  {item.logs.join("\n")}
-                                </code>
-                              </pre>
-                            </AccordionDetails>
-                          </Accordion> */}
                         </Grid>
                       </Grid>
                     </AccordionDetails>
@@ -477,8 +446,6 @@ export default function Evaluation() {
     }
     </>
   }
-
-  // const skipMetadataArray = ['title', 'summary']
 
   return(
     <Container className='mainContainer'>
@@ -591,7 +558,7 @@ export default function Evaluation() {
           
           <Button
             variant="contained" 
-            className={classes.submitButton} 
+            style={{textTransform: 'none', margin: theme.spacing(2, 2)}}
             onClick={downloadEvaluation}
             startIcon={<DownloadJsonIcon />}>
               Download the evaluation results JSON file
@@ -601,23 +568,10 @@ export default function Evaluation() {
         </>
       }
 
-      {state.evaluationRunning && 
+      {/* {state.evaluationRunning && 
         <CircularProgress style={{marginTop: theme.spacing(5)}} />
-      }
+      } */}
 
-      {state.evaluationsList.length > 0 && 
-        <div style={{ height: 400, width: '100%' }}>
-          {console.log(state.evaluationsList)}
-          <DataGrid
-            columns={columns}
-            rows={state.evaluationsList}
-            // {...state.evaluationsList}
-            components={{
-              Toolbar: GridToolbar,
-            }}
-          />
-        </div>
-      }
     </Container>
   )
 }

@@ -16,6 +16,9 @@ And retrieving informations about this resource (title, description, date create
     def evaluate(self, eval: EvaluationModel, g):
         alt_uris = eval.data['alternative_uris']
 
+        # FDP specs: https://github.com/FAIRDataTeam/FAIRDataPoint-Spec/blob/master/spec.md
+        # For KG: https://www.w3.org/TR/hcls-dataset
+
         self.check('Checking RDF metadata to find links to the resource identifiers: ' + ', '.join(alt_uris))
         for alt_uri in alt_uris:
             found_link = False
