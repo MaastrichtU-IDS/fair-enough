@@ -79,6 +79,11 @@ class Query:
         return User(name="Patrick", age=100)
 
 
+    # Work in local docker, but not prod docker for no reason
+    # Task <Task pending coro=<ExecutionContext.resolve_field.<locals>.await_result() 
+    # running at /usr/local/lib/python3.7/site-packages/graphql/execution/execute.py:625> 
+    # cb=[gather.<locals>._done_callback() at /usr/local/lib/python3.7/asyncio/tasks.py:691]>
+    # got Future <Future pending> attached to a different loop",
     @strawberry.field
     async def collections(self, id: Optional[str] = None) -> List[CollectionModel]:
         collections = await db["collections"].find().to_list(1000)
