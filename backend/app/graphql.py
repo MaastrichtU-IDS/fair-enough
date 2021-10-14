@@ -59,7 +59,6 @@ class EvaluationModel:
     # id: str = Field(default_factory=PyObjectId, alias="_id")
     id: str
     resource_uri: str
-    title: str
     collection: str
     author: Optional[str]
     score: Optional[EvaluationScore]
@@ -81,14 +80,14 @@ class Query:
 
 
     @strawberry.field
-    async def collections(self, id: Optional[str] = None, title: Optional[str] = None) -> List[CollectionModel]:
+    async def collections(self, id: Optional[str] = None) -> List[CollectionModel]:
         collections = await db["collections"].find().to_list(1000)
         collec_list = []
         for collec in collections:
             if id and id != collec['_id']:
                 continue
-            if title and not collec['title'].lower().contains(title.lower()):
-                continue
+            # if title and not collec['title'].lower().contains(title.lower()):
+            #     continue
             collec['id'] = collec['_id']
             del collec['_id']
             del collec['@id']
