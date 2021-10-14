@@ -1,6 +1,6 @@
 import strawberry
 from strawberry.asgi import GraphQL
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 from pydantic import BaseModel, Field
 import json
 
