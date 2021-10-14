@@ -2,8 +2,9 @@ version: "3.3"
 services:
 
   backend:
-    # ports:
-    #   - "8888:80"
+    ports:
+      - "80:80"
+    command: /start-reload.sh
     volumes:
       - ./backend:/app
     environment:
@@ -16,13 +17,13 @@ services:
       args:
         INSTALL_DEV: ${INSTALL_DEV-true}
         INSTALL_JUPYTER: ${INSTALL_JUPYTER-false}
+        
     # command: bash -c "while true; do sleep 1; done"  # Infinite loop to keep container live doing nothing
-    command: /start-reload.sh
-    labels:
-      - traefik.enable=true
-      - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/rest`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
-      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+    #   - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/rest`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
+    #   - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
 
   # frontend:
   #   build:
@@ -82,7 +83,7 @@ services:
   #   ports:
   #     - "5050:5050"
 
-networks:
-  traefik-public:
-    # For local dev, don't expect an external Traefik network
-    external: false
+# networks:
+#   traefik-public:
+#     # For local dev, don't expect an external Traefik network
+#     external: false
