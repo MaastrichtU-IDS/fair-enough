@@ -1,36 +1,36 @@
 version: "3.3"
 services:
 
-  proxy:
-    image: traefik:v2.2
-    networks:
-      - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
-      - default
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command:
-      # Enable Docker in Traefik, so that it reads labels from Docker services
-      - --providers.docker
-      # Add a constraint to only use services with the label for this stack from the env var TRAEFIK_TAG
-      - --providers.docker.constraints=Label(`traefik.constraint-label-stack`, `${TRAEFIK_TAG?Variable not set}`)
-      # Do not expose all Docker services, only the ones explicitly exposed
-      - --providers.docker.exposedbydefault=false
-      # Enable Docker Swarm mode
-      - --providers.docker.swarmmode
-      # Enable the access log, with HTTP requests
-      - --accesslog
-      # Enable the Traefik log, for configurations and errors
-      - --log
-      # Enable the Dashboard and API
-      - --api
-    environment:
-      - VIRTUAL_HOST=fair-enough.semanticscience.org
-      - LETSENCRYPT_HOST=fair-enough.semanticscience.org
-      - VIRTUAL_PORT=80
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.${STACK_NAME?Variable not set}-traefik-public-http.rule=Host(`${DOMAIN?Variable not set}`)
-      - traefik.http.services.${STACK_NAME?Variable not set}-traefik-public.loadbalancer.server.port=80
+  # proxy:
+  #   image: traefik:v2.2
+  #   networks:
+  #     - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
+  #     - default
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command:
+  #     # Enable Docker in Traefik, so that it reads labels from Docker services
+  #     - --providers.docker
+  #     # Add a constraint to only use services with the label for this stack from the env var TRAEFIK_TAG
+  #     - --providers.docker.constraints=Label(`traefik.constraint-label-stack`, `${TRAEFIK_TAG?Variable not set}`)
+  #     # Do not expose all Docker services, only the ones explicitly exposed
+  #     - --providers.docker.exposedbydefault=false
+  #     # Enable Docker Swarm mode
+  #     - --providers.docker.swarmmode
+  #     # Enable the access log, with HTTP requests
+  #     - --accesslog
+  #     # Enable the Traefik log, for configurations and errors
+  #     - --log
+  #     # Enable the Dashboard and API
+  #     - --api
+  #   # environment:
+  #   #   - VIRTUAL_HOST=fair-enough.semanticscience.org
+  #   #   - LETSENCRYPT_HOST=fair-enough.semanticscience.org
+  #   #   - VIRTUAL_PORT=80
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.${STACK_NAME?Variable not set}-traefik-public-http.rule=Host(`${DOMAIN?Variable not set}`)
+  #     - traefik.http.services.${STACK_NAME?Variable not set}-traefik-public.loadbalancer.server.port=80
 
 
   mongodb:
@@ -45,7 +45,7 @@ services:
       MONGO_INITDB_DATABASE: evaluations
 
   backend:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    # image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     build:
       context: ./backend
       dockerfile: backend.dockerfile
@@ -64,34 +64,65 @@ services:
     #   - SERVER_HOST=https://${DOMAIN?Variable not set}
     #   # Allow explicit env var override for tests
     #   - SMTP_HOST=${SMTP_HOST}
-    labels:
-      - traefik.enable=true
-      - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
-      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+    #   - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/`) || PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
+    #   - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
 
 
-  frontend:
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     # args:
+  #     #   FRONTEND_ENV: dev
+  #   ports:
+  #     - 5000:5000
+  #   environment:
+  #     API_URL: http://localhost/api
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
+  #     - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
+
+
+  queue:
+    image: rabbitmq:3
+    # networks:
+    #   - default
+    # Using the below image instead is required to enable the "Broker" tab in the flower UI:
+    # image: rabbitmq:3-management
+    #
+    # You also have to change the flower command
+  
+
+  celeryworker:
     build:
-      context: ./frontend
-      # args:
-      #   FRONTEND_ENV: dev
-    ports:
-      - 5000:5000
-    labels:
-      - traefik.enable=true
-      - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
-      - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
-
+      context: ./backend
+      dockerfile: celeryworker.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    depends_on:
+      - mongodb
+      - queue
+    env_file:
+      - .env
+    environment:
+      - SERVER_NAME=${DOMAIN?Variable not set}
+      - SERVER_HOST=https://${DOMAIN?Variable not set}
+      # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
+      # Allow explicit env var override for tests
+      # - SMTP_HOST=${SMTP_HOST?Variable not set}
+    
 
 volumes:
   mongodb-data:
 
-networks:
-  traefik-public:
-    # For local dev, don't expect an external Traefik network
-    external: false
+# networks:
+#   traefik-public:
+#     # For local dev, don't expect an external Traefik network
+#     external: false
 
 # networks:
 #   traefik-public:

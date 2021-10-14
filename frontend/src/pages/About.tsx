@@ -43,10 +43,10 @@ export default function About() {
         </Typography> */}
 
       <Typography variant="body1" className={classes.mainText}>
-        A web interface to evaluate how much a resource URL follows to the <a href="https://www.go-fair.org/fair-principles" className={classes.link} target="_blank" rel="noopener noreferrer">FAIR principles ♻️</a> (Findable, Accessible, Interoperable, Reusable).
+        A web interface to evaluate how much online resources follow to the <a href="https://www.go-fair.org/fair-principles" className={classes.link} target="_blank" rel="noopener noreferrer">FAIR principles ♻️</a> (Findable, Accessible, Interoperable, Reusable).
       </Typography>
       <Typography variant="body1" className={classes.mainText}>
-        Relies on a <a href="https://github.com/vemonet/fair-enough" className={classes.link} target="_blank" rel="noopener noreferrer">custom F-UJI API</a> hosted by the <a href="https://www.maastrichtuniversity.nl/research/institute-data-science" className={classes.link} target="_blank" rel="noopener noreferrer">Institute of Data Science</a> at Maastricht University.
+        Developed and hosted by the <a href="https://www.maastrichtuniversity.nl/research/institute-data-science" className={classes.link} target="_blank" rel="noopener noreferrer">Institute of Data Science</a> at Maastricht University.
       </Typography>
       
 

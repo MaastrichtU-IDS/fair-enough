@@ -1,38 +1,14 @@
 import React from 'react';
-import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+// import { makeStyles } from '@mui/styles';
 import { Container, Typography } from '@mui/material';
 
-const useStyles = makeStyles((theme) => ({
-  darkLink: {
-    textDecoration: 'none',
-    color: 'inherit',
-    '&:hover': {
-      color: theme.palette.primary.light,
-      textDecoration: 'none',
-    },
-  },
-  whiteLink: {
-    textDecoration: 'none',
-    color: 'inherit',
-    '&:hover': {
-      color: theme.palette.primary.dark,
-      textDecoration: 'none',
-    },
-  },
-  footer: {
-    padding: theme.spacing(2),
-    marginTop: 'auto',
-    color: 'white',
-    backgroundColor: theme.palette.primary.main,
-  },
-}));
-
 function Copyright() {
-  const classes = useStyles();
+  // const classes = useStyles();
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <a className={classes.darkLink} target="_blank"
+      <a style={{textDecoration: 'none', color: 'inherit'}} target="_blank"
       href="https://maastrichtuniversity.nl/ids">
         Institute of Data Science at Maastricht University
       </a>{' '}
@@ -42,7 +18,34 @@ function Copyright() {
 }
 
 export default function Footer() {
-  const classes = useStyles();
+  // const classes = useStyles();
+  const theme = useTheme()
+
+  // const useStyles = makeStyles((theme) => ({
+  //   darkLink: {
+  //     textDecoration: 'none',
+  //     color: 'inherit',
+  //     '&:hover': {
+  //       color: theme.palette.primary.light,
+  //       textDecoration: 'none',
+  //     },
+  //   },
+  //   whiteLink: {
+  //     textDecoration: 'none',
+  //     color: 'inherit',
+  //     '&:hover': {
+  //       color: theme.palette.primary.dark,
+  //       textDecoration: 'none',
+  //     },
+  //   },
+  //   footer: {
+  //     padding: theme.spacing(2),
+  //     marginTop: 'auto',
+  //     color: 'white',
+  //     backgroundColor: theme.palette.primary.main,
+  //   },
+  // }));
+
   // Set state in functional style:
   // const [state, setState] = React.useState({search: '', name: 'Vincent'});
   // console.log(state.search);
@@ -63,11 +66,14 @@ export default function Footer() {
   // Empty dep list: will only run when componentDidMount
 
   return (
-      <footer className={classes.footer}>
+      <footer style={{padding: theme.spacing(2),
+          marginTop: 'auto',
+          color: 'white',
+          backgroundColor: theme.palette.primary.main }}>
         <Container maxWidth="md" style={{textAlign: 'center'}}>
           <Typography variant="body2" >
             This website is licensed under the&nbsp;
-            <a className={classes.whiteLink} target="_blank"
+            <a target="_blank" style={{textDecoration: 'none', color: 'inherit'}}
             href="https://github.com/MaastrichtU-IDS/fair-enough/blob/main/LICENSE">
               MIT license
             </a>

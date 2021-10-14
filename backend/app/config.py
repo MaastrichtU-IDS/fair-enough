@@ -5,7 +5,7 @@ from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, v
 
 
 class Settings(BaseSettings):
-    API_PATH: str = "/api"
+    API_PATH: str = "/rest"
     BASE_URI: str = "https://w3id.org/fair-enough"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     ORCID_CLIENT_SECRET: Optional[str]
     OAUTH_REDIRECT_URI: str = 'http://localhost/api/auth'
 
-    MONGODB_URL: str = f'mongodb://root:{SECRET_KEY}@mongodb:27017/'
+    MONGODB_URL: str = f'mongodb://root:oursecretkey@mongodb:27017/'
 
     CONTEXT = 'https://raw.githubusercontent.com/MaastrichtU-IDS/fair-enough/main/context.jsonld'
     
@@ -38,6 +38,15 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
+
+
+    SENTRY_DSN: Optional[HttpUrl] = None
+
+    @validator("SENTRY_DSN", pre=True)
+    def sentry_dsn_can_be_blank(cls, v: str) -> Optional[str]:
+        if len(v) == 0:
+            return None
+        return v
 
 
     class Config:

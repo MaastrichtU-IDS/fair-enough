@@ -43,6 +43,7 @@ async def create_collection(
         '@id': f'{settings.BASE_URI}/collection/{collection["_id"]}',
         '@context': settings.CONTEXT
     }
+    # posts_list.append(PostDB(**post, id=post['_id']))
 
     try:
         new_collection = await db["collections"].insert_one(collec_obj)
@@ -70,7 +71,7 @@ async def list_collections() -> List[CollectionModel]:
 @router.get(
     "/{id}", response_description="Get a single collection", response_model=CollectionModel
 )
-async def show_collection(id: str) -> CollectionModel:
+async def show_collection(id: str = 'fair-metrics') -> CollectionModel:
     collection = await db["collections"].find_one({"_id": id})
     if collection is not None:
         return collection

@@ -12,6 +12,22 @@ import Footer from "./src/components/Footer";
 import RunEvaluations from "./src/pages/RunEvaluations";
 import Evaluation from "./src/pages/Evaluation";
 import About from "./src/pages/About";
+import { AuthProvider, useAuth } from 'oidc-react';
+
+// https://github.com/kolitiri/fastapi-oidc-react
+const oidcConfig = {
+  onSignIn: async (user: any) => {
+    alert('You just signed in, congratz! Check out the console!');
+    console.log(user);
+    window.location.hash = '';
+  },
+  authority: 'https://orcid.org',
+  clientId: 'APP-TEANCMSUOPYZOGJ3',
+  redirectUri: 'http://localhost/rest/auth',
+  // redirectUri: 'http://localhost:19006/#/',
+  autoSignIn: false
+  // redirectUri="http://localhost:3000/oauth-callback"
+};
 
 // Change theme color and typography here
 const theme = createTheme({
@@ -46,17 +62,19 @@ const theme = createTheme({
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    {/* <Router basename="/fairificator/"> */}
-    <HashRouter>
-      <View style={{height: '100%', backgroundColor: '#eceff1'}}>
-        <NavBar />
+    {/* <Router basename="/"> */}
+    <AuthProvider {...oidcConfig}>
+      <HashRouter>
+        <View style={{height: '100%', backgroundColor: '#eceff1'}}>
+          <NavBar />
 
-        <Route exact path="/evaluation/:id" component={Evaluation} />
-        <Route path="/about" component={About} />
-        <Route exact path="/" component={RunEvaluations} />
-        <Footer />
-      </View>
-    </HashRouter>
+          <Route exact path="/evaluation/:id" component={Evaluation} />
+          <Route path="/about" component={About} />
+          <Route exact path="/" component={RunEvaluations} />
+          <Footer />
+        </View>
+      </HashRouter>
+    </AuthProvider>
   </ThemeProvider>
 );
 export default App;

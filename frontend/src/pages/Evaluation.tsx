@@ -16,34 +16,14 @@ import FailIcon from '@mui/icons-material/Error';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
 // import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
 // import { Doughnut } from 'react-chartjs-2';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import hljs from 'highlight.js/lib/core';
-// import hljs from 'highlight.js'; // Too heavy, loading only required languages
-import 'highlight.js/styles/github-dark-dimmed.css';
-import json from 'highlight.js/lib/languages/json';
-hljs.registerLanguage('json', json);
-hljs.registerLanguage("pythonlogging",function(e){return {
-  // Define codeblock highlight for API tests logs ouput 
-  // purple: title https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html
-  aliases: ['pythonlogging'],
-  contains: [
-    {className: 'deletion', variants: [{ begin: '^ERROR', end: ':' }]},
-    {className: 'built_in', variants: [{ begin: '^WARNING', end: ':' }]},
-    {className: 'string', variants: [{ begin: '^INFO', end: ':' }]},
-    {className: 'addition', variants: [{ begin: '^SUCCESS', end: ':' }]},
-    {className: 'strong', variants: [
-        { begin: '^WARNING', end: ':' },
-        { begin: '^ERROR', end: ':' },
-        { begin: '^SUCCESS', end: ':' },
-    ]}
-  ]
-}});
+import settings from '../settings'
+
 
 export default function Evaluation() {
   const theme = useTheme();
@@ -79,28 +59,17 @@ export default function Evaluation() {
   }))
 
   const classes = useStyles(theme);
-  const { id } = useParams();
+  // const { id } = useParams();
+  const evalParams: any = useParams();
   // useLocation hook to get URL params
   let location = useLocation();  
   let evaluationResults: any = null;
   let resourceMetadata: any = null;
-  let fairDoughnutConfig: any = null;
   const [state, setState] = React.useState({
-    // apiUrl: 'https://fuji-137-120-31-148.sslip.io/fuji/api/v1',
-    // apiUrl: 'http://localhost/api',
-    apiUrl: 'http://localhost:8888/api',
-    urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
-    // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
     adviceLogs: [],
-    resourceMetadata: resourceMetadata,
     logLevel: 'all',
-    evaluationRunning: false,
-    evaluationsList: [],
-    metadata_service_type: 'oai_pmh',
-    metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
-    use_datacite: true,
-    fairDoughnutConfig: fairDoughnutConfig
+    resourceMetadata: resourceMetadata,
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -112,35 +81,48 @@ export default function Evaluation() {
 
   // Run on page init
   React.useEffect(() => {
-    // Get the edit URL param if provided
-    const params = new URLSearchParams(location.search + location.hash);
-    let urlToEvaluate = params.get('evaluate');
     if (process.env.API_URL) {
       updateState({ apiUrl: process.env.API_URL })
     }
-    if (urlToEvaluate) {
-      updateState({ urlToEvaluate: urlToEvaluate })
-      doEvaluateUrl(urlToEvaluate)
-    }
-    // get evaluation
-    axios.get(state.apiUrl + '/evaluations/' + id, {
+    // get evaluations
+    axios.get(settings.apiUrl + '/evaluations/' + evalParams.id, {
       headers: {'Content-Type': 'application/json'},
     })
       .then((res: any) => {
-        console.log(res.data)
-        let evaluationsList: any = []
-        // res.data.map((evaluation: any, key: number) => {
-        //   evaluation['id'] = evaluation['_id']
-        //   evaluation['score_percent'] = evaluation['score']['percent']
-        //   evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
-        //   evaluationsList.push(evaluation)
-        // })
-        updateState({ evaluationResults: res.data })
-        hljs.highlightAll();
-        // console.log("state.evaluationsList")
-        // console.log(evaluationsList)
-        // console.log(state.evaluationsList)
-        // const evaluationsList = res.data
+        const evalResults = res.data;
+        updateState({ evaluationResults: evalResults })
+
+        let adviceLogs: any = []
+        evalResults.results.map((evaluation: any, key: number) => {
+          evaluation.logs.map((log: any, key: number) => {
+            if (log.startsWith('❌') || log.startsWith('ℹ️')) {
+              adviceLogs.push(log);
+            }
+          })
+        })
+        updateState({adviceLogs: adviceLogs})
+
+        // Check for metadata found in output (core metadata, license)
+        let resourceMetadata: any = {}
+        Object.keys(evalResults.data).map((metadata: any, key: number) => {
+        // evaluationResults.data.map((item: any, key: number) => {
+          const extractMetadata = ['resource_title', 'resource_description', 'date_created', 'accessRights', 'license']
+          if (extractMetadata.includes(metadata)) {
+            resourceMetadata[metadata] = evalResults.data[metadata]
+          }
+          // if (item.output.core_metadata_found) {
+          //   resourceMetadata = {...resourceMetadata, ...item.output.core_metadata_found}
+          // }
+          // if (Array.isArray(item.output)) {
+          //   item.output.map((outputEntry: any, key: number) => {
+          //     if (outputEntry.license) {
+          //       resourceMetadata = {...resourceMetadata, ...{license: outputEntry.license}}  
+          //     }
+          //   })
+          // }
+        })
+        updateState({resourceMetadata: resourceMetadata})
+        // hljs.highlightAll();
       })
 
   }, [])
@@ -168,68 +150,14 @@ export default function Evaluation() {
     }
   }
 
-  const doEvaluateUrl  = (evaluateUrl: string) => {
-    updateState({
-      evaluationRunning: true,
-      evaluationResults: null
-    })
-    console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + state.apiUrl)
-    const postJson = JSON.stringify({
-      "resource_uri": evaluateUrl,
-      "title": "FAIR metrics dataset evaluation",
-      "collection": "fair-metrics"
-    });
-    axios.post(state.apiUrl + '/evaluations', postJson, {
-      headers: {'Content-Type': 'application/json'},
-      // crossDomain: true
-    })
-      .then(res => {
-        const evaluationResults = res.data
-        updateState({
-          evaluationResults: evaluationResults,
-          evaluationRunning: false,
-          // fairDoughnutConfig: buildCharts(evaluationResults)
-        })
-        console.log(evaluationResults);
-        let adviceLogs: any = []
-        evaluationResults.results.map((evaluation: any, key: number) => {
-          evaluation.logs.map((log: any, key: number) => {
-            if (log.startsWith('❌') || log.startsWith('ℹ️')) {
-              adviceLogs.push(log);
-            }
-          })
-        })
-        updateState({adviceLogs: adviceLogs})
-        // Check for metadata found in output (core metadata, license)
-        // let resourceMetadata = {}
-        // evaluationResults.results.map((item: any, key: number) => {
-        //   if (item.output.core_metadata_found) {
-        //     resourceMetadata = {...resourceMetadata, ...item.output.core_metadata_found}
-        //   }
-        //   if (Array.isArray(item.output)) {
-        //     item.output.map((outputEntry: any, key: number) => {
-        //       if (outputEntry.license) {
-        //         resourceMetadata = {...resourceMetadata, ...{license: outputEntry.license}}  
-        //       }
-        //     })
-        //   }
-        // })
-        // updateState({resourceMetadata: resourceMetadata})
-        hljs.highlightAll();
-      })
-  }
-
   // const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   // Set the TextField input to the state variable corresponding to the field id  
   //   updateState({[event.target.id]: event.target.value})
   // }
-  // const handleSubmit  = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   doEvaluateUrl(state.urlToEvaluate)
-  // }
+
   const handleLogLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateState({'logLevel': event.target.value})
-    hljs.highlightAll();
+    // hljs.highlightAll();
   }
   const downloadEvaluation  = (event: React.FormEvent) => {
     event.preventDefault();
@@ -272,43 +200,6 @@ export default function Evaluation() {
     }
     return <Chip label={maturity + '/3'}/>
   }
-  // const BorderLinearProgress = withStyles({
-  //   root: {
-  //     height: 20,
-  //     width: "100%",
-  //     // backgroundColor: hex ? lighten(internalColor, 0.5) : undefined,
-  //     borderRadius: "10px"
-  //   },
-  //   bar: {
-  //     borderRadius: 20,
-  //     // backgroundColor: hex ? internalColor : undefined
-  //   }
-  // })(LinearProgress);
-
-  // const { data } = useDemoData({
-  //   dataSet: 'Commodity',
-  //   rowLength: 100,
-  //   maxColumns: 6,
-  // });
-
-  // const { data } = {
-  //   columns: [
-  //     {
-  //       field: "id",​​​
-  //       headerName: "ID",
-  //       width: 110
-  //     },
-  //     {
-  //       field: "title",​​​
-  //       headerName: "Title",
-  //       width: 110
-  //     }
-  //   ],
-  //   rows: state.evaluationsList
-  //   // dataSet: 'Commodity',
-  //   // rowLength: 100,
-  //   // maxColumns: 6,
-  // };
 
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
@@ -456,33 +347,35 @@ export default function Evaluation() {
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
             {state.evaluationResults['resource_uri']}
           </Typography>
-          {/* {state.resourceMetadata &&
+          {state.resourceMetadata &&
             // Display resources metadata if found
             <>
-              <Typography variant="h4" style={{margin: theme.spacing(3, 0), textAlign: 'center'}}>Metadata found</Typography>
+              {/* <Typography variant="h4" style={{margin: theme.spacing(3, 0), textAlign: 'center'}}>
+                Metadata found
+              </Typography> */}
               <Paper className={classes.paperPadding} style={{textAlign: 'left'}}>
-                {state.resourceMetadata.title &&
+                {state.resourceMetadata.resource_title &&
                   <Typography variant="h5" style={{marginBottom: theme.spacing(1)}}>
-                    <b>title</b>: {state.resourceMetadata.title}
+                    title: {state.resourceMetadata.resource_title}
                   </Typography>
                 }
-                {state.resourceMetadata.summary &&
+                {state.resourceMetadata.resource_description &&
                   <Typography variant="body1" style={{marginBottom: theme.spacing(1)}}>
-                    <b>summary</b>: {state.resourceMetadata.summary}
+                    summary: {state.resourceMetadata.resource_description}
                   </Typography>
                 }
                 {
                   Object.keys(state.resourceMetadata).map((metadata: any, key: number) => {
-                    if (!skipMetadataArray.includes(metadata)) {
+                    if (!['resource_title', 'resource_description'].includes(metadata)) {
                       return <Typography variant="body1" style={{marginBottom: theme.spacing(1)}} key={key}>
-                          <b>{metadata}</b>: {getUrlHtml(state.resourceMetadata[metadata])}
+                          {metadata}: {getUrlHtml(state.resourceMetadata[metadata])}
                         </Typography>
                     }
                   })
                 }
               </Paper>
             </>
-          } */}
+          }
 
           {/* <Typography variant="h4" style={{margin: theme.spacing(3, 0)}}>
             FAIR score: {state.evaluationResults['score']['percent']} ({state.evaluationResults['score']['total_score']}/{state.evaluationResults['score']['total_score_max']})
@@ -536,21 +429,19 @@ export default function Evaluation() {
             </Grid>
           </Grid>
 
-          {/* <InputLabel id="logLevel-select-label">Log level</InputLabel> */}
-          <Select
-            // labelId="logLevel-select-label"
-            id="logLevel"
-            variant="outlined"
-            value={state.logLevel}
-            label="Log level"
-            onChange={handleLogLevelChange}
-            style={{margin: theme.spacing(2, 0)}}
-          >
+          {/* Log level dropdown select */}
+          <TextField select
+              value={state.logLevel} 
+              label={"Log level"} 
+              id="logLevel" 
+              onChange={handleLogLevelChange} 
+              variant="outlined"> 
             <MenuItem value={'all'}>All logs</MenuItem>
             <MenuItem value={'warning'}>Warnings and errors</MenuItem>
-            <MenuItem value={'error'}>Errors only</MenuItem>
-          </Select>
+            <MenuItem value={'error'}>Errors only</MenuItem>  
+          </TextField>
 
+          {/* Display results per category */}
           {getResultsForCategory('Findable')}
           {getResultsForCategory('Accessible')}
           {getResultsForCategory('Interoperable')}
@@ -568,11 +459,30 @@ export default function Evaluation() {
         </>
       }
 
-      {/* {state.evaluationRunning && 
-        <CircularProgress style={{marginTop: theme.spacing(5)}} />
-      } */}
-
     </Container>
   )
 }
 
+
+// Custom codeblocks highlight 
+// import hljs from 'highlight.js/lib/core';
+// // import hljs from 'highlight.js'; // Too heavy, loading only required languages
+// import 'highlight.js/styles/github-dark-dimmed.css';
+// import json from 'highlight.js/lib/languages/json';
+// hljs.registerLanguage('json', json);
+// hljs.registerLanguage("pythonlogging",function(e){return {
+//   // Define codeblock highlight for API tests logs ouput 
+//   // purple: title https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html
+//   aliases: ['pythonlogging'],
+//   contains: [
+//     {className: 'deletion', variants: [{ begin: '^ERROR', end: ':' }]},
+//     {className: 'built_in', variants: [{ begin: '^WARNING', end: ':' }]},
+//     {className: 'string', variants: [{ begin: '^INFO', end: ':' }]},
+//     {className: 'addition', variants: [{ begin: '^SUCCESS', end: ':' }]},
+//     {className: 'strong', variants: [
+//         { begin: '^WARNING', end: ':' },
+//         { begin: '^ERROR', end: ':' },
+//         { begin: '^SUCCESS', end: ':' },
+//     ]}
+//   ]
+// }});

@@ -3,49 +3,25 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
-import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DownloadJsonIcon from '@mui/icons-material/GetApp';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PassIcon from '@mui/icons-material/CheckCircle';
-import FailIcon from '@mui/icons-material/Error';
+import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 // import EvaluationIcon from '@mui/icons-material/Send';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
 // import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 // import { Doughnut } from 'react-chartjs-2';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-import hljs from 'highlight.js/lib/core';
-// import hljs from 'highlight.js'; // Too heavy, loading only required languages
-import 'highlight.js/styles/github-dark-dimmed.css';
-import json from 'highlight.js/lib/languages/json';
-hljs.registerLanguage('json', json);
-hljs.registerLanguage("pythonlogging",function(e){return {
-  // Define codeblock highlight for API tests logs ouput 
-  // purple: title https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html
-  aliases: ['pythonlogging'],
-  contains: [
-    {className: 'deletion', variants: [{ begin: '^ERROR', end: ':' }]},
-    {className: 'built_in', variants: [{ begin: '^WARNING', end: ':' }]},
-    {className: 'string', variants: [{ begin: '^INFO', end: ':' }]},
-    {className: 'addition', variants: [{ begin: '^SUCCESS', end: ':' }]},
-    {className: 'strong', variants: [
-        { begin: '^WARNING', end: ':' },
-        { begin: '^ERROR', end: ':' },
-        { begin: '^SUCCESS', end: ':' },
-    ]}
-  ]
-}});
+import settings from '../settings'
+import { useAuth } from 'oidc-react';
 
 export default function Evaluation() {
   const theme = useTheme();
   const history = useHistory();
+  const auth = useAuth();
 
   const useStyles = makeStyles(() => ({
     link: {
@@ -84,21 +60,14 @@ export default function Evaluation() {
   let resourceMetadata: any = null;
   let fairDoughnutConfig: any = null;
   const [state, setState] = React.useState({
-    // apiUrl: 'https://fuji-137-120-31-148.sslip.io/fuji/api/v1',
-    // apiUrl: 'http://localhost/api',
-    apiUrl: 'http://localhost:8888/api',
     urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
     // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
     adviceLogs: [],
-    resourceMetadata: resourceMetadata,
-    logLevel: 'all',
     evaluationRunning: false,
     evaluationsList: [],
-    metadata_service_type: 'oai_pmh',
     metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
     use_datacite: true,
-    fairDoughnutConfig: fairDoughnutConfig
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -124,9 +93,9 @@ export default function Evaluation() {
 
   // Run on page init
   React.useEffect(() => {
-    if (process.env.API_URL) {
-      updateState({ apiUrl: process.env.API_URL })
-    }
+    // if (process.env.API_URL) {
+    //   updateState({ apiUrl: process.env.API_URL })
+    // }
     // Get the edit URL param if provided
     // const params = new URLSearchParams(location.search + location.hash);
     // let urlToEvaluate = params.get('evaluate');
@@ -135,9 +104,11 @@ export default function Evaluation() {
     //   doEvaluateUrl(urlToEvaluate)
     // }
 
+    console.log(settings.apiUrl)
+
     // Get the list of evaluations from API
     if (state.evaluationsList.length < 1) {
-      axios.get(state.apiUrl + '/evaluations', {
+      axios.get(settings.apiUrl + '/evaluations', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
@@ -149,13 +120,10 @@ export default function Evaluation() {
             evaluationsList.push(evaluation)
           })
           updateState({ evaluationsList: evaluationsList })
-          // console.log("state.evaluationsList")
-          // console.log(evaluationsList)
-          // console.log(state.evaluationsList)
-          // const evaluationsList = res.data
+
         })
     }
-  }, [state.evaluationsList])
+  }, [])
 
   const colors: any = {
     f: '#81d4fa', // blue
@@ -185,61 +153,41 @@ export default function Evaluation() {
       evaluationRunning: true,
       evaluationResults: null
     })
-    console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + state.apiUrl)
+    console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.apiUrl)
     const postJson = JSON.stringify({
       "resource_uri": evaluateUrl,
-      "title": "FAIR metrics dataset evaluation",
+      // "title": "FAIR metrics dataset evaluation",
       "collection": "fair-metrics"
     });
-    axios.post(state.apiUrl + '/evaluations', postJson, {
+    axios.post(settings.apiUrl + '/evaluations', postJson, {
       headers: {'Content-Type': 'application/json'}
     })
       .then(res => {
-        const evaluationResults = res.data
-        updateState({
-          evaluationResults: evaluationResults,
-          evaluationRunning: false,
-          // fairDoughnutConfig: buildCharts(evaluationResults)
-        })
-        console.log(evaluationResults);
-        let adviceLogs: any = []
-        evaluationResults.results.map((evaluation: any, key: number) => {
-          evaluation.logs.map((log: any, key: number) => {
-            if (log.startsWith('❌') || log.startsWith('ℹ️')) {
-              adviceLogs.push(log);
-            }
-          })
-        })
-        updateState({adviceLogs: adviceLogs})
-        // Check for metadata found in output (core metadata, license)
-        // let resourceMetadata = {}
-        // evaluationResults.results.map((item: any, key: number) => {
-        //   if (item.output.core_metadata_found) {
-        //     resourceMetadata = {...resourceMetadata, ...item.output.core_metadata_found}
-        //   }
-        //   if (Array.isArray(item.output)) {
-        //     item.output.map((outputEntry: any, key: number) => {
-        //       if (outputEntry.license) {
-        //         resourceMetadata = {...resourceMetadata, ...{license: outputEntry.license}}  
-        //       }
-        //     })
-        //   }
-        // })
-        // updateState({resourceMetadata: resourceMetadata})
-        // hljs.highlightAll();
+        axiosRetry(axios, {
+          retries: 30, // number of retries
+          retryDelay: (retryCount) => {
+            console.log(`Waiting for evaluation to finish: ${retryCount}`);
+            return retryCount * 3000; // time interval between retries
+          },
+          retryCondition: (error: any) => {
+            // if retry condition is not specified, by default idempotent requests are retried
+            return error.response.status === 404;
+          },
+        });
 
-        // Redirect to the page of the created evaluation
-        history.push("/evaluation/" + evaluationResults['_id']);
+        const evalId = res.data['_id']
+        // Retry every 3 seconds until the evaluation is available
+        axios.get(settings.apiUrl + '/evaluations/' + evalId)
+          .then((res: any) => {
+            // Redirect to the page of the created evaluation
+            history.push("/evaluation/" + evalId);
+          })
       })
   }
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Set the TextField input to the state variable corresponding to the field id  
     updateState({[event.target.id]: event.target.value})
-  }
-  const handleLogLevelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateState({'logLevel': event.target.value})
-    hljs.highlightAll();
   }
   const handleSubmit  = (event: React.FormEvent) => {
     event.preventDefault();
@@ -263,7 +211,7 @@ export default function Evaluation() {
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
     { 
-      field: 'id', headerName: 'Evaluation ID', flex: 1,
+      field: 'id', headerName: 'Evaluation ID', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         <Button href={'/#/evaluation/' + params.value as string}
             variant="contained" 
@@ -273,7 +221,7 @@ export default function Evaluation() {
           Evaluation
         </Button>)
     },
-    { field: 'title', headerName: 'Title', flex: 1 },
+    // { field: 'title', headerName: 'Title', flex: 1 },
     {
       field: 'resource_uri', headerName: 'Resource URI', flex: 1,
       renderCell: (params: GridRenderCellParams) => (
@@ -282,14 +230,14 @@ export default function Evaluation() {
         </>)
     },
     {
-      field: 'score_percent', headerName: 'Score', flex: 1,
+      field: 'score_percent', headerName: 'FAIR compliant', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
         </>)
     },
     {
-      field: 'bonus_percent', headerName: 'Bonus', flex: 1,
+      field: 'bonus_percent', headerName: 'FAIR Role Model', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
@@ -303,6 +251,13 @@ export default function Evaluation() {
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
         ⚖️ Evaluate how FAIR is a resource 🔗
       </Typography>
+
+      {auth && auth.userData &&
+        <div>
+          <strong>Logged in! 🎉</strong><br />
+          <button onClick={() => auth.signOut()}>Log out!</button>
+        </div>
+      }
 
       {/* Form to provide the URL to evaludate */}
       <form onSubmit={handleSubmit}>

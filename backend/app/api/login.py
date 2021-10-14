@@ -83,7 +83,8 @@ async def auth(request: Request):
     print(user)
     if user:
         request.session['user'] = dict(user)
-    return RedirectResponse(url='/docs')
+    # return RedirectResponse(url='/docs')
+    return RedirectResponse(url='http://localhost:19006')
 
 @router.get('/logout')
 async def logout(request: Request):

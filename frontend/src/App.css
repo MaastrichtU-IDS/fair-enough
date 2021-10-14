@@ -10,12 +10,21 @@
   text-align: center;
 }
 
+pre {
+  border: 2px solid grey;
+  padding: 1em;
+}
+
 pre, code {
   font-family: monospace, monospace;
   border-radius: 6px;
-  padding: 2px;
-  color: white;
-  background-color: #757575;
+  /* padding: 2px; */
+  color: #adbac7;
+  background: #22272e;
+  /* padding: 0.5em; */
+  /* padding: 5px; */
+  /* color: white;
+  background-color: #757575; */
   /* background-color: #78909c; */
 }
   

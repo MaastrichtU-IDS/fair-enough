@@ -8,6 +8,7 @@ from typing import List, Optional
 from app.api.api import api_router
 from app.config import settings
 from app.graphql import Query
+from app.db import connect_db, close_db
 
 
 schema = strawberry.Schema(query=Query)
@@ -51,9 +52,13 @@ app.add_websocket_route("/graphql", graphql_app)
 
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
+# app.include_router(api_router, prefix=settings.API_PATH)
 app.include_router(api_router, prefix=settings.API_PATH)
 
 print(settings.BACKEND_CORS_ORIGINS)
+
+app.add_event_handler("startup", connect_db)
+app.add_event_handler("shutdown", close_db)
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:

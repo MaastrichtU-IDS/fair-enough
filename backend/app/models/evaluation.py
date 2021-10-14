@@ -65,7 +65,7 @@ class EvaluationModel(BaseModel):
     # id: str = Field(..., alias="_id")
     resource_uri: str = Field(...)
     collection: str = Field(...)
-    title: Optional[str] = Field(...)
+    # title: Optional[str] = Field(...)
     author: Optional[str] = None
     score: Optional[EvaluationScore] = EvaluationScore()
     results: Optional[List[EvaluationResults]] = []
@@ -82,7 +82,7 @@ class EvaluationModel(BaseModel):
         schema_extra = {
             "example": {
                 "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
-                "title": "FAIR metrics dataset evaluation",
+                # "title": "FAIR metrics dataset evaluation",
                 "collection": "fair-metrics",
                 'results':[],
                 'data': {},
@@ -96,7 +96,6 @@ class CreateEvaluationModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     resource_uri: str = Field(...)
     collection: str = Field(...)
-    title: Optional[str] = Field(...)
     class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
@@ -104,7 +103,6 @@ class CreateEvaluationModel(BaseModel):
         schema_extra = {
             "example": {
                 "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
-                "title": "FAIR metrics dataset evaluation",
                 "collection": "fair-metrics"
             }
         }
@@ -112,7 +110,6 @@ class CreateEvaluationModel(BaseModel):
 
 class UpdateEvaluationModel(BaseModel):
     resource_uri: Optional[str]
-    title: Optional[str]
     collection: Optional[str]
     class Config:
         arbitrary_types_allowed = True
@@ -120,7 +117,6 @@ class UpdateEvaluationModel(BaseModel):
         schema_extra = {
             "example": {
                 "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
-                "title": "FAIR metrics dataset evaluation",
                 "collection": "fair-metrics"
             }
         }
