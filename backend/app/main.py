@@ -22,7 +22,7 @@ app = FastAPI(
     openapi_url=f"{settings.API_PATH}/openapi.json",
     description=f"""APIs to evaluate how FAIR a resource is given its URI (URL identifier for this resource).
     
-You will need to login with [ORCID](https://orcid.org) to create new collections of assessments.
+You don't need to login to run evaluations, but you will need to login with [ORCID](https://orcid.org) if you want to create a new collection of assessments.
 
 To login, click on the **Authorize 🔓️** button, and use the 2nd option: **OpenIdConnect (OAuth2, implicit)**
 

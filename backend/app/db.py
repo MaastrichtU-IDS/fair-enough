@@ -7,23 +7,13 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 # https://www.codementor.io/@arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
 
-# def get_db():
-#     client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGODB_URL)
-#     return client.evaluations
-
-# db = get_db()
-
 
 db_client: AsyncIOMotorClient = None
-
-# db: AsyncIOMotorDatabase = AsyncIOMotorClient(settings.MONGODB_URL, maxPoolSize=10, minPoolSize=10).evaluations
 db: AsyncIOMotorDatabase = None
+
 
 def get_db() -> AsyncIOMotorDatabase:
     """Return Evaluations database client instance."""
-    # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
-    # return db_client.evaluations
-    # print(db)
     return db
 
 

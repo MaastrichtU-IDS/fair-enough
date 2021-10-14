@@ -27,12 +27,9 @@ async def create_collection(
     all_assess_names = []
     for assess in all_assessments:
         all_assess_names.append(assess['id'])
-    print(collection['assessments'])
-    print(all_assess_names)
     if not all(item in all_assess_names for item in collection['assessments']):
         raise HTTPException(status_code=404, detail=f"Assessment {', '.join(collection['assessments'])} not found")
 
-    print(f'{settings.BASE_URI}/collections/{collection["_id"]}')
     collec_obj = {
         '_id': collection['_id'],
         'title': collection['title'],

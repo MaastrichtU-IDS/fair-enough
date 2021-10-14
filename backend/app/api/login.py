@@ -68,8 +68,6 @@ oauth.register(
 @router.get('/login')
 async def login(request: Request):
     redirect_uri = request.url_for('auth')
-    print('REDIRECT URI')
-    print(redirect_uri)
     return await oauth.orcid.authorize_redirect(request, redirect_uri)
 
 @router.get('/auth')
@@ -79,8 +77,8 @@ async def auth(request: Request):
     except OAuthError as error:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     user = token.get('userinfo')
-    print('Auth with user: ')
-    print(user)
+    # print('Auth with user: ')
+    # print(user)
     if user:
         request.session['user'] = dict(user)
     # return RedirectResponse(url='/docs')
@@ -93,8 +91,8 @@ async def logout(request: Request):
 
 @router.get('/current-user')
 async def current_user(current_user: models.User = Depends(get_current_user)):
-    print('current_user')
-    print(current_user)
+    # print('current_user')
+    # print(current_user)
     return current_user
 
 

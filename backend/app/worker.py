@@ -29,8 +29,6 @@ def run_evaluation(evaluation: CreateEvaluationModel,
         '@context': settings.CONTEXT
     }
     if current_user:
-        print('USER!!!')
-        print(str(current_user))
         init_eval['author'] = current_user['id']
     else:
         init_eval['author'] = None

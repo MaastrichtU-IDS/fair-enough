@@ -3,19 +3,15 @@ from strawberry.asgi import GraphQL
 from typing import List, Optional, Union, Any
 from pydantic import BaseModel, Field
 import json
-
 from starlette.requests import Request
 from starlette.websockets import WebSocket
 from starlette.responses import Response 
 from strawberry.types import Info
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
-from app.api.collections import list_collections, show_collection
-# from app.models import EvaluationModel
 from app.config import settings
-from app.db import get_db
-
-# db = get_db()
+# from app.models import EvaluationModel
+# from app.api.collections import list_collections, show_collection
 
 # https://strawberry.rocks/docs/general/schema-basics
 
@@ -92,12 +88,6 @@ class Query:
     def user(self) -> User:
         return User(name="Patrick", age=100)
 
-
-    # Work in local docker, but not prod docker for no reason
-    # Task <Task pending coro=<ExecutionContext.resolve_field.<locals>.await_result() 
-    # running at /usr/local/lib/python3.7/site-packages/graphql/execution/execute.py:625> 
-    # cb=[gather.<locals>._done_callback() at /usr/local/lib/python3.7/asyncio/tasks.py:691]>
-    # got Future <Future pending> attached to a different loop",
     @strawberry.field
     async def collections(self, info: Info, id: Optional[str] = None) -> List[CollectionModel]:
         # db = get_db()

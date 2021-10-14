@@ -116,20 +116,20 @@ async def create_evaluation(
     if collection is None:
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
 
-    # Run evaluation asynchronously in celery worker
+    # Run evaluation asynchronously in celery worker.py
     task = run_evaluation.delay(evaluation, collection, current_user)   
 
     result = None
     # Check if task is ready every 1s for 500s
     for _ in range(500):
         res = AsyncResult(task.task_id)
-        print(str(res.ready()))
         if res.ready():
-            # TODO: improve how we retrieve results, wait is blocking
+            # TODO: improve how we retrieve results? wait is blocking
             result = task.wait(timeout=None, interval=0.2)
             break
         await asyncio.sleep(1)
 
+    # You can also return the given evaluation with its ID and status (available later)
     # evaluation['status'] = "Evaluation successfully started, it will be avaible in a few seconds with the ID: " + str(evaluation['_id'])
     # evaluation['task_id'] = str(task)
     # return result.dict(by_alias=True)
