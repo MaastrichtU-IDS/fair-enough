@@ -15,6 +15,9 @@ jobs:
         node-version: 12
 
     - name: Install dependencies and build
+      env:
+        API_URL: "https://api.fair-enough.semanticscience.org/rest"
+        GRAPHQL_URL: "https://api.fair-enough.semanticscience.org/graphql"
       run: |
         git config --global user.email "vincent.emonet@maastrichtuniversity.nl"
         git config --global user.name "Vincent Emonet"
