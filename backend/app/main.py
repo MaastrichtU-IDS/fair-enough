@@ -20,11 +20,13 @@ graphql_app = EnoughGraphQL(schema)
 app = FastAPI(
     title=settings.PROJECT_NAME, 
     openapi_url=f"{settings.API_PATH}/openapi.json",
-    description="""APIs to evaluate how FAIR a resource is given its URI (URL identifier for this resource).
+    description=f"""APIs to evaluate how FAIR a resource is given its URI (URL identifier for this resource).
     
 You will need to login with [ORCID](https://orcid.org) to create new collections of assessments.
 
 To login, click on the **Authorize 🔓️** button, and use the 2nd option: **OpenIdConnect (OAuth2, implicit)**
+
+You can access the web application at [{settings.FRONTEND_URL}]({settings.FRONTEND_URL})
 
 You can also query FAIR enough using the experimental GraphQL endpoint at [/graphql](/graphql?query=query%20%7B%0A%09evaluations%20%7B%0A%20%20%20%20title%0A%20%20%20%20resourceUri%0A%20%20%20%20collection%0A%20%20%20%20score%20%7B%0A%20%20%20%20%20%20totalScore%0A%20%20%20%20%20%20totalScoreMax%0A%20%20%20%20%20%20percent%0A%20%20%20%20%20%20totalBonus%0A%20%20%20%20%20%20totalBonusMax%0A%20%20%20%20%20%20bonusPercent%0A%20%20%20%20%7D%0A%20%20%20%20results%20%7B%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20fairType%0A%20%20%20%20%20%20metricId%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20maxScore%0A%20%20%20%20%20%20bonusScore%0A%20%20%20%20%20%20maxBonus%0A%20%20%20%20%20%20logs%0A%20%20%20%20%7D%0A%20%20%20%20data%0A%20%20%7D%0A%7D)
 
@@ -54,7 +56,6 @@ app.add_websocket_route("/graphql", graphql_app)
 
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
-# app.include_router(api_router, prefix=settings.API_PATH)
 app.include_router(api_router, prefix=settings.API_PATH)
 
 app.add_event_handler("startup", connect_db)

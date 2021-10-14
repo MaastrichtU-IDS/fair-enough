@@ -27,22 +27,16 @@ def get_db() -> AsyncIOMotorDatabase:
     return db
 
 
-# db: AsyncIOMotorDatabase = get_db()
-
-
 async def connect_db():
     """Create database connection."""
     global db
-    # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
-    db_client = AsyncIOMotorClient(settings.MONGODB_URL, 
-        maxPoolSize=100, 
-        minPoolSize=100)
+    db_client = AsyncIOMotorClient(settings.MONGODB_URL)
+    # db_client = AsyncIOMotorClient(settings.MONGODB_URL, maxPoolSize=100, minPoolSize=100)
     db = db_client.evaluations
 
 async def close_db():
     """Close database connection."""
     db_client.close()
-
 
 
 def init_db() -> None:

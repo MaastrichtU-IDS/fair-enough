@@ -4,7 +4,8 @@ from app.celery_app import celery_app
 from app.config import settings
 from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User
 from rdflib import Graph
-from app.db import get_db
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+# from app.db import get_db
 
 from fastapi.encoders import jsonable_encoder
 
@@ -66,10 +67,7 @@ def run_evaluation(evaluation: CreateEvaluationModel,
         eval.score.percent = 0
         eval.score.bonus_percent = 0
 
-    print('END WORKER EVAL')
-
-    # print(eval.dict(by_alias=True))
-    db = get_db()
+    db = AsyncIOMotorClient(settings.MONGODB_URL).evaluations
     new_evaluation = db["evaluations"].insert_one(eval.dict(by_alias=True))
     # print(type(new_evaluation.inserted_id))
     # print(new_evaluation.inserted_id)
@@ -81,5 +79,5 @@ def run_evaluation(evaluation: CreateEvaluationModel,
     # return JSONResponse(status_code=status.HTTP_201_CREATED, content=eval.dict(by_alias=True))
     # eval['_id'] = str(eval['_id'])
     eval = jsonable_encoder(eval)
-    return eval.dict(by_alias=True)
-    # return eval
+
+    return eval

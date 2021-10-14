@@ -7,7 +7,6 @@ import json
 from starlette.requests import Request
 from starlette.websockets import WebSocket
 from starlette.responses import Response 
-# from strawberry.permission import BasePermission
 from strawberry.types import Info
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
@@ -23,9 +22,7 @@ from app.db import get_db
 
 class EnoughGraphQL(GraphQL):
     async def get_context(self, request: Union[Request, WebSocket], response: Optional[Response] = None) -> Any:
-        db_client = AsyncIOMotorClient(settings.MONGODB_URL, 
-            maxPoolSize=100, 
-            minPoolSize=100)
+        db_client = AsyncIOMotorClient(settings.MONGODB_URL)
         return {"db": db_client.evaluations}
 
 
@@ -127,6 +124,8 @@ class Query:
             minScore: Optional[int] = None,
             maxBonus: Optional[int] = None,
             minBonus: Optional[int] = None,
+            maxPercent: Optional[int] = None,
+            minPercent: Optional[int] = None,
             
         ) -> List[EvaluationModel]:
         db = info.context["db"]
@@ -142,6 +141,10 @@ class Query:
             if maxBonus and maxBonus > eval['score']['total_bonus']:
                 continue
             if minBonus and minBonus < eval['score']['total_bonus']:
+                continue
+            if maxPercent and maxPercent > eval['score']['percent']:
+                continue
+            if minPercent and minPercent < eval['score']['percent']:
                 continue
             result_list = []
             for result in eval['results']:

@@ -1,6 +1,95 @@
 version: "3.3"
 services:
 
+  mongodb:
+    image: mongo
+    restart: always
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${SECRET_KEY-oursecretkey}
+      # MONGO_INITDB_ROOT_PASSWORD: oursecretkey
+      MONGO_INITDB_DATABASE: evaluations
+
+  backend:
+    # image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    command: /start-reload.sh
+    volumes:
+      - ./backend:/app
+    ports:
+      - 80:80
+      # - 8889:80
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    environment:
+      - FRONTEND_URL=https://fair-enough.semanticscience.org/#
+      - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
+      - VIRTUAL_HOST=api.fair-enough.semanticscience.org
+      - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
+      - VIRTUAL_PORT=80
+    #   - SERVER_NAME=${DOMAIN?Variable not set}
+    #   - SERVER_HOST=https://${DOMAIN?Variable not set}
+    #   # Allow explicit env var override for tests
+    #   - SMTP_HOST=${SMTP_HOST}
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+    #   - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/`) || PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
+    #   - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
+
+  queue:
+    image: rabbitmq:3
+    # networks:
+    #   - default
+    # Using the below image instead is required to enable the "Broker" tab in the flower UI:
+    # image: rabbitmq:3-management
+    #
+    # You also have to change the flower command
+  
+
+  celeryworker:
+    build:
+      context: ./backend
+      dockerfile: celeryworker.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    depends_on:
+      - mongodb
+      - queue
+    env_file:
+      - .env
+    environment:
+      - SERVER_NAME=${DOMAIN?Variable not set}
+      - SERVER_HOST=https://${DOMAIN?Variable not set}
+      # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
+      # Allow explicit env var override for tests
+      # - SMTP_HOST=${SMTP_HOST?Variable not set}
+    
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     # args:
+  #     #   FRONTEND_ENV: dev
+  #   ports:
+  #     - 5000:5000
+  #   environment:
+  #     API_URL: http://localhost/api
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
+  #     - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
+
+
   # proxy:
   #   image: traefik:v2.2
   #   networks:
@@ -33,90 +122,6 @@ services:
   #     - traefik.http.services.${STACK_NAME?Variable not set}-traefik-public.loadbalancer.server.port=80
 
 
-  mongodb:
-    image: mongo
-    restart: always
-    volumes:
-      - mongodb-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: ${SECRET_KEY-oursecretkey}
-      # MONGO_INITDB_ROOT_PASSWORD: oursecretkey
-      MONGO_INITDB_DATABASE: evaluations
-
-  backend:
-    # image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
-    build:
-      context: ./backend
-      dockerfile: backend.dockerfile
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-false}
-    ports:
-      - 8888:80
-    depends_on:
-      - mongodb
-    env_file:
-      - .env
-    environment:
-      - VIRTUAL_HOST=api.fair-enough.semanticscience.org
-      - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
-      - VIRTUAL_PORT=80
-      - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
-    #   - SERVER_NAME=${DOMAIN?Variable not set}
-    #   - SERVER_HOST=https://${DOMAIN?Variable not set}
-    #   # Allow explicit env var override for tests
-    #   - SMTP_HOST=${SMTP_HOST}
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-    #   - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/`) || PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
-    #   - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
-
-
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     # args:
-  #     #   FRONTEND_ENV: dev
-  #   ports:
-  #     - 5000:5000
-  #   environment:
-  #     API_URL: http://localhost/api
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
-  #     - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
-
-
-  queue:
-    image: rabbitmq:3
-    # networks:
-    #   - default
-    # Using the below image instead is required to enable the "Broker" tab in the flower UI:
-    # image: rabbitmq:3-management
-    #
-    # You also have to change the flower command
-  
-
-  celeryworker:
-    build:
-      context: ./backend
-      dockerfile: celeryworker.dockerfile
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-false}
-    depends_on:
-      - mongodb
-      - queue
-    env_file:
-      - .env
-    environment:
-      - SERVER_NAME=${DOMAIN?Variable not set}
-      - SERVER_HOST=https://${DOMAIN?Variable not set}
-      # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
-      # Allow explicit env var override for tests
-      # - SMTP_HOST=${SMTP_HOST?Variable not set}
-    
 
 volumes:
   mongodb-data:

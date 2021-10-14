@@ -81,11 +81,8 @@ export default function Evaluation() {
 
   // Run on page init
   React.useEffect(() => {
-    if (process.env.API_URL) {
-      updateState({ apiUrl: process.env.API_URL })
-    }
     // get evaluations
-    axios.get(settings.apiUrl + '/evaluations/' + evalParams.id, {
+    axios.get(settings.restUrl + '/evaluations/' + evalParams.id, {
       headers: {'Content-Type': 'application/json'},
     })
       .then((res: any) => {

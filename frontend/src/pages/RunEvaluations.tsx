@@ -93,9 +93,6 @@ export default function Evaluation() {
 
   // Run on page init
   React.useEffect(() => {
-    // if (process.env.API_URL) {
-    //   updateState({ apiUrl: process.env.API_URL })
-    // }
     // Get the edit URL param if provided
     // const params = new URLSearchParams(location.search + location.hash);
     // let urlToEvaluate = params.get('evaluate');
@@ -104,11 +101,9 @@ export default function Evaluation() {
     //   doEvaluateUrl(urlToEvaluate)
     // }
 
-    console.log(settings.apiUrl)
-
     // Get the list of evaluations from API
     if (state.evaluationsList.length < 1) {
-      axios.get(settings.apiUrl + '/evaluations', {
+      axios.get(settings.restUrl + '/evaluations', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
@@ -153,13 +148,13 @@ export default function Evaluation() {
       evaluationRunning: true,
       evaluationResults: null
     })
-    console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.apiUrl)
+    console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.docsUrl)
     const postJson = JSON.stringify({
       "resource_uri": evaluateUrl,
       // "title": "FAIR metrics dataset evaluation",
       "collection": "fair-metrics"
     });
-    axios.post(settings.apiUrl + '/evaluations', postJson, {
+    axios.post(settings.restUrl + '/evaluations', postJson, {
       headers: {'Content-Type': 'application/json'}
     })
       .then(res => {
@@ -177,7 +172,7 @@ export default function Evaluation() {
 
         const evalId = res.data['_id']
         // Retry every 3 seconds until the evaluation is available
-        axios.get(settings.apiUrl + '/evaluations/' + evalId)
+        axios.get(settings.restUrl + '/evaluations/' + evalId)
           .then((res: any) => {
             // Redirect to the page of the created evaluation
             history.push("/evaluation/" + evalId);

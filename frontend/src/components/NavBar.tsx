@@ -70,7 +70,7 @@ export default function NavBar() {
 
         <Tooltip title='Access the OpenAPI documentation of the API used by this web interface'>
           <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
-          href={settings.apiUrl}>
+          href={settings.docsUrl}>
             <ApiIcon style={{ marginRight: theme.spacing(1)}} />
             API
           </Button>

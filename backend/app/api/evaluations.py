@@ -1,12 +1,14 @@
-from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends
+from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 # from typing import Collection, List, Optional
 from typing import List, Optional
+from starlette.responses import RedirectResponse
 # from app.db import get_db, db
 from app.db import get_db
 from rdflib import ConjunctiveGraph
 from celery.result import AsyncResult
+import asyncio
 
 from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
 from app.api.login import get_current_user, reusable_oauth2
@@ -110,24 +112,28 @@ async def create_evaluation(
     evaluation = jsonable_encoder(evaluation)
     db = get_db()
 
-    # if current_user:
-    #     print(str(current_user))
-
     collection = await db["collections"].find_one({"_id": evaluation['collection']})
     if collection is None:
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
 
+    # Run evaluation asynchronously in celery worker
     task = run_evaluation.delay(evaluation, collection, current_user)   
 
-    # print('type(task)')
-    # print(type(task))
-    result = task.wait(timeout=None, interval=0.5)
-    # print(result)
+    result = None
+    # Check if task is ready every 1s for 500s
+    for _ in range(500):
+        res = AsyncResult(task.task_id)
+        print(str(res.ready()))
+        if res.ready():
+            # TODO: improve how we retrieve results, wait is blocking
+            result = task.wait(timeout=None, interval=0.2)
+            break
+        await asyncio.sleep(1)
 
-    evaluation['status'] = "Evaluation successfully started, it will be avaible in a few seconds with the ID: " + str(evaluation['_id'])
-    evaluation['task_id'] = str(task)
+    # evaluation['status'] = "Evaluation successfully started, it will be avaible in a few seconds with the ID: " + str(evaluation['_id'])
+    # evaluation['task_id'] = str(task)
     # return result.dict(by_alias=True)
-    return evaluation
+    return result
     
 
     # eval = run_evaluation(evaluation, collection, current_user)
@@ -153,7 +159,8 @@ async def list_evaluations():
 @router.get(
     "/evaluations/{id}", response_description="Get a single evaluation", response_model=EvaluationModel
 )
-async def show_evaluation(id: PyObjectId) -> EvaluationModel:
+async def show_evaluation(id: PyObjectId, accept: Optional[str] = Header(None)) -> EvaluationModel:
+    # 61677ca946a6770a020fd173
     # print(id)
     # from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
     # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
@@ -164,8 +171,11 @@ async def show_evaluation(id: PyObjectId) -> EvaluationModel:
     evaluation = await db["evaluations"].find_one({"_id": id})
     # print(evaluation)
 
+    # text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
     
     if evaluation is not None:
+        if accept.startswith('text/html'):
+            return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluation/{str(id)}')
         return evaluation
 
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
