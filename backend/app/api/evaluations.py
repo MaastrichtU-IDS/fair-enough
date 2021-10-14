@@ -25,7 +25,7 @@ router = APIRouter()
 #         await websocket.send_text(f"Message text was: {data}")
 
 
-# def run_evaluation(
+# async def run_evaluation(
 #         evaluation: CreateEvaluationModel,
 #         collection,
 #         current_user: Optional[User]) -> EvaluationModel:
@@ -110,8 +110,8 @@ async def create_evaluation(
     evaluation = jsonable_encoder(evaluation)
     db = get_db()
 
-    if current_user:
-        print(str(current_user))
+    # if current_user:
+    #     print(str(current_user))
 
     collection = await db["collections"].find_one({"_id": evaluation['collection']})
     if collection is None:
@@ -119,7 +119,9 @@ async def create_evaluation(
 
     task = run_evaluation.delay(evaluation, collection, current_user)   
 
-    # result = task.wait(timeout=None, interval=0.5)
+    # print('type(task)')
+    # print(type(task))
+    result = task.wait(timeout=None, interval=0.5)
     # print(result)
 
     evaluation['status'] = "Evaluation successfully started, it will be avaible in a few seconds with the ID: " + str(evaluation['_id'])
@@ -157,8 +159,8 @@ async def show_evaluation(id: PyObjectId) -> EvaluationModel:
     # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
     # db = db_client.evaluations
     # import asyncio
-    # await asyncio.sleep(10)
     db = get_db()
+    # await asyncio.sleep(20)
     evaluation = await db["evaluations"].find_one({"_id": id})
     # print(evaluation)
 

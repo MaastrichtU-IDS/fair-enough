@@ -16,13 +16,14 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 db_client: AsyncIOMotorClient = None
 
-db: AsyncIOMotorDatabase = AsyncIOMotorClient(settings.MONGODB_URL, maxPoolSize=10, minPoolSize=10).evaluations
+# db: AsyncIOMotorDatabase = AsyncIOMotorClient(settings.MONGODB_URL, maxPoolSize=10, minPoolSize=10).evaluations
+db: AsyncIOMotorDatabase = None
 
 def get_db() -> AsyncIOMotorDatabase:
     """Return Evaluations database client instance."""
     # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
     # return db_client.evaluations
-    print(db)
+    # print(db)
     return db
 
 
@@ -33,7 +34,9 @@ async def connect_db():
     """Create database connection."""
     global db
     # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
-    db_client = AsyncIOMotorClient(settings.MONGODB_URL, maxPoolSize=10, minPoolSize=10)
+    db_client = AsyncIOMotorClient(settings.MONGODB_URL, 
+        maxPoolSize=100, 
+        minPoolSize=100)
     db = db_client.evaluations
 
 async def close_db():

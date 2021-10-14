@@ -1,17 +1,33 @@
 import strawberry
-# from strawberry.asgi import GraphQL
-from typing import List, Optional
+from strawberry.asgi import GraphQL
+from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 import json
+
+from starlette.requests import Request
+from starlette.websockets import WebSocket
+from starlette.responses import Response 
+# from strawberry.permission import BasePermission
+from strawberry.types import Info
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from app.api.collections import list_collections, show_collection
 # from app.models import EvaluationModel
 from app.config import settings
 from app.db import get_db
 
-db = get_db()
+# db = get_db()
 
 # https://strawberry.rocks/docs/general/schema-basics
+
+
+class EnoughGraphQL(GraphQL):
+    async def get_context(self, request: Union[Request, WebSocket], response: Optional[Response] = None) -> Any:
+        db_client = AsyncIOMotorClient(settings.MONGODB_URL, 
+            maxPoolSize=100, 
+            minPoolSize=100)
+        return {"db": db_client.evaluations}
+
 
 @strawberry.type
 class User:
@@ -68,6 +84,7 @@ class EvaluationModel:
     # uri: str = Field(..., alias="@id")
     # context: str = Field(..., alias="@context")
 
+
 #  strawberry.field(resolver=collection_resolver)
 @strawberry.type
 class Query:
@@ -85,7 +102,9 @@ class Query:
     # cb=[gather.<locals>._done_callback() at /usr/local/lib/python3.7/asyncio/tasks.py:691]>
     # got Future <Future pending> attached to a different loop",
     @strawberry.field
-    async def collections(self, id: Optional[str] = None) -> List[CollectionModel]:
+    async def collections(self, info: Info, id: Optional[str] = None) -> List[CollectionModel]:
+        # db = get_db()
+        db = info.context["db"]
         collections = await db["collections"].find().to_list(1000)
         collec_list = []
         for collec in collections:
@@ -102,7 +121,7 @@ class Query:
 
 
     @strawberry.field
-    async def evaluations(self, 
+    async def evaluations(self, info: Info,
             id: Optional[str] = None,
             maxScore: Optional[int] = None,
             minScore: Optional[int] = None,
@@ -110,6 +129,7 @@ class Query:
             minBonus: Optional[int] = None,
             
         ) -> List[EvaluationModel]:
+        db = info.context["db"]
         evaluations = await db["evaluations"].find().to_list(1000)
         eval_list = []
         for eval in evaluations:

@@ -51,6 +51,8 @@ services:
       dockerfile: backend.dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
+    ports:
+      - 8888:80
     depends_on:
       - mongodb
     env_file:

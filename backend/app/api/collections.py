@@ -65,7 +65,7 @@ async def create_collection(
     },
 )
 async def list_collections() -> List[CollectionModel]:
-    return await db["collections"].find().to_list(1000)
+    return JSONResponse(content=await db["collections"].find().to_list(1000))
 
 
 @router.get(

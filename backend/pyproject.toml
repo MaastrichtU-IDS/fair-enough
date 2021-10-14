@@ -30,7 +30,7 @@ rdflib = "^6.0.1"
 PyLD = "^2.0.3"
 google = "^3.0.0"
 beautifulsoup4 = "^4.10.0"
-strawberry-graphql = "^0.81.0"
+strawberry-graphql = {extras = ["asgi"], version = "^0.83.4"}
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.770"

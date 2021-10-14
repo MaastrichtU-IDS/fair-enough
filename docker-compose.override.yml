@@ -35,8 +35,8 @@ services:
       - traefik.http.services.${STACK_NAME?Variable not set}-traefik-public.loadbalancer.server.port=80
 
   backend:
-    ports:
-      - "8888:80"
+    # ports:
+    #   - "8888:80"
     volumes:
       - ./backend:/app
     environment:
