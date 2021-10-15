@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
         mongodb-version: ['5.0']
 
     steps:
@@ -35,7 +35,7 @@ jobs:
     - name: Start RabbitMQ
       uses: nijel/rabbitmq-action@v1.0.0
       with:
-        rabbitmq version: '5'
+        rabbitmq version: '3'
 
     - name: Install dependencies
       run: |
@@ -43,12 +43,16 @@ jobs:
         pip install poetry
         poetry install
 
+    - name: Start Celery worker
+      run: |
+        cd backend
+        celery worker -A app.worker -l info -Q main-queue --detach
+
     - name: Run tests
       env:
         MONGODB_URL: 'mongodb://localhost:27017/'
         DOMAIN: localhost
       run: |
         cd backend
-        celery worker -A app.worker -l info -Q main-queue --detach
         ./tests-start.sh
         # pytest --cov=app --cov-report=term-missing tests
