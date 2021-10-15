@@ -17,7 +17,7 @@ app.use(helmet({
 app.use(express.static(path.join(__dirname, ".", "public")));
 
 app.get('/*', (req,res) => { //this is required to support any client side routing written in react.
- res.sendFile(path.join(__dirname, ".", "public", 'index.html'))
+  res.sendFile(path.join(__dirname, ".", "public", 'index.html'))
 })
 
 app.listen({ port: 4000 }, () =>

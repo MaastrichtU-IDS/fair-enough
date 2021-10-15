@@ -13,7 +13,7 @@ FROM node:alpine AS build-react
 COPY frontend /app
 WORKDIR /app
 RUN yarn install --frozen-lockfile
-RUN yarn build
+RUN yarn build-prod
 
 
 ## Build and run the server
