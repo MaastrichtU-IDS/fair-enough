@@ -27,6 +27,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    # - uses: actions/cache@v2
+    #   with:
+    #     path: ~/.cache/pip
+    #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-pip-
+
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.6.0
       with:
@@ -46,7 +53,7 @@ jobs:
     - name: Start Celery worker
       run: |
         cd backend
-        celery worker -A app.worker -l info -Q main-queue --detach
+        poetry run celery worker -A app.worker -l info -Q main-queue --detach
 
     - name: Run tests
       env:
