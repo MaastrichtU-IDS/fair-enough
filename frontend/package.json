@@ -7,7 +7,7 @@
     "dev": "expo web",
     "eject": "expo eject",
     "build": "expo build:web",
-    "build-prod": "API_URL=https://api.fair-enough.semanticscience.org/rest expo build:web",
+    "build-prod": "API_URL=https://api.fair-enough.semanticscience.org expo build:web",
     "serve": "serve -s web-build",
     "start": "npm run build && npm run serve",
     "predeploy": "npm run build",
