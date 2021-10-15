@@ -15,7 +15,7 @@ import axios from 'axios';
 import axiosRetry from 'axios-retry';
 // import { Doughnut } from 'react-chartjs-2';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
-import settings from '../settings'
+import { settings } from '../settings'
 import { useAuth } from 'oidc-react';
 
 export default function Evaluation() {
@@ -206,9 +206,10 @@ export default function Evaluation() {
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
     { 
-      field: 'id', headerName: 'Evaluation ID', flex: 0.5,
+      field: 'id', headerName: 'Access evaluation', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
-        <Button href={'/#/evaluation/' + params.value as string}
+        // <Button href={'/#/evaluation/' + params.value as string}
+        <Button href={'/evaluation/' + params.value as string}
             variant="contained" 
             className={classes.submitButton} 
             startIcon={<EvaluationIcon />}
@@ -327,7 +328,7 @@ export default function Evaluation() {
         <Button type="submit" 
           variant="contained" 
           // className={classes.submitButton} 
-          style={{margin: theme.spacing(2)}}
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
             Start the FAIR evaluation

@@ -12,7 +12,7 @@ import LoginIcon from '@mui/icons-material/Login';
 // @ts-ignore
 import iconImage from '../../assets/icon.png';
 
-import settings from '../settings';
+import { settings } from '../settings';
 import { useAuth } from 'oidc-react';
 
 // const theme = useTheme();

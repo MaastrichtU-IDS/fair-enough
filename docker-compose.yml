@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     environment:
-      - FRONTEND_URL=https://fair-enough.semanticscience.org/#
+      - FRONTEND_URL=https://fair-enough.semanticscience.org/
       - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
       - VIRTUAL_HOST=api.fair-enough.semanticscience.org
       - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
@@ -69,20 +69,24 @@ services:
       # - SMTP_HOST=${SMTP_HOST?Variable not set}
     
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     # args:
-  #     #   FRONTEND_ENV: dev
-  #   ports:
-  #     - 5000:5000
-  #   environment:
-  #     API_URL: http://localhost/api
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
-  #     - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
+  frontend:
+    build: .
+      # context: .
+      # args:
+      #   FRONTEND_ENV: dev
+    # ports:
+    #   - 5000:4000
+    environment:
+      API_URL: https://api.fair-enough.semanticscience.org
+      VIRTUAL_HOST: fair-enough.semanticscience.org
+      LETSENCRYPT_HOST: fair-enough.semanticscience.org
+      VIRTUAL_PORT: 4000
+
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+    #   - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
+    #   - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
 
 
   # proxy:

@@ -1,18 +1,18 @@
 # ♻️ FAIR enough 🎯
 
-[![Run backend tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml)
+[![Run backend tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml) [![Deploy frontend to GitHub Pages](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/deploy-frontend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/deploy-frontend.yml) [![CodeQL analysis](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/codeql-analysis.yml)
 
-An OpenAPI where anyone can run evaluations to assess how compliant to the FAIR principles is a resource, given the resource identifier (URI/URL).
+A service where anyone can run evaluations to assess how compliant to the FAIR principles is a resource, given the resource identifier (URI/URL).
 
-Using [FastAPI](https://fastapi.tiangolo.com/), [Pydantic](https://pydantic-docs.helpmanual.io/) and [MongoDB](https://www.mongodb.com/)
+An **evaluation** runs a **collection** of **assessments** against the resource to evaluate.
 
-## 📥️ Requirements
+* **Evaluations** can be created by anyone without authentication. An evaluation takes the URI of the resource to evaluate, and a collection of assessments to run against this resource.
+* **Collections** can be created through the API after authenticating with ORCID. A collection is a sorted list of assessments.
+* **Assessments** are tests written in Python that can be part of a collection. Each assessment run some tests against the resource to evaluate, record the results, and pass the results to the next assessment in the collection. To create a test you will need to add a python file in the folder `backend/app/assessments` and send us a pull request (see below for more details)
 
-* [Docker](https://www.docker.com/)
-* [Docker Compose](https://docs.docker.com/compose/install/)
-* [Poetry](https://python-poetry.org/) if you need to install new Python packages.
+Backend built with [FastAPI](https://fastapi.tiangolo.com/), [Pydantic](https://pydantic-docs.helpmanual.io/), Celery (RabbitMQ backend) and [MongoDB](https://www.mongodb.com/)
 
-* Node.js (with `npm`) if you need to do frontend development
+Frontend built with [React](https://reactjs.org) and [Material UI](https://mui.com/)
 
 ## 📝 Add an assessment
 
@@ -20,11 +20,11 @@ All assessments used to run evaluations are python scripts defined in the same f
 
 Feel free to add new assessments and send a pull request!  To create a new assessment:
 
-* Optionally, create a folder if you want to group multiple assessments under a same category 
+* Optionally, create a folder if you want to group multiple assessments under a same folder 
 
 * Copy an existing assessment to get started
 
-* Change the attributes of this assessment to describe it so that users can easily understand what your assessment do. Provide your ORCID URL in the `author` attribute,
+* Change the attributes of the `Assessment` class to describe it so that users can easily understand what your assessment does. Provide your ORCID URL in the `author` attribute,
 
 * Add the code in the `evaluate()` function, 2 variables are passed to the assessment, plus you can access the assessment object itself to log what the test is trying to do, and why it success or fail:
 
@@ -43,6 +43,14 @@ Feel free to add new assessments and send a pull request!  To create a new asses
     ```
 
 > Most of the Python code for the API is in https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app
+
+## 📥️ Requirements
+
+* [Docker](https://www.docker.com/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
+* [Poetry](https://python-poetry.org/) if you need to install new Python packages.
+
+* [Node.js](https://nodejs.org/en/) (with `npm`) and [`yarn`](https://yarnpkg.com/) if you need to do frontend development
 
 ## 🐳 Backend local development
 
@@ -200,11 +208,11 @@ docker-compose exec backend bash /app/tests-start.sh --cov-report=html
 
 ```bash
 cd frontend
-npm install
-npm run serve
+yarn
+yarn dev
 ```
 
-Then open your browser at http://localhost:8080
+Then open your browser at http://localhost:19006
 
 If you have Vue CLI installed, you can also run `vue ui` to control, configure, serve, and analyze your application using a nice local web user interface.
 

@@ -4,3 +4,5 @@ docker-stack.yml
 
 .expo
 node_modules
+
+/server/public

@@ -22,7 +22,7 @@ import axios from 'axios';
 // import { Doughnut } from 'react-chartjs-2';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import settings from '../settings'
+import {settings} from '../settings'
 
 
 export default function Evaluation() {

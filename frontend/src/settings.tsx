@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles';
 
 const settings = {
   apiUrl: process.env.API_URL || 'http://localhost',
@@ -6,4 +7,24 @@ const settings = {
   graphqlUrl: ((process.env.API_URL) ? process.env.API_URL + '/graphql' : null) || 'http://localhost/graphql'
 }
 
-export default settings;
+const getUrlHtml = (urlString: string) => {
+  const theme = useTheme();
+  if(/^(?:node[0-9]+)|((https?|ftp):.*)$/.test(urlString)) {
+    // Process URIs
+    return <a href={urlString}  target="_blank" rel="noopener noreferrer"
+        style={{color: theme.palette.primary.main,
+          textDecoration: 'none',
+          // '&:hover': {
+          //   color: theme.palette.primary.light,
+          //   textDecoration: 'none',}
+          }}>{urlString}</a>
+  } else {
+    return urlString
+  }
+}
+
+// export default settings;
+export {
+  settings,
+  getUrlHtml
+}

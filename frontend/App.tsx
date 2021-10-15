@@ -60,11 +60,19 @@ const theme = createTheme({
   // },
 });
 
+// Fix React router:
+// https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
+// We could use an express server
+// app.use('/mysub-application1', express.static(path.resolve(__dirname, `../public`)))
+// app.get('/mysub-application1/*', (req,res) => { //this is required to support any client side routing written in react.
+//  res.sendFile(path.join(__dirname, '../../public', 'index.html'))
+// })
+
 const App = () => (
   <ThemeProvider theme={theme}>
-    {/* <Router basename="/"> */}
     <AuthProvider {...oidcConfig}>
-      <HashRouter>
+      <Router basename="/">
+      {/* <HashRouter> */}
         <View style={{height: '100%', backgroundColor: '#eceff1'}}>
           <NavBar />
 
@@ -73,7 +81,8 @@ const App = () => (
           <Route exact path="/" component={RunEvaluations} />
           <Footer />
         </View>
-      </HashRouter>
+      {/* </HashRouter> */}
+      </Router>
     </AuthProvider>
   </ThemeProvider>
 );
