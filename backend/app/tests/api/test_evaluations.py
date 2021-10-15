@@ -19,16 +19,17 @@ def test_evaluation_get(test_client) -> None:
     # assert len(results[0]['assessments']) > 2
     assert r.status_code == 200
 
-def test_evaluation_create(test_client) -> None:
-    eval_data = {
-        "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
-        "collection": "fair-metrics"
-    }
 
-    r = test_client.post(f"{settings.API_PATH}/evaluations",
-        data=json.dumps(eval_data),
-        headers={"Accept": "application/json"}
-    )
-    results = r.json()
-    assert r.status_code == 200
-    assert len(results['results']) > 2
+# def test_evaluation_create(test_client) -> None:
+#     eval_data = {
+#         "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
+#         "collection": "fair-metrics"
+#     }
+
+#     r = test_client.post(f"{settings.API_PATH}/evaluations",
+#         data=json.dumps(eval_data),
+#         headers={"Accept": "application/json"}
+#     )
+#     results = r.json()
+#     assert r.status_code == 200
+#     assert len(results['results']) > 2
