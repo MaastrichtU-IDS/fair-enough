@@ -1,4 +1,4 @@
-name: Deploy website to GitHub Pages
+name: Deploy frontend to GitHub Pages
 on:
   workflow_dispatch:
   push:
@@ -20,7 +20,7 @@ jobs:
       env:
         API_URL: "https://api.fair-enough.semanticscience.org"
       run: |
-        git config --global user.email "vincent.emonet@maastrichtuniversity.nl"
+        git config --global user.email "vincent.emonet@gmail.com"
         git config --global user.name "Vincent Emonet"
         cd frontend
         yarn install
