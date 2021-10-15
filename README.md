@@ -14,6 +14,24 @@ Backend built with [FastAPI](https://fastapi.tiangolo.com/), [Pydantic](https://
 
 Frontend built with [React](https://reactjs.org) and [Material UI](https://mui.com/)
 
+## Motivation
+
+This work has been motivated by the existing implementations of FAIR evaluations services:
+
+* Mark Wilkinson's [FAIR evaluator](https://fairsharing.github.io/FAIR-Evaluator-FrontEnd/#!/) is a service where people could create collections of tests, which allow communities to define their own set of FAIR assessments. But the evaluations takes too long, the codebase is in Ruby, and dependencies informations are missing which makes it hard to redeploy and test. 
+* F-UJI API was written in python and already implemented a lot of interesting assessments. But it is does not allow to composes assessments, it acts as a monolythic tests suite without the possibility to create collections, or add new assessments. Moreover it's structure is not straightforward when it comes to the assessments, most tests files don't hold any assessments, they just handle the scoring (which does not follow a clear framework), and the checks are actually implemented in a complex network of classes and functions, sometimes requiring to go through multiple functions to finally found the actual code doing the assessment.
+
+To solve those issues we took the best from Mark Wilkinson's FAIR evaluator: the possibility to define collection of assessments, and the best from F-UJI: assessments implemented in python. 
+
+We created **FAIR Enough**: built from the ground up to make writing and contributing new FAIR assessments easy, with the goal to encourage communities to contribute assessments that matters to them, and create the collections to validate a resource FAIRness following their requirements.
+
+We chose Python to implement this service due to:
+
+* Its popularity and simplicity enable more people to contribute, and add their own FAIR assessments that matters to their community
+* Its ecosystem is mature and contains most libraries needed to implement the assessment of online resources (e.g. extruct to extract metadata embedded in HTML, RDFLib to parse RDF metadata). As a matter of fact even the FAIR evaluator written in ruby needed to call some python dependencies like extruct! 
+
+Even if python itself is a relatively slow language, we put a lot of importance in the efficiency and simplicity of the code. Evaluations are directly started by the API (FastAPI) on an asynchronous worker (Celery) using a message broker (RabbitMQ) which can scale easily in clusters. The python files for each test in a collection are executed one after the other, each assessment adds a result entry with the score and log for the evaluated resource to an object passed down to the next.
+
 ## 📝 Add an assessment
 
 All assessments used to run evaluations are python scripts defined in the same folder: https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments

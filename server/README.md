@@ -1,12 +1,10 @@
-# Server for GraphQL with OpenAPI from ElasticSearch
+# Server for React app
 
-This ExpressJS server serves:
+This ExpressJS server serves a React app to fix issues where React router is not enough to handle multi-pages app.
 
-* SearchKit Apollo GraphQL endpoint serving data from an existing ElasticSearch on `/graphql`
-* Sofa API to publish an OpenAPI based on the GraphQL endpoint
-  * API on `/api`
-  * Swagger UI on `/apidocs`
-* A React website to search the data on the base URL (`/`) defined in the folder `searchkit-react`
+So we don't need to use the ugly HashRouter.
+
+https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
 
 ## Development
 
@@ -14,18 +12,9 @@ Install
 
 ```bash
 yarn
-cd searchkit-react
-yarn
-cd ..
 ```
 
-Start only the express server on http://localhost:4000
-
-```bash
-yarn dev
-```
-
-Start the express server on http://localhost:4000 and the React app on http://localhost:3000 (in development mode)
+Build the React app and start the express server on http://localhost:4000
 
 ```bash
 yarn start
@@ -45,12 +34,12 @@ yarn serve
 Build:
 
 ```bash
-docker build -t ghcr.io/bio2kg/registry-server .
+docker build -t fair-enough-server .
 ```
 
 Run:
 
 ```bash
-docker run -it -p 4000:4000 ghcr.io/bio2kg/registry-server
+docker run -it -p 4000:4000 fair-enough-server
 ```
 
