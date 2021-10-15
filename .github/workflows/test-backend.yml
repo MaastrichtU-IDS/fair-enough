@@ -32,6 +32,11 @@ jobs:
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
+    - name: Start RabbitMQ
+      uses: nijel/rabbitmq-action@v1.0.0
+      with:
+        rabbitmq version: '5'
+
     - name: Install dependencies
       run: |
         cd backend
@@ -44,5 +49,6 @@ jobs:
         DOMAIN: localhost
       run: |
         cd backend
+        celery worker -A app.worker -l info -Q main-queue --detach
         ./tests-start.sh
         # pytest --cov=app --cov-report=term-missing tests

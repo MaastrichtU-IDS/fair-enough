@@ -12,15 +12,16 @@ from app.models.collection import CollectionModel, CreateCollectionModel, Update
 
 
 router = APIRouter()
-db = get_db()
+# db = get_db()
 
 
 @router.post("/", response_description="Add a new collection", response_model=CollectionModel)
 async def create_collection(
         collection: CreateCollectionModel = Body(...),
         current_user: models.User = Depends(login.get_current_user)):
-    
     collection = jsonable_encoder(collection)
+    db = get_db()
+
     # Check if given assessments exist
     # all_assessments = await 
     all_assessments = await assessments.list_assessments()
@@ -62,6 +63,7 @@ async def create_collection(
     },
 )
 async def list_collections() -> List[CollectionModel]:
+    db = get_db()
     return JSONResponse(content=await db["collections"].find().to_list(1000))
 
 
@@ -69,6 +71,7 @@ async def list_collections() -> List[CollectionModel]:
     "/{id}", response_description="Get a single collection", response_model=CollectionModel
 )
 async def show_collection(id: str = 'fair-metrics') -> CollectionModel:
+    db = get_db()
     collection = await db["collections"].find_one({"_id": id})
     if collection is not None:
         return collection
@@ -81,9 +84,8 @@ async def update_collection(
         id: str, 
         collection: UpdateCollectionModel = Body(...),
         current_user: models.User = Depends(login.get_current_user) ):
-
     collection = {k: v for k, v in collection.dict(by_alias=True).items() if v is not None}
-    
+    db = get_db()
     existing_collection = await db["collections"].find_one({"_id": id})
 
     # Check if the collection updated has been published by the same ORCID user
@@ -106,9 +108,9 @@ async def update_collection(
 
 @router.delete("/{id}", response_description="Delete a collection")
 async def delete_collection(id: str, current_user: models.User = Depends(login.get_current_user)):
+    db = get_db()
     delete_result = await db["collections"].delete_one({"_id": id})
 
-    
     # Check if the deleted collection has been published by the same ORCID user
     existing_collection = await db["collections"].find_one({"_id": id})
     if current_user['id'] != existing_collection['author']:

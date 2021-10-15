@@ -19,6 +19,7 @@ def get_db() -> AsyncIOMotorDatabase:
 
 async def connect_db():
     """Create database connection."""
+    global db_client
     global db
     db_client = AsyncIOMotorClient(settings.MONGODB_URL)
     # db_client = AsyncIOMotorClient(settings.MONGODB_URL, maxPoolSize=100, minPoolSize=100)

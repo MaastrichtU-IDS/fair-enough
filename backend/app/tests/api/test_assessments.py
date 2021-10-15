@@ -7,8 +7,8 @@ from app.config import settings
 from app.tests.conftest import client
 
 
-def test_assessments() -> None:
-    r = client.get(f"{settings.API_PATH}/assessments")
+def test_assessments(test_client) -> None:
+    r = test_client.get(f"{settings.API_PATH}/assessments")
     results = r.json()
     # print(results)
     assert len(results) > 3
