@@ -6,7 +6,7 @@ import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, 
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 // import EvaluationIcon from '@mui/icons-material/Send';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
-import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+import EvaluationIcon from '@mui/icons-material/LibraryAdd';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -63,7 +63,7 @@ export default function Evaluation() {
     urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
     // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
-    adviceLogs: [],
+    collectionsList: [],
     evaluationRunning: false,
     evaluationsList: [],
     metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
@@ -102,19 +102,19 @@ export default function Evaluation() {
     // }
 
     // Get the list of evaluations from API
-    if (state.evaluationsList.length < 1) {
-      axios.get(settings.restUrl + '/evaluations', {
+    if (state.collectionsList.length < 1) {
+      axios.get(settings.restUrl + '/collections', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
-          let evaluationsList: any = []
-          res.data.map((evaluation: any, key: number) => {
-            evaluation['id'] = evaluation['_id']
-            evaluation['score_percent'] = evaluation['score']['percent']
-            evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
-            evaluationsList.push(evaluation)
+          let collectionsList: any = []
+          res.data.map((collec: any, key: number) => {
+            collec['id'] = collec['_id']
+            // evaluation['score_percent'] = evaluation['score']['percent']
+            // evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
+            collectionsList.push(collec)
           })
-          updateState({ evaluationsList: evaluationsList })
+          updateState({ collectionsList: collectionsList })
 
         })
     }
@@ -204,148 +204,80 @@ export default function Evaluation() {
 
 
   const columns: GridColumns = [
-    { field: '@id', headerName: 'ID', hide: true },
-    { 
-      field: 'id', headerName: 'Access evaluation', flex: 0.5,
-      renderCell: (params: GridRenderCellParams) => (
-        // <Button href={'/#/evaluation/' + params.value as string}
-        <Button href={'/evaluation/' + params.value as string}
-            variant="contained" 
-            className={classes.submitButton} 
-            startIcon={<EvaluationIcon />}
-            color="primary">
-          Evaluation
-        </Button>)
-    },
-    // { field: 'title', headerName: 'Title', flex: 1 },
+    { field: 'id', headerName: 'ID', hide: false },
+    // { 
+    //   field: 'id', headerName: 'Access evaluation', flex: 0.5,
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     // <Button href={'/#/evaluation/' + params.value as string}
+    //     <Button href={'/evaluation/' + params.value as string}
+    //         variant="contained" 
+    //         className={classes.submitButton} 
+    //         startIcon={<EvaluationIcon />}
+    //         color="primary">
+    //       Evaluation
+    //     </Button>)
+    // },
+    { field: 'title', headerName: 'Title', flex: 1 },
     {
-      field: 'resource_uri', headerName: 'Resource URI', flex: 1,
+      field: 'homepage', headerName: 'Homepage', flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {getUrlHtml(params.value as string)}
         </>)
     },
-    {
-      field: 'score_percent', headerName: 'FAIR compliant', flex: 0.5,
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          {params.value as string}%
-        </>)
-    },
-    {
-      field: 'bonus_percent', headerName: 'FAIR Role Model', flex: 0.5,
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          {params.value as string}%
-        </>)
-    }
+    // TODO: calculate max_score and max_bonus for each collection
+    // {
+    //   field: 'max_score', headerName: 'FAIR compliant', flex: 0.5,
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <>
+    //       {params.value as string}%
+    //     </>)
+    // },
+    // {
+    //   field: 'max_bonus', headerName: 'FAIR Role Model', flex: 0.5,
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <>
+    //       {params.value as string}%
+    //     </>)
+    // }
   ]
   
 
   return(
     <Container className='mainContainer'>
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-        ⚖️ Evaluate how FAIR is a resource 🔗
+        Collections of assessments
       </Typography>
 
-      {/* {auth && auth.userData &&
-        <div>
-          <strong>Logged in! 🎉</strong><br />
-          <button onClick={() => auth.signOut()}>Log out!</button>
-        </div>
+      <Button href="/collection/create" 
+        variant="contained" 
+        // className={classes.submitButton} 
+        style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
+        startIcon={<EvaluationIcon />}
+        color="secondary" >
+          Create a new collection
+      </Button>
+
+      {/* <Link to="/collections" className={classes.linkButton}>
+          <Tooltip title='Browse existing Collections of assessments'>
+            <Button style={{color: '#fff'}}>
+              <InfoIcon />
+              Collections
+            </Button>
+          </Tooltip>
+        </Link> */}
+
+      {/* {state.evaluationRunning && 
+        <CircularProgress style={{margin: theme.spacing(5, 0)}} />
       } */}
 
-      {/* Form to provide the URL to evaludate */}
-      <form onSubmit={handleSubmit}>
-        <Box display="flex" style={{margin: theme.spacing(0, 6)}}>
-          <TextField
-            id='urlToEvaluate'
-            label='URL of the resource to evaluate'
-            placeholder='URL of the resource to evaluate'
-            value={state.urlToEvaluate}
-            className={classes.fullWidth}
-            variant="outlined"
-            onChange={handleTextFieldChange}
-            // size='small'
-            InputProps={{
-              className: classes.formInput
-            }}
-          />
-
-          {/* <Tooltip  title='Evaluator settings'>
-            <Button style={{margin: theme.spacing(1)}} onClick={handleClick}>
-              <SettingsIcon />
-            </Button>
-          </Tooltip> */}
-          <Popper open={open} anchorEl={anchorEl}>
-            <ClickAwayListener onClickAway={handleClickAway}>
-              <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'center'}}>
-                {/* <Typography variant="h6" style={{textAlign: 'center'}}>
-                  Evaluator settings
-                </Typography> */}
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <Tooltip title='By default, the FAIR Enough evaluator uses content negociation based on the DOI URL to retrieve DataCite JSON metadata. If you uncheck this option F-UJI will try to use the landing page URL instead.'>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={state.use_datacite}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                              updateState({[event.target.name]: event.target.checked});
-                            }}
-                            name="use_datacite"
-                            color="primary"
-                          />
-                        }
-                        label="Use DataCite"
-                      />
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Tooltip title='OAI-PMH (Open Archives Initiative Protocol for Metadata Harvesting) endpoint to use when searching for metadata about this resource.'>
-                      <TextField
-                        id='metadata_service_endpoint'
-                        label='OAI-PMH metadata endpoint URL'
-                        placeholder='OAI-PMH metadata endpoint URL'
-                        value={state.metadata_service_endpoint}
-                        className={classes.fullWidth}
-                        variant="outlined"
-                        onChange={handleTextFieldChange}
-                        // size='small'
-                        InputProps={{
-                          className: classes.formInput
-                        }}
-                      />
-                    </Tooltip>
-                    <FormHelperText>List of OAI-PMH providers: {getUrlHtml('https://www.openarchives.org/Register/BrowseSites')}</FormHelperText>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
-        </Box>
-
-        <Button type="submit" 
-          variant="contained" 
-          // className={classes.submitButton} 
-          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
-          startIcon={<EvaluationIcon />}
-          color="secondary" >
-            Start the FAIR evaluation
-        </Button>
-      </form>
-
-      {state.evaluationRunning && 
-        <CircularProgress style={{margin: theme.spacing(5, 0)}} />
-      }
-
       {/* Display the Data table listing the Evaluations */}
-      {state.evaluationsList.length > 0 && 
+      {state.collectionsList.length > 0 && 
         <div style={{ height: 600, width: '100%' }}>
-          {console.log(state.evaluationsList)}
+          {console.log(state.collectionsList)}
           <DataGrid
             columns={columns}
-            rows={state.evaluationsList}
+            rows={state.collectionsList}
             // {...state.evaluationsList}
             components={{
               Toolbar: GridToolbar,

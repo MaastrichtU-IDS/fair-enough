@@ -6,3 +6,5 @@ docker-stack.yml
 node_modules
 
 /server/public
+
+.env

@@ -8,7 +8,7 @@ from app.config import settings
 # Use Authlib for ORCID OpenID Connect
 from starlette.config import Config
 from starlette.requests import Request
-from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.responses import HTMLResponse, RedirectResponse, JSONResponse
 from authlib.integrations.starlette_client import OAuth, OAuthError
 
 
@@ -24,7 +24,7 @@ reusable_oauth2 = OpenIdConnect(
 )
 # reusable_oauth2 = OAuth2PasswordBearer(
 #     # tokenUrl=f"{settings.API_PATH}/login/access-token"
-#     tokenUrl=f"https://orcid.org/oauth/authorize?client_id=APP-TEANCMSUOPYZOGJ3&response_type=code&scope=/authenticate&redirect_uri=http://localhost/api/login/orcid"
+#     tokenUrl=f"https://orcid.org/oauth/authorize?client_id={settings.ORCID_CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=http://localhost/api/login/orcid"
 # )
 # reusable_oauth2 = OAuth2AuthorizationCodeBearer(
 #     authorizationUrl=settings.AUTHORIZATION_URL,
@@ -57,7 +57,7 @@ oauth.register(
     name='orcid',
     server_metadata_url='https://orcid.org/.well-known/openid-configuration',
     client_id=settings.ORCID_CLIENT_ID,
-    # client_secret=settings.ORCID_CLIENT_SECRET,
+    client_secret=settings.ORCID_CLIENT_SECRET,
     redirect_uri=settings.OAUTH_REDIRECT_URI,
     client_kwargs={
         'scope': '/authenticate'
@@ -67,8 +67,13 @@ oauth.register(
 
 @router.get('/login')
 async def login(request: Request):
-    redirect_uri = request.url_for('auth')
-    return await oauth.orcid.authorize_redirect(request, redirect_uri)
+    auth_uri = request.url_for('auth')
+    return await oauth.orcid.authorize_redirect(request, auth_uri)
+
+@router.get('/login/ui')
+async def login_ui(request: Request):
+    login_url = f'# https://orcid.org/oauth/authorize?response_type=token&client_id={settings.ORCID_CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%2Fdocs%2Foauth2-redirect&scope=%2Fauthenticate'
+    return RedirectResponse(url=login_url)
 
 @router.get('/auth')
 async def auth(request: Request):
@@ -77,12 +82,14 @@ async def auth(request: Request):
     except OAuthError as error:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     user = token.get('userinfo')
-    # print('Auth with user: ')
-    # print(user)
     if user:
         request.session['user'] = dict(user)
-    # return RedirectResponse(url='/docs')
-    return RedirectResponse(url='http://localhost:19006')
+    return RedirectResponse(url='http://localhost:19006/collection/create',
+        headers={"Authorization": 'Bearer ' + str(token['access_token'])})
+    # return JSONResponse({"access_token": token['access_token'], "token_type": 'bearer'}, 
+    #     headers={"Authorization": 'Bearer ' + str(token['access_token'])})
+
+# curl 'http://localhost/rest/current-user' -H 'Authorization: Bearer 21807418-ee11-4097-bdc5-dc9aaf0b9296'
 
 @router.get('/logout')
 async def logout(request: Request):
@@ -119,7 +126,7 @@ async def current_user(current_user: models.User = Depends(get_current_user)):
 #     print(code)
 #     redirect_uri = 'http://localhost/api/login/orcid'
 #     # Authentication page:
-#     # https://orcid.org/oauth/authorize?client_id=APP-TEANCMSUOPYZOGJ3&response_type=code&scope=/authenticate&redirect_uri=http://localhost/api/login/orcid
+#     # https://orcid.org/oauth/authorize?client_id={settings.ORCID_CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=http://localhost/api/login/orcid
 #     data = {
 #         'client_id': settings.ORCID_CLIENT_ID,
 #         'client_secret': settings.ORCID_CLIENT_SECRET,

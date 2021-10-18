@@ -11,23 +11,25 @@ import NavBar from "./src/components/NavBar";
 import Footer from "./src/components/Footer";
 import RunEvaluations from "./src/pages/RunEvaluations";
 import Evaluation from "./src/pages/Evaluation";
+import CreateCollection from "./src/pages/CreateCollection";
+import Collections from "./src/pages/Collections";
 import About from "./src/pages/About";
 import { AuthProvider, useAuth } from 'oidc-react';
 
 // https://github.com/kolitiri/fastapi-oidc-react
-const oidcConfig = {
-  onSignIn: async (user: any) => {
-    alert('You just signed in, congratz! Check out the console!');
-    console.log(user);
-    window.location.hash = '';
-  },
-  authority: 'https://orcid.org',
-  clientId: 'APP-TEANCMSUOPYZOGJ3',
-  redirectUri: 'http://localhost/rest/auth',
-  // redirectUri: 'http://localhost:19006/#/',
-  autoSignIn: false
-  // redirectUri="http://localhost:3000/oauth-callback"
-};
+// const oidcConfig = {
+//   onSignIn: async (user: any) => {
+//     alert('You just signed in, congratz! Check out the console!');
+//     console.log(user);
+//     window.location.hash = '';
+//   },
+//   authority: 'https://orcid.org',
+//   clientId: process.env.ORCID_CLIENT_ID,
+//   // redirectUri: 'http://localhost/rest/auth',
+//   redirectUri: 'http://localhost:19006/',
+//   autoSignIn: false
+//   // redirectUri="http://localhost:3000/oauth-callback"
+// };
 
 // Change theme color and typography here
 const theme = createTheme({
@@ -70,7 +72,7 @@ const theme = createTheme({
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <AuthProvider {...oidcConfig}>
+    {/* <AuthProvider {...oidcConfig}> */}
       <Router basename="/">
       {/* <HashRouter> */}
         <View style={{height: '100%', backgroundColor: '#eceff1'}}>
@@ -78,12 +80,14 @@ const App = () => (
 
           <Route exact path="/evaluation/:id" component={Evaluation} />
           <Route path="/about" component={About} />
+          <Route path="/collections" component={Collections} />
+          <Route path="/collection/create" component={CreateCollection} />
           <Route exact path="/" component={RunEvaluations} />
           <Footer />
         </View>
       {/* </HashRouter> */}
       </Router>
-    </AuthProvider>
+    {/* </AuthProvider> */}
   </ThemeProvider>
 );
 export default App;

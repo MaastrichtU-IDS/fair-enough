@@ -35,7 +35,8 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
     "react-native-web": "0.13.13",
     "react-router-dom": "^5.2.0",
-    "react-router-native": "^5.1.2"
+    "react-router-native": "^5.1.2",
+    "react-simple-oauth2-login": "^0.5.1"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",

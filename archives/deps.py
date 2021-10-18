@@ -28,7 +28,7 @@ reusable_oauth2 = OpenIdConnect(
 
 # reusable_oauth2 = OAuth2PasswordBearer(
 #     # tokenUrl=f"{settings.API_PATH}/login/access-token"
-#     tokenUrl=f"https://orcid.org/oauth/authorize?client_id=APP-TEANCMSUOPYZOGJ3&response_type=code&scope=/authenticate&redirect_uri=http://localhost/api/login/orcid"
+#     tokenUrl=f"https://orcid.org/oauth/authorize?client_id={settings.ORCID_CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=http://localhost/api/login/orcid"
 # )
 # oauth2_scheme = OAuth2AuthorizationCodeBearer(
 #     authorizationUrl=settings.AUTHORIZATION_URL,

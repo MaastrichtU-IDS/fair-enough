@@ -4,7 +4,8 @@ const settings = {
   apiUrl: process.env.API_URL || 'http://localhost',
   restUrl: ((process.env.API_URL) ? process.env.API_URL + '/rest' : null) || 'http://localhost/rest',
   docsUrl: ((process.env.API_URL) ? process.env.API_URL + '/docs' : null) || 'http://localhost/docs',
-  graphqlUrl: ((process.env.API_URL) ? process.env.API_URL + '/graphql' : null) || 'http://localhost/graphql'
+  graphqlUrl: ((process.env.API_URL) ? process.env.API_URL + '/graphql' : null) || 'http://localhost/graphql',
+  OauthRedirectUri: process.env.OAUTH_REDIRECT_FRONTEND || "http://localhost:19006/collection/create"
 }
 
 const getUrlHtml = (urlString: string) => {

@@ -61,19 +61,22 @@ services:
       - queue
     env_file:
       - .env
-    environment:
-      - SERVER_NAME=${DOMAIN?Variable not set}
-      - SERVER_HOST=https://${DOMAIN?Variable not set}
+    # environment:
+    #   - SERVER_NAME=${DOMAIN?Variable not set}
+    #   - SERVER_HOST=https://${DOMAIN?Variable not set}
       # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
       # Allow explicit env var override for tests
       # - SMTP_HOST=${SMTP_HOST?Variable not set}
     
 
   frontend:
-    build: .
-      # context: .
-      # args:
-      #   FRONTEND_ENV: dev
+    build:
+      context: .
+      args:
+        # FRONTEND_ENV: dev
+        ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
+        ORCID_CLIENT_SECRET: ${ORCID_CLIENT_SECRET}
+        OAUTH_REDIRECT_FRONTEND: ${OAUTH_REDIRECT_FRONTEND}
     # ports:
     #   - 5000:4000
     environment:

@@ -14187,6 +14187,11 @@ react-router@5.2.1:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
+react-simple-oauth2-login@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-simple-oauth2-login/-/react-simple-oauth2-login-0.5.1.tgz#e2ee3c54f5cd8c746ba3c049d110c741e5498c0a"
+  integrity sha512-wvYYQ5FslVAILGEqKL2lorc2XcTKvN7HKTf3oqPNgkUNfRBe2b0SZJxkUKclgbH6Y65dOaVbRs/JuSQr8J47MQ==
+
 react-timer-mixin@^0.13.4:
   version "0.13.4"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.4.tgz#75a00c3c94c13abe29b43d63b4c65a88fc8264d3"

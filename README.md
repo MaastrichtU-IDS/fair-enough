@@ -19,7 +19,7 @@ Frontend built with [React](https://reactjs.org) and [Material UI](https://mui.c
 This work has been motivated by the existing implementations of FAIR evaluations services:
 
 * Mark Wilkinson's [FAIR evaluator](https://fairsharing.github.io/FAIR-Evaluator-FrontEnd/#!/) is a service where people could create collections of tests, which allow communities to define their own set of FAIR assessments. But the evaluations takes too long, the codebase is in Ruby, and dependencies informations are missing which makes it hard to redeploy and test. 
-* F-UJI API was written in python and already implemented a lot of interesting assessments. But it is does not allow to composes assessments, it acts as a monolythic tests suite without the possibility to create collections, or add new assessments. Moreover it's structure is not straightforward when it comes to the assessments, most tests files don't hold any assessments, they just handle the scoring (which does not follow a clear framework), and the checks are actually implemented in a complex network of classes and functions, sometimes requiring to go through multiple functions to finally found the actual code doing the assessment.
+* F-UJI API was written in python and already implemented a lot of interesting assessments. But it is does not allow to composes assessments, it acts as a monolythic tests suite without the possibility to create collections, or add new assessments. Moreover it's structure is not straightforward when it comes to the assessments, most tests files don't hold any assessments, they just handle the scoring, and the checks sometimes require to go through multiple functions and classes to finally found the actual code doing the assessment.
 
 To solve those issues we took the best from Mark Wilkinson's FAIR evaluator: the possibility to define collection of assessments, and the best from F-UJI: assessments implemented in python. 
 
@@ -30,7 +30,7 @@ We chose Python to implement this service due to:
 * Its popularity and simplicity enable more people to contribute, and add their own FAIR assessments that matters to their community
 * Its ecosystem is mature and contains most libraries needed to implement the assessment of online resources (e.g. extruct to extract metadata embedded in HTML, RDFLib to parse RDF metadata). As a matter of fact even the FAIR evaluator written in ruby needed to call some python dependencies like extruct! 
 
-Even if python itself is a relatively slow language, we put a lot of importance in the efficiency and simplicity of the code. Evaluations are directly started by the API (FastAPI) on an asynchronous worker (Celery) using a message broker (RabbitMQ) which can scale easily in clusters. The python files for each test in a collection are executed one after the other, each assessment adds a result entry with the score and log for the evaluated resource to an object passed down to the next.
+Even if python itself is not the fatest language, we put a lot of importance in the efficiency and simplicity of the code. Evaluations are directly started by the API (FastAPI) on a asynchronous workers (Celery) using a message broker (RabbitMQ) which can scale easily in clusters. The python files for each test in a collection are executed one after the other, each assessment adds a result entry with the score and log for the evaluated resource to an object passed down to the next.
 
 ## 📝 Add an assessment
 
@@ -56,7 +56,9 @@ Feel free to add new assessments and send a pull request!  To create a new asses
     self.log('This print a regular event', '✔️') # 2nd arg (prefix added to the log) is optional
     self.success('This will also increase the score of the assessment by 1')
     self.bonus('This will also increase the bonus score of the assessment by 1')
+    self.error('This will print a warning while running the assessment')
     self.error('This will print a failure while running the assessment')
+    # We provide also some helpers, e.g. to parse RDF (cf. models/assessments.py)
     g = self.parseRDF(rdf_data, 'text/turtle', msg='content negotiation RDF')
     ```
 
@@ -148,19 +150,7 @@ poetry shell
 
 Next, open your editor at `./backend/` (instead of the project root: `./`), so that you see an `./app/` directory with your code inside. That way, your editor will be able to find all the imports, etc. Make sure your editor uses the environment you just created with Poetry.
 
-### Docker Compose Override
-
 During development, you can change Docker Compose settings that will only affect the local development environment, in the file `docker-compose.override.yml`
-
-```bash
-docker-compose up -d
-```
-
-To get inside the container with a `bash` session you can `exec` inside the running container:
-
-```console
-docker-compose exec backend bash
-```
 
 ### Backend tests
 
@@ -222,7 +212,14 @@ docker-compose exec backend bash /app/tests-start.sh --cov-report=html
 
 ## 🖥️ Frontend development
 
-* Enter the `frontend` directory, install the NPM packages and start the live server using the `npm` scripts:
+You will need to define the ORCID OAuth app ID and secret to enable login:
+
+```bash
+export ORCID_CLIENT_ID=APP-XXXX
+export ORCID_CLIENT_SECRET=XXXX
+```
+
+Enter the `frontend` directory, install the NPM packages and start the live server using the `npm` scripts:
 
 ```bash
 cd frontend
@@ -232,26 +229,12 @@ yarn dev
 
 Then open your browser at http://localhost:19006
 
-If you have Vue CLI installed, you can also run `vue ui` to control, configure, serve, and analyze your application using a nice local web user interface.
+## 🚀 Production deployment 
 
-## 🚀 Deployment 
-
-### Traefik network
-
-This stack expects the public Traefik network to be named `traefik-public`, just as in the tutorials in <a href="https://dockerswarm.rocks" class="external-link" target="_blank">DockerSwarm.rocks</a>.
-
-If you need to use a different Traefik public network name, update it in the `docker-compose.yml` files, in the section:
-
-```YAML
-networks:
-  traefik-public:
-    external: true
-```
-
-Change `traefik-public` to the name of the used Traefik network. And then update it in the file `.env`:
+You will need to ignore the `docker-compose.override.yml` to deploy the app with production config: 
 
 ```bash
-TRAEFIK_PUBLIC_NETWORK=traefik-public
+docker-compose -f docker-compose.yml up -d
 ```
 
 ## ➕ Docker Compose files and env vars
