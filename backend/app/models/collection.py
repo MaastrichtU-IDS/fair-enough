@@ -4,6 +4,7 @@ from bson import ObjectId
 import strawberry
 
 from app.config import settings
+# from app.models import AssessmentModel
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -30,7 +31,9 @@ class CollectionModel(BaseModel):
     homepage: Optional[str] = None
     # homepage: Optional[AnyUrl] = None
     assessments: List[str] = []
+    # assessments: List[AssessmentModel] = []
     author: str = Field(...)
+    created: str = ''
     uri: str = Field(..., alias="@id")
     context: str = Field(..., alias="@context")
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import List
+import datetime
 from pymongo.errors import DuplicateKeyError
 
 from app import models
@@ -9,11 +10,9 @@ from app.api import login, assessments
 from app.db import get_db
 from app.config import settings
 from app.models.collection import CollectionModel, CreateCollectionModel, UpdateCollectionModel
-
+import re
 
 router = APIRouter()
-# db = get_db()
-
 
 @router.post("/", response_description="Add a new collection", response_model=CollectionModel)
 async def create_collection(
@@ -21,6 +20,16 @@ async def create_collection(
         current_user: models.User = Depends(login.get_current_user)):
     collection = jsonable_encoder(collection)
     db = get_db()
+
+    if not re.match('^[0-9a-zA-Z-]{3,}$', collection['_id']):
+        raise HTTPException(status_code=403, detail=f"Collection {collection['_id']} should be at least 3 characters long, and not contains strange characters, only alphanumeric and dash, e.g. fair-metrics")
+
+    if len(collection['assessments']) < 1:
+        raise HTTPException(status_code=403, detail=f"Collection should contain at least 1 assessment")
+    if len(collection['title']) < 1:
+        raise HTTPException(status_code=403, detail=f"Provide a title for the collection")
+    if len(collection['description']) < 1:
+        raise HTTPException(status_code=403, detail=f"Provide a description for the collection")
 
     # Check if given assessments exist
     # all_assessments = await 
@@ -31,16 +40,23 @@ async def create_collection(
     if not all(item in all_assess_names for item in collection['assessments']):
         raise HTTPException(status_code=404, detail=f"Assessment {', '.join(collection['assessments'])} not found")
 
+    if 'id' not in current_user.keys():
+        raise HTTPException(status_code=403, detail=f"You need to login to create a new collection")
+    print(current_user)
     collec_obj = {
         '_id': collection['_id'],
         'title': collection['title'],
         'description': collection['description'],
         'homepage': collection['homepage'],
+        'homepage': None,
         'assessments': collection['assessments'],
         'author': current_user['id'],
+        'created': str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")),
         '@id': f'{settings.BASE_URI}/collection/{collection["_id"]}',
         '@context': settings.CONTEXT
     }
+    # if 'homepage' in collection.keys() and collection['homepage']:
+    #     collec_obj['homepage'] = collection['homepage']
     # posts_list.append(PostDB(**post, id=post['_id']))
 
     try:

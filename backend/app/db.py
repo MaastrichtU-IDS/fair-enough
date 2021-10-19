@@ -1,6 +1,7 @@
 from app.config import settings
 # import motor.motor_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+import datetime
 
 # https://github.com/michaldev/fastapi-async-mongodb
 # https://art049.github.io/odmantic/usage_fastapi/
@@ -54,7 +55,8 @@ def init_db() -> None:
                 "i2_fair_vocabularies",
                 "r1_accessible_license"
             ],
-            "author": "https://orcid.org/0000-00c02-1501-1082",
+            "author": "https://orcid.org/0000-0002-1501-1082",
+            'created': str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")),
             '@id': f'{settings.BASE_URI}/collection/{collec_id}',
             '@context': settings.CONTEXT
         }

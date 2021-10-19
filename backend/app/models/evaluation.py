@@ -36,7 +36,6 @@ class EvaluationResults(BaseModel):
     max_bonus: int = 1
     logs: List[str] = []
 
-
 class EvaluationData(BaseModel):
     alternative_uris: List[str] = []
     resource_title: Optional[str]
@@ -68,6 +67,7 @@ class EvaluationModel(BaseModel):
     # title: Optional[str] = Field(...)
     author: Optional[str] = None
     score: Optional[EvaluationScore] = EvaluationScore()
+    created: str = ''
     results: Optional[List[EvaluationResults]] = []
     data: dict = Field(default={})
     # data: Optional[EvaluationData] = EvaluationData()

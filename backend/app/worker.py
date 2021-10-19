@@ -4,6 +4,7 @@ from app.celery_app import celery_app
 from app.config import settings
 from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User
 from rdflib import Graph
+import datetime
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 # from app.db import get_db
 
@@ -64,6 +65,8 @@ def run_evaluation(evaluation: CreateEvaluationModel,
     else:
         eval.score.percent = 0
         eval.score.bonus_percent = 0
+
+    eval.created = str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S"))
 
     db = AsyncIOMotorClient(settings.MONGODB_URL).evaluations
     new_evaluation = db["evaluations"].insert_one(eval.dict(by_alias=True))

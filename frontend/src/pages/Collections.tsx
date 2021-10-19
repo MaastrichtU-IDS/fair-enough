@@ -1,12 +1,13 @@
 import React from 'react';
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
-// import EvaluationIcon from '@mui/icons-material/Send';
-// import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
-import EvaluationIcon from '@mui/icons-material/LibraryAdd';
+// import CreateCollectionIcon from '@mui/icons-material/Send';
+// import CreateCollectionIcon from '@mui/icons-material/PlaylistAddCheck';
+import CreateCollectionIcon from '@mui/icons-material/LibraryAdd';
+import CollectionIcon from '@mui/icons-material/CollectionsBookmark';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -18,7 +19,7 @@ import axiosRetry from 'axios-retry';
 import { settings } from '../settings'
 // import { useAuth } from 'oidc-react';
 
-export default function Evaluation() {
+export default function Collections() {
   const theme = useTheme();
   const history = useHistory();
   // const auth = useAuth();
@@ -101,7 +102,7 @@ export default function Evaluation() {
     //   doEvaluateUrl(urlToEvaluate)
     // }
 
-    // Get the list of evaluations from API
+    // Get the list of collections from API
     if (state.collectionsList.length < 1) {
       axios.get(settings.restUrl + '/collections', {
         headers: {'Content-Type': 'application/json'},
@@ -143,51 +144,14 @@ export default function Evaluation() {
     }
   }
 
-  const doEvaluateUrl  = (evaluateUrl: string) => {
-    updateState({
-      evaluationRunning: true,
-      evaluationResults: null
-    })
-    console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.docsUrl)
-    const postJson = JSON.stringify({
-      "resource_uri": evaluateUrl,
-      // "title": "FAIR metrics dataset evaluation",
-      "collection": "fair-metrics"
-    });
-    axios.post(settings.restUrl + '/evaluations', postJson, {
-      headers: {'Content-Type': 'application/json'}
-    })
-      .then(res => {
-        axiosRetry(axios, {
-          retries: 30, // number of retries
-          retryDelay: (retryCount) => {
-            console.log(`Waiting for evaluation to finish: ${retryCount}`);
-            return retryCount * 3000; // time interval between retries
-          },
-          retryCondition: (error: any) => {
-            // if retry condition is not specified, by default idempotent requests are retried
-            return error.response.status === 404;
-          },
-        });
-
-        const evalId = res.data['_id']
-        // Retry every 3 seconds until the evaluation is available
-        axios.get(settings.restUrl + '/evaluations/' + evalId)
-          .then((res: any) => {
-            // Redirect to the page of the created evaluation
-            history.push("/evaluation/" + evalId);
-          })
-      })
-  }
-
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Set the TextField input to the state variable corresponding to the field id  
     updateState({[event.target.id]: event.target.value})
   }
-  const handleSubmit  = (event: React.FormEvent) => {
-    event.preventDefault();
-    doEvaluateUrl(state.urlToEvaluate)
-  }
+  // const handleSubmit  = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   doEvaluateUrl(state.urlToEvaluate)
+  // }
 
   // const BorderLinearProgress = withStyles({
   //   root: {
@@ -204,22 +168,37 @@ export default function Evaluation() {
 
 
   const columns: GridColumns = [
-    { field: 'id', headerName: 'ID', hide: false },
-    // { 
-    //   field: 'id', headerName: 'Access evaluation', flex: 0.5,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     // <Button href={'/#/evaluation/' + params.value as string}
-    //     <Button href={'/evaluation/' + params.value as string}
-    //         variant="contained" 
-    //         className={classes.submitButton} 
-    //         startIcon={<EvaluationIcon />}
-    //         color="primary">
-    //       Evaluation
-    //     </Button>)
-    // },
+    // { field: 'id', headerName: 'ID', hide: false },
+    { 
+      field: 'id', headerName: 'Access collection', flex: 0.7,
+      renderCell: (params: GridRenderCellParams) => (
+        // <Button href={'/#/evaluation/' + params.value as string}
+        <Link to={'/collection/' + params.value as string}>
+          <Button variant="contained" 
+              className={classes.submitButton} 
+              // startIcon={<CollectionIcon />}
+              color="primary">
+            {params.value as string}
+          </Button>
+        </Link>)
+    },
     { field: 'title', headerName: 'Title', flex: 1 },
     {
       field: 'homepage', headerName: 'Homepage', flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {getUrlHtml(params.value as string)}
+        </>)
+    },
+    {
+      field: 'created', headerName: 'Date created', flex: 0.4,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}
+        </>)
+    },
+    {
+      field: 'author', headerName: 'Author', flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {getUrlHtml(params.value as string)}
@@ -249,14 +228,15 @@ export default function Evaluation() {
         Collections of assessments
       </Typography>
 
-      <Button href="/collection/create" 
-        variant="contained" 
-        // className={classes.submitButton} 
-        style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
-        startIcon={<EvaluationIcon />}
-        color="secondary" >
-          Create a new collection
-      </Button>
+      <Link to="/collection/create">
+        <Button variant="contained" 
+          // className={classes.submitButton} 
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
+          startIcon={<CreateCollectionIcon />}
+          color="secondary" >
+            Create a new collection
+        </Button>
+      </Link>
 
       {/* <Link to="/collections" className={classes.linkButton}>
           <Tooltip title='Browse existing Collections of assessments'>

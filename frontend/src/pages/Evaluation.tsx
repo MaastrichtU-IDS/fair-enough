@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
 // import { useParams } from 'react-router';
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
@@ -344,6 +344,16 @@ export default function Evaluation() {
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
             {state.evaluationResults['resource_uri']}
           </Typography>
+          {state.evaluationResults['author'] &&
+            <Typography variant="h5" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+              Author: {getUrlHtml(state.evaluationResults['author'])}
+            </Typography>
+          }
+          {state.evaluationResults['created'] &&
+            <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+              Evaluation created on the {state.evaluationResults['created']}
+            </Typography>
+          }
           {state.resourceMetadata &&
             // Display resources metadata if found
             <>
@@ -351,6 +361,11 @@ export default function Evaluation() {
                 Metadata found
               </Typography> */}
               <Paper className={classes.paperPadding} style={{textAlign: 'left'}}>
+                {state.evaluationResults.collection &&
+                  <Typography variant="h5" style={{marginBottom: theme.spacing(1), textAlign: 'center'}}>
+                    Evaluated with the <Link to={'/collection/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection
+                  </Typography>
+                }
                 {state.resourceMetadata.resource_title &&
                   <Typography variant="h5" style={{marginBottom: theme.spacing(1)}}>
                     title: {state.resourceMetadata.resource_title}
@@ -431,6 +446,7 @@ export default function Evaluation() {
               value={state.logLevel} 
               label={"Log level"} 
               id="logLevel" 
+              style={{backgroundColor: 'white'}}
               onChange={handleLogLevelChange} 
               variant="outlined"> 
             <MenuItem value={'all'}>All logs</MenuItem>

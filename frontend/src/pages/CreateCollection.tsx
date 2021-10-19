@@ -1,28 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocation, useHistory } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Card, CardContent, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 // import CreateCollectionIcon from '@mui/icons-material/Send';
 // import CreateCollectionIcon from '@mui/icons-material/PlaylistAddCheck';
 import CreateCollectionIcon from '@mui/icons-material/LibraryAdd';
+import ArrowIcon from '@mui/icons-material/ArrowForward';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
+// import axiosRetry from 'axios-retry';
 // import { Doughnut } from 'react-chartjs-2';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { settings } from '../settings'
 import { useAuth } from 'oidc-react';
+import UserContext from '../UserContext';
 
 // import OAuth2Login from 'react-simple-oauth2-login';
 
 export default function Evaluation() {
   const theme = useTheme();
   const history = useHistory();
+  const { user } = useContext(UserContext);
   // const auth = useAuth();
 
   const useStyles = makeStyles(() => ({
@@ -72,14 +77,16 @@ export default function Evaluation() {
     collectionTitle: '',
     collectionDescription: '',
     collectionHomepage: '',
-    urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
-    // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
-    evaluationResults: evaluationResults,
-    adviceLogs: [],
-    evaluationRunning: false,
-    evaluationsList: [],
-    metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
-    use_datacite: true,
+    collectionCreatedSnackbar: null,
+    errorMessage: null,
+    // urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
+    // // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
+    // evaluationResults: evaluationResults,
+    // adviceLogs: [],
+    // evaluationRunning: false,
+    // evaluationsList: [],
+    // metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
+    // use_datacite: true,
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -110,26 +117,26 @@ export default function Evaluation() {
     let configState: any = JSON.parse(localStorageConfig);
     console.log(localStorageConfig);
     console.log(settings.restUrl);
-    if (!state.currentUser && configState && configState['access_token']) {
-      console.log(configState);
-      // Qet current user from API to check if access token still valid
-      axios.get(settings.restUrl + '/current-user', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + configState['access_token']
-        },
-      })
-        .then((res: any) => {
-          console.log('got current user')
-          console.log(res.data)
-          if (res.data['id']) {
-            updateState({ currentUser: res.data, accessToken: configState['access_token'], loggedIn: true})
-          }
-          // if (res.data['error'] == 'access_denied') {
-        })
+    // if (!state.currentUser && configState && configState['access_token']) {
+    //   console.log(configState);
+    //   // Qet current user from API to check if access token still valid
+    //   axios.get(settings.restUrl + '/current-user', {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': 'Bearer ' + configState['access_token']
+    //     },
+    //   })
+    //     .then((res: any) => {
+    //       console.log('got current user')
+    //       console.log(res.data)
+    //       if (res.data['id']) {
+    //         updateState({ currentUser: res.data, accessToken: configState['access_token'], loggedIn: true})
+    //       }
+    //       // if (res.data['error'] == 'access_denied') {
+    //     })
 
-      updateState({ currentUser: {token: configState.access_token} })
-    }
+    //   updateState({ currentUser: {token: configState.access_token} })
+    // }
 
     // axios.post(settings.restUrl + '/login', {
     //   headers: {'Content-Type': 'application/json'},
@@ -149,7 +156,7 @@ export default function Evaluation() {
 
     //   })
 
-    // Get the list of evaluations from API
+    // Get the list of assessments from API
     if (state.assessmentsList.length < 1) {
       axios.get(settings.restUrl + '/assessments', {
         headers: {'Content-Type': 'application/json'},
@@ -168,7 +175,7 @@ export default function Evaluation() {
 
         })
     }
-  }, [state.currentUser, state.loggedIn, state.accessToken])
+  }, [])
 
   const getUrlHtml = (urlString: string) => {
     if(/^(?:node[0-9]+)|((https?|ftp):.*)$/.test(urlString)) {
@@ -179,10 +186,23 @@ export default function Evaluation() {
     }
   }
 
+  const getBadgeFair  = (fairType: string, metricId: number) => {
+    const emojiMap: any = {
+      'f': '🔍️',
+      'a': '📬️',
+      'i': '⚙️',
+      'r': '♻️'
+    }
+    return <Chip size='medium' label={emojiMap[fairType] + ' ' + fairType.toUpperCase() + metricId.toString()}/> // blue
+  }
+
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Set the TextField input to the state variable corresponding to the field id  
     updateState({[event.target.id]: event.target.value})
   }
+  function handleClose (event: any, reason: any) {
+    updateState({ collectionCreatedSnackbar: null, errorMessage: null});
+  };
   const handleSubmit  = (event: React.FormEvent) => {
     event.preventDefault();
     // doEvaluateUrl(state.urlToEvaluate)
@@ -197,28 +217,66 @@ export default function Evaluation() {
       'homepage': state.collectionHomepage,
       'assessments': assessmentsInCollec,
     }
+    // console.log(settings.restUrl);
+    console.log(user['access_token']);
     axios.post(settings.restUrl + '/collections', 
       postCollec, 
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + state.accessToken
+          'Authorization': 'Bearer ' + user['access_token']
         },
       }
     )
       .then((res: any) => {
         console.log('New collection ' + postCollec.id + ' successfully created.')
         console.log(res.data)
+        updateState({ collectionCreatedSnackbar: 'Collection ' + postCollec.id + ' successfully created' })
         // if (res.data['id']) {
         //   updateState({ currentUser: res.data, loggedIn: true })
         // }
         // if (res.data['error'] == 'access_denied') {
       })
+      .catch(function (error) {
+        if (error.response) {
+          // Request made and server responded
+          // {"detail":[{"loc":["body","homepage"],"msg":"invalid or missing URL scheme","type":"value_error.url.scheme"}]}
+          
+          if (error.response.data["detail"]) {
+            updateState({ errorMessage: 'Error: ' + JSON.stringify(error.response.data["detail"])})
+          // } else if (error.response.data["detail"][0]['loc']) {
+          //   const errorMsg = 'Error: ' + error.response.data["detail"][0]['loc'][1] + ' ' + error.response.data["detail"][0]['msg']
+          //   updateState({ errorMessage: errorMsg })
+          } else {
+            updateState({ errorMessage: JSON.stringify(error.response.data) })
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log('request err');
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+          updateState({ errorMessage: error.message })
+        }
+    
+      });
 
   }
   const addAssessment  = (assessment: any) => {
     // event.preventDefault();
+    // console.log(user)
     updateState({addedAssessment: state.addedAssessments.push(assessment)})
+  }
+  const removeAssessment  = (assessmentId: any) => {
+    // event.preventDefault();
+    // console.log(state.addedAssessments)
+    // console.log(state.addedAssessments.filter(( obj: any ) => {
+    //   return obj.id !== assessmentId;
+    // }))
+    updateState({addedAssessments: state.addedAssessments.filter(( obj: any ) => {
+      return obj.id !== assessmentId;
+    })})
   }
 
   // const BorderLinearProgress = withStyles({
@@ -240,14 +298,14 @@ export default function Evaluation() {
         Create a collection of assessments
       </Typography>
 
-      { state.loggedIn &&
+      { user['username'] &&
         <Typography style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-          Logged in as {state.currentUser.given_name} {state.currentUser.family_name}
+          ✅ Logged in as {user['username']}
         </Typography>
       }
-      { !state.loggedIn &&
+      { !user['username'] &&
           <Typography style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-            You need to login with your ORCID to create a new collection.
+            ⚠️ You need to login with your ORCID to create a new collection
           </Typography>
         }
 
@@ -316,12 +374,22 @@ export default function Evaluation() {
           <Grid container spacing={1}>
             { state.addedAssessments
               .map((item: any, key: number) => (
-                <Grid item xs={3}  key={key}>
-                  <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left'}}>
-                    <Typography>{item.title}</Typography>
-                  </Paper>
+                <Grid item xs={3} display="flex" key={key} style={{alignItems: 'center'}} >
+                  <ArrowIcon />
+                  <div onClick={() => removeAssessment(item.id)}>
+                    <Tooltip title='Click to remove this assessment from your collection'>
+                      <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left', cursor: 'pointer'}}>
+                        {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
+                        <Typography>
+                          {item.title}
+                        </Typography>
+                      </Paper>
+                    </Tooltip>
+                  </div>
                 </Grid>
-            ))}
+              ))
+              // .join(<ArrowIcon />)
+            }
             { state.addedAssessments.length < 1 &&
               <Grid item xs={12}>
                 <Typography style={{textAlign: 'center'}}>
@@ -345,15 +413,33 @@ export default function Evaluation() {
                 })
                 return filterItem
               })
+              .sort((a: any, b: any) => {
+                // f first, then per alphabetic order to get fair
+                if ( a.fair_type == 'f' && b.fair_type != 'f' ){
+                  return -1;
+                }
+                if ( a.fair_type != 'f' && b.fair_type == 'f' ){
+                  return 1;
+                }
+                if ( a.fair_type + a.metric_id < b.fair_type + b.metric_id ){
+                  return -1;
+                }
+                if ( a.fair_type + a.metric_id > b.fair_type + b.metric_id ){
+                  return 1;
+                }
+                return 0;
+              })
               .map((item: any, key: number) => (
                 <Grid item xs={6} key={key}>
                   {/* onClick={addAssessment(item)}  */}
                   <div onClick={() => addAssessment(item)}>
                     <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left', cursor: 'pointer'}}>
-                        <Typography>{item.title}</Typography>
-                        <Typography>{item.description}</Typography>
-                        <Typography>Max score: {item.max_score}</Typography>
-                        <Typography>Max bonus: {item.max_bonus}</Typography>
+                        <Typography variant='h6'>
+                          {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
+                          {item.title}
+                        </Typography>
+                        <Typography variant='body2'>{item.description}</Typography>
+                        <Typography variant='body2'>Max score: {item.max_score} | Max bonus: {item.max_bonus}</Typography>
                     </Paper>
                   </div>
                 </Grid>
@@ -366,12 +452,12 @@ export default function Evaluation() {
               <SettingsIcon />
             </Button>
           </Tooltip> */}
-          <Popper open={open} anchorEl={anchorEl}>
+          {/* <Popper open={open} anchorEl={anchorEl}>
             <ClickAwayListener onClickAway={handleClickAway}>
               <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'center'}}>
-                {/* <Typography variant="h6" style={{textAlign: 'center'}}>
+                <Typography variant="h6" style={{textAlign: 'center'}}>
                   Evaluator settings
-                </Typography> */}
+                </Typography> 
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <Tooltip title='By default, the FAIR Enough evaluator uses content negociation based on the DOI URL to retrieve DataCite JSON metadata. If you uncheck this option F-UJI will try to use the landing page URL instead.'>
@@ -411,22 +497,33 @@ export default function Evaluation() {
                 </Grid>
               </Paper>
             </ClickAwayListener>
-          </Popper>
+          </Popper> */}
         {/* </Box> */}
 
         <Button type="submit" 
           variant="contained" 
-          disabled={!state.loggedIn}
+          disabled={!user['username']}
           // className={classes.submitButton} 
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
           startIcon={<CreateCollectionIcon />}
           color="secondary" >
-            Create the collection
+            Publish the collection
         </Button>
 
-        { !state.loggedIn &&
+        <Snackbar anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} open={state.collectionCreatedSnackbar ? true : false} onClose={handleClose} autoHideDuration={6000}>
+          <MuiAlert elevation={6} severity="success">
+            {state.collectionCreatedSnackbar}
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar anchorOrigin={{vertical: 'bottom', horizontal: 'center' }} open={state.errorMessage ? true : false} onClose={handleClose} autoHideDuration={6000}>
+          <MuiAlert elevation={6} severity="error">
+            {state.errorMessage}
+          </MuiAlert>
+        </Snackbar>
+
+        { !user['username'] &&
           <Typography style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-            You need to login with your ORCID to create a new collection.
+            ⚠️ You need to login with your ORCID to create a new collection.
           </Typography>
         }
       </form>

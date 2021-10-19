@@ -1,6 +1,8 @@
 from app.models import AssessmentModel, EvaluationModel
 import os
 import requests
+import re
+import io
 
 class Assessment(AssessmentModel):
     fair_type = 'i'
@@ -21,19 +23,49 @@ Resolve IRIs, check FAIRness of the returned documents."""
         lod_cloudnet = 'https://lod-cloud.net/lod-data.json'
 
 
-        self.check('Checking RDF metadata vocabularies')
-        all_ns = [n for n in g.namespace_manager.namespaces()]
-        print(all_ns)
+        # self.check('Checking RDF metadata vocabularies')
+        # rdflib_ns = [n for n in g.namespace_manager.namespaces()]
+        rdflib_ns = [n for n in g.namespaces()]
+        print(rdflib_ns)
 
+        # Extract namespace manually since RDFLib can't do it
+        extracted_ns = []
+        for row in io.StringIO(g.serialize(format='turtle')):
+            if row.startswith('@prefix'):
+                pattern = re.compile("^.*<(.*?)>")
+                ns = pattern.search(row).group(1)
+                extracted_ns.append(ns)
+        print(extracted_ns)
+        
+        validated_ns = set()
+        tested_ns = set()
+        ignore_ns = []
         self.check('Check if used vocabularies in Linked Open Vocabularies: ' + lov_api)
         lov_list = requests.get(lov_api).json()
         for vocab in lov_list:
-            pass
-            # URI used for namespace/prefix:
-            # print(vocab['nsp'])
+            if vocab['nsp'] in ignore_ns:
+                continue
 
+            # Check for manually extracted ns
+            for ns in extracted_ns:
+                tested_ns.add(ns)
+                if vocab['nsp'].startswith(ns):
+                    validated_ns.add(ns)
 
-        self.check('Check if used vocabularies in the LOD cloud: ' + lod_cloudnet)
+            # Check for RDFLib extracted ns
+            for index, tuple in rdflib_ns:
+                tested_ns.add(tuple[1])
+                # if vocab['nsp'].startswith(tuple[1]):
+                if tuple[1].startswith(vocab['nsp']):
+                    validated_ns.add(tuple[1])
+
+        if len(validated_ns) > 0:
+            self.success('Found vocabularies used by the resource metadata in the LOV: ' + ', '.join(validated_ns))
+        else:
+            self.error('Could not find vocabularies used by the resource metadata in the LOV: ' + ', '.join(tested_ns))
+        
+        
+        # self.check('Check if used vocabularies in the LOD cloud: ' + lod_cloudnet)
         # https://github.com/vemonet/fuji/blob/master/fuji_server/helper/preprocessor.py#L368
 
             

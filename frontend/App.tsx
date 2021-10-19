@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useReducer } from "react";
 import { View } from "react-native";
 import { HashRouter } from "react-router-dom";
 import { BrowserRouter as Router, Route } from "react-router-dom";
@@ -11,10 +11,14 @@ import NavBar from "./src/components/NavBar";
 import Footer from "./src/components/Footer";
 import RunEvaluations from "./src/pages/RunEvaluations";
 import Evaluation from "./src/pages/Evaluation";
+import Collection from "./src/pages/Collection";
 import CreateCollection from "./src/pages/CreateCollection";
 import Collections from "./src/pages/Collections";
 import About from "./src/pages/About";
+import UserContext from "./src/UserContext";
 import { AuthProvider, useAuth } from 'oidc-react';
+
+// const UserContext = createContext(null);
 
 // https://github.com/kolitiri/fastapi-oidc-react
 // const oidcConfig = {
@@ -70,8 +74,19 @@ const theme = createTheme({
 //  res.sendFile(path.join(__dirname, '../../public', 'index.html'))
 // })
 
-const App = () => (
-  <ThemeProvider theme={theme}>
+// context for User
+function reducer(state: any, item: any) {
+  // return [...state, item]
+  // return {...state, item}
+  return item
+}
+
+const App = () => {
+
+  const [user, setUser]: any = useReducer(reducer, []);
+
+  return (<ThemeProvider theme={theme}>
+    <UserContext.Provider value={{ user, setUser }}>
     {/* <AuthProvider {...oidcConfig}> */}
       <Router basename="/">
       {/* <HashRouter> */}
@@ -79,6 +94,7 @@ const App = () => (
           <NavBar />
 
           <Route exact path="/evaluation/:id" component={Evaluation} />
+          <Route exact path="/collection/:id" component={Collection} />
           <Route path="/about" component={About} />
           <Route path="/collections" component={Collections} />
           <Route path="/collection/create" component={CreateCollection} />
@@ -87,7 +103,8 @@ const App = () => (
         </View>
       {/* </HashRouter> */}
       </Router>
+    </UserContext.Provider>
     {/* </AuthProvider> */}
   </ThemeProvider>
-);
+)};
 export default App;

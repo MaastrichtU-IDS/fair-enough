@@ -1,20 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import { AppBar, Toolbar, Button, Tooltip, IconButton, Box, ButtonBase } from '@mui/material';
+import { Popper, ClickAwayListener, Typography, Paper, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
 import ApiIcon from '@mui/icons-material/Http';
 import GraphqlIcon from '@mui/icons-material/Code';
 import LoginIcon from '@mui/icons-material/Login';
+import CollectionsIcon from '@mui/icons-material/CollectionsBookmark';
+import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+import axios from 'axios';
 
 // @ts-ignore
 import iconImage from '../../assets/icon.png';
 
-import { settings } from '../settings';
+import { getUrlHtml, settings } from '../settings';
 import { useAuth } from 'oidc-react';
 import OAuth2Login from 'react-simple-oauth2-login';
+import UserContext from '../UserContext'
 
 // const theme = useTheme();
 
@@ -59,14 +64,112 @@ export default function NavBar() {
   }))
   const classes = useStyles();
 
+  const { user, setUser }: any = useContext(UserContext)
+
+  const [state, setState] = React.useState({
+    currentUsername: null,
+    accessToken: null,
+    loggedIn: false
+  });
+  const stateRef = React.useRef(state);
+  // Avoid conflict when async calls
+  const updateState = React.useCallback((update) => {
+    stateRef.current = {...stateRef.current, ...update};
+    setState(stateRef.current);
+  }, [setState]);
+
+  // Settings for Popper
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl]: any = React.useState(null);
+  const showUserInfo = (event: any) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+    // setAnchorEl(anchorEl ? null : document.body);
+    setOpen((prev) => !prev);
+  };
+  const handleClickAway = () => {
+    setOpen(false);
+    setAnchorEl(anchorEl ? null : anchorEl);
+  };
+  const id = open ? 'simple-popper' : undefined;
+
 
   const onSuccess = (response: any) => {
-    console.log(response)
-    localStorage.setItem("fairEnoughSettings", JSON.stringify(response));
-    window.location.reload();
+    // console.log(response)
+    // const tokenRes: any = JSON.stringify(response)
+    // console.log('tokenRes')
+    // console.log(response['access_token'])
+    // console.log(response)
+
+    axios.get(settings.restUrl + '/current-user', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + response['access_token']
+      },
+    })
+      .then((res: any) => {
+        console.log('got current user')
+        let user = res.data
+        user['access_token'] = response['access_token']
+        console.log(user)
+        setUser(user)
+        localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
+        // window.location.reload();
+        // TODO: refactor to use Context without reload
+      })
+
+    // localStorage.setItem("fairEnoughSettings", JSON.stringify(response));
+    // window.location.reload();
   };
   const onFailure = (response: any) => console.error(response);
 
+  const logout = () => {
+    localStorage.clear();
+    setUser({})
+    // window.location.reload();
+  }
+
+  React.useEffect(() => {
+    const localStorageConfig: any = localStorage.getItem("fairEnoughSettings");
+    // console.log(localStorageConfig)
+    let configState: any = JSON.parse(localStorageConfig);
+    if (configState && configState['access_token']) {
+      axios.get(settings.restUrl + '/current-user', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + configState['access_token']
+        },
+      })
+        .then((res: any) => {
+          let user = res.data
+          if (!user.error) {
+            user['access_token'] = configState['access_token']
+            if (user['given_name'] || user['family_name']) {
+              user['username'] = configState['given_name'] + ' ' + configState['family_name']
+            } else if (user['name']) {
+              user['username'] = user['name']
+            }
+            setUser(user)
+          }
+          // https://stackoverflow.com/questions/25686484/what-is-intent-of-id-token-expiry-time-in-openid-connect
+          // If the token is expired, it should make another auth request, except this time with prompt=none in the URL parameter
+          // Getting an error with prompt if not login
+          
+          // localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
+          // window.location.reload();
+        })
+      // Also possible and lighter on the Auth API: just check the cookie
+      // const username = configState['given_name'] + ' ' + configState['family_name']
+      // updateState({ currentUsername: username, accessToken: configState['access_token'], loggedIn: true})
+      // console.log('access_token before setUser')
+      // console.log(configState)
+      // setUser({
+      //   username: username, 
+      //   access_token: configState['access_token'],
+      //   id: configState['id'],
+      // })
+    }
+    // const { setSalad } = useContext(SaladContext)
+  }, [user])
 
   // const localStorageConfig = localStorage.getItem("fairEnoughSettings");
   //     if (localStorageConfig) {
@@ -83,11 +186,17 @@ export default function NavBar() {
             <img src={iconImage} style={{height: '2em', width: '2em', marginRight: '10px'}} alt="Logo" />
           </Tooltip>
         </Link>
+        <Link to="/" className={classes.linkButton}>
+          <Tooltip title='Browse existing evaluations or submit a new one'>
+            <Button style={{color: '#fff'}}>
+              <EvaluationIcon />&nbsp;Evaluations
+            </Button>
+          </Tooltip>
+        </Link>
         <Link to="/collections" className={classes.linkButton}>
           <Tooltip title='Browse existing Collections of assessments'>
             <Button style={{color: '#fff'}}>
-              {/* <InfoIcon /> */}
-              Collections
+              <CollectionsIcon />&nbsp;Collections
             </Button>
           </Tooltip>
         </Link>
@@ -124,22 +233,44 @@ export default function NavBar() {
 
         {/* <Tooltip title='Login with ORCID'> */}
         {/* <Button variant='contained' color='primary' size='small' component="span"> */}
-        <OAuth2Login
-          className="MuiButton‑root MuiButton‑contained"
-          authorizationUrl="https://orcid.org/oauth/authorize"
-          responseType="token"
-          clientId={process.env.ORCID_CLIENT_ID}
-          clientSecret={process.env.ORCID_CLIENT_SECRET}
-          redirectUri={settings.OauthRedirectUri}
-          // redirectUri=""
-          style={{textTransform: 'none', textDecoration: 'none'}}
-          onSuccess={onSuccess}
-          onFailure={onFailure}>
-          <Button variant='contained' color='primary' size='small' component="span">
-            Login
-          </Button>
-
-        </OAuth2Login>    
+        {/* {} */}
+        { user.username && 
+            <Button variant='contained' onClick={showUserInfo} color='secondary' size='small'>
+              {user.username}
+            </Button>
+        }
+        { !user.username && 
+          <OAuth2Login
+            className="MuiButton‑root MuiButton‑contained"
+            authorizationUrl="https://orcid.org/oauth/authorize"
+            responseType="token"
+            clientId={process.env.ORCID_CLIENT_ID}
+            clientSecret={process.env.ORCID_CLIENT_SECRET}
+            redirectUri={settings.OauthRedirectUri}
+            // redirectUri=""
+            style={{textTransform: 'none', textDecoration: 'none'}}
+            onSuccess={onSuccess}
+            onFailure={onFailure}>
+              <Button variant='contained' color='primary' size='small' component="span">
+                Login
+              </Button>
+          </OAuth2Login>
+          }
+        <Popper open={open} anchorEl={anchorEl}>
+            <ClickAwayListener onClickAway={handleClickAway}>
+              <Paper elevation={4} style={{padding: theme.spacing(2, 2), textAlign: 'left'}}>
+                <Typography style={{marginBottom: theme.spacing(1)}}>
+                  Logged in with ORCID: {getUrlHtml(user.id)}
+                </Typography>
+                <Typography style={{marginBottom: theme.spacing(1)}}>
+                  Username: {user.username}
+                </Typography>
+                <Button onClick={logout} variant='contained' size='small'>
+                  Logout
+                </Button>
+              </Paper>
+            </ClickAwayListener>
+          </Popper>    
         {/* </Button> */}
         {/* </Tooltip> */}
 

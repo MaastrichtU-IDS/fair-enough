@@ -70,11 +70,6 @@ async def login(request: Request):
     auth_uri = request.url_for('auth')
     return await oauth.orcid.authorize_redirect(request, auth_uri)
 
-@router.get('/login/ui')
-async def login_ui(request: Request):
-    login_url = f'# https://orcid.org/oauth/authorize?response_type=token&client_id={settings.ORCID_CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%2Fdocs%2Foauth2-redirect&scope=%2Fauthenticate'
-    return RedirectResponse(url=login_url)
-
 @router.get('/auth')
 async def auth(request: Request):
     try:
@@ -84,7 +79,7 @@ async def auth(request: Request):
     user = token.get('userinfo')
     if user:
         request.session['user'] = dict(user)
-    return RedirectResponse(url='http://localhost:19006/collection/create',
+    return RedirectResponse(url=f'{settings.OAUTH_REDIRECT_FRONTEND}',
         headers={"Authorization": 'Bearer ' + str(token['access_token'])})
     # return JSONResponse({"access_token": token['access_token'], "token_type": 'bearer'}, 
     #     headers={"Authorization": 'Bearer ' + str(token['access_token'])})

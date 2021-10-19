@@ -1,5 +1,5 @@
-import React from 'react';
-import { useLocation, useHistory } from "react-router-dom";
+import React, { useContext } from 'react';
+import { useLocation, useHistory, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
@@ -7,6 +7,7 @@ import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText }
 // import EvaluationIcon from '@mui/icons-material/Send';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+import UserContext from '../UserContext';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -54,6 +55,8 @@ export default function Evaluation() {
   }))
   const classes = useStyles();
 
+  const { user }: any = useContext(UserContext);
+
   // useLocation hook to get URL params
   let location = useLocation();  
   let evaluationResults: any = null;
@@ -66,6 +69,8 @@ export default function Evaluation() {
     adviceLogs: [],
     evaluationRunning: false,
     evaluationsList: [],
+    collectionsList: [],
+    collectionSelected: 'fair-metrics',
     metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
     use_datacite: true,
   });
@@ -100,6 +105,19 @@ export default function Evaluation() {
     //   updateState({ urlToEvaluate: urlToEvaluate })
     //   doEvaluateUrl(urlToEvaluate)
     // }
+    if (state.collectionsList.length < 1) {
+      axios.get(settings.restUrl + '/collections', {
+        headers: {'Content-Type': 'application/json'},
+      })
+        .then((res: any) => {
+          let collectionsList: any = []
+          res.data.map((collec: any, key: number) => {
+            collec['id'] = collec['_id']
+            collectionsList.push(collec)
+          })
+          updateState({ collectionsList: collectionsList })
+        })
+    }
 
     // Get the list of evaluations from API
     if (state.evaluationsList.length < 1) {
@@ -149,14 +167,20 @@ export default function Evaluation() {
       evaluationResults: null
     })
     console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.docsUrl)
-    const postJson = JSON.stringify({
+    const postJson: any = {
       "resource_uri": evaluateUrl,
       // "title": "FAIR metrics dataset evaluation",
-      "collection": "fair-metrics"
-    });
-    axios.post(settings.restUrl + '/evaluations', postJson, {
-      headers: {'Content-Type': 'application/json'}
-    })
+      "collection": state.collectionSelected
+    };
+    console.log(user)
+    // Getting User access_token from context set by NavBar
+    let headers: any = {'Content-Type': 'application/json'}
+    if (user && user['access_token']) {
+      headers['Authorization'] = 'Bearer ' + user['access_token']
+    }
+    axios.post(settings.restUrl + '/evaluations', JSON.stringify(postJson), 
+      { headers: headers }
+    )
       .then(res => {
         axiosRetry(axios, {
           retries: 30, // number of retries
@@ -182,6 +206,8 @@ export default function Evaluation() {
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Set the TextField input to the state variable corresponding to the field id  
+    console.log('user from context')
+    console.log(user)
     updateState({[event.target.id]: event.target.value})
   }
   const handleSubmit  = (event: React.FormEvent) => {
@@ -202,20 +228,24 @@ export default function Evaluation() {
   //   }
   // })(LinearProgress);
 
+  const handleCollectionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateState({'collectionSelected': event.target.value})
+    // hljs.highlightAll();
+  }
 
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
     { 
       field: 'id', headerName: 'Access evaluation', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
-        // <Button href={'/#/evaluation/' + params.value as string}
-        <Button href={'/evaluation/' + params.value as string}
-            variant="contained" 
-            className={classes.submitButton} 
-            startIcon={<EvaluationIcon />}
-            color="primary">
-          Evaluation
-        </Button>)
+        <Link to={'/evaluation/' + params.value as string}>
+          <Button variant="contained" 
+              className={classes.submitButton} 
+              startIcon={<EvaluationIcon />}
+              color="primary">
+            Evaluation
+          </Button>
+        </Link>)
     },
     // { field: 'title', headerName: 'Title', flex: 1 },
     {
@@ -226,17 +256,38 @@ export default function Evaluation() {
         </>)
     },
     {
-      field: 'score_percent', headerName: 'FAIR compliant', flex: 0.5,
+      field: 'collection', headerName: 'Collection', flex: 0.4,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}
+        </>)
+    },
+    {
+      field: 'score_percent', headerName: 'FAIR score', flex: 0.3,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
         </>)
     },
     {
-      field: 'bonus_percent', headerName: 'FAIR Role Model', flex: 0.5,
+      field: 'bonus_percent', headerName: 'Bonus score', flex: 0.3,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
+        </>)
+    },
+    {
+      field: 'created', headerName: 'Date created', flex: 0.3,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}
+        </>)
+    },
+    {
+      field: 'author', headerName: 'Author', flex: 0.6,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {getUrlHtml(params.value as string)}
         </>)
     }
   ]
@@ -271,6 +322,21 @@ export default function Evaluation() {
               className: classes.formInput
             }}
           />
+          {/* Log level dropdown select */}
+          <TextField select
+              value={state.collectionSelected} 
+              label={"Using the collection"} 
+              id="collectionSelected" 
+              onChange={handleCollectionChange} 
+              style={{margin: theme.spacing(0, 2), backgroundColor: 'white'}}
+              variant="outlined"> 
+            { state.collectionsList.map((collec: any, key: number) => (
+              <MenuItem value={collec.id}>{collec.title} ({collec.id})</MenuItem>
+            ))}
+            {/* // <MenuItem value={'all'}>All logs</MenuItem>
+            // <MenuItem value={'warning'}>Warnings and errors</MenuItem>
+            // <MenuItem value={'error'}>Errors only</MenuItem>   */}
+          </TextField>
 
           {/* <Tooltip  title='Evaluator settings'>
             <Button style={{margin: theme.spacing(1)}} onClick={handleClick}>
