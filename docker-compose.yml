@@ -69,21 +69,21 @@ services:
       # - SMTP_HOST=${SMTP_HOST?Variable not set}
     
 
-  # frontend:
-  #   build:
-  #     context: .
-  #     args:
-  #       # FRONTEND_ENV: dev
-  #       ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
-  #       ORCID_CLIENT_SECRET: ${ORCID_CLIENT_SECRET}
-  #       OAUTH_REDIRECT_FRONTEND: ${OAUTH_REDIRECT_FRONTEND}
-  #   # ports:
-  #   #   - 5000:4000
-  #   environment:
-  #     API_URL: https://api.fair-enough.semanticscience.org
-  #     VIRTUAL_HOST: fair-enough.semanticscience.org
-  #     LETSENCRYPT_HOST: fair-enough.semanticscience.org
-  #     VIRTUAL_PORT: 4000
+  frontend:
+    build:
+      context: .
+      args:
+        # FRONTEND_ENV: dev
+        ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
+        ORCID_CLIENT_SECRET: ${ORCID_CLIENT_SECRET}
+        OAUTH_REDIRECT_FRONTEND: ${OAUTH_REDIRECT_FRONTEND}
+    # ports:
+    #   - 5000:4000
+    environment:
+      API_URL: https://api.fair-enough.semanticscience.org
+      VIRTUAL_HOST: fair-enough.semanticscience.org
+      LETSENCRYPT_HOST: fair-enough.semanticscience.org
+      VIRTUAL_PORT: 4000
 
     # labels:
     #   - traefik.enable=true
