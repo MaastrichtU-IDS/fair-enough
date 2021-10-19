@@ -11,6 +11,9 @@ RUN yarn install --frozen-lockfile
 ## Build React website
 FROM node:alpine AS build-react
 COPY frontend /app
+ARG ORCID_CLIENT_ID
+ARG ORCID_CLIENT_SECRET
+ARG OAUTH_REDIRECT_FRONTEND
 WORKDIR /app
 RUN yarn install --frozen-lockfile
 RUN yarn build-prod
