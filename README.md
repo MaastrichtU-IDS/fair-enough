@@ -56,7 +56,7 @@ Feel free to add new assessments and send a pull request!  To create a new asses
     self.log('This print a regular event', '✔️') # 2nd arg (prefix added to the log) is optional
     self.success('This will also increase the score of the assessment by 1')
     self.bonus('This will also increase the bonus score of the assessment by 1')
-    self.error('This will print a warning while running the assessment')
+    self.warning('This will print a warning while running the assessment')
     self.error('This will print a failure while running the assessment')
     # We provide also some helpers, e.g. to parse RDF (cf. models/assessments.py)
     g = self.parseRDF(rdf_data, 'text/turtle', msg='content negotiation RDF')
