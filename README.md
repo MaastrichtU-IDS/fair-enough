@@ -120,7 +120,7 @@ sudo rm -rf **/__pycache__
 docker-compose build --no-cache
 ```
 
-### General workflow
+### Add new packages
 
 By default, the dependencies are managed with [Poetry](https://python-poetry.org/), go there and install it.
 
@@ -212,14 +212,14 @@ docker-compose exec backend bash /app/tests-start.sh --cov-report=html
 
 ## 🖥️ Frontend development
 
-You will need to define the ORCID OAuth app ID and secret to enable login:
+You will need to define the ORCID OAuth app ID and secret to enable login, you can add it to your `.bashrc` or `.zshrc` to make it automatic everytime you boot:
 
 ```bash
 export ORCID_CLIENT_ID=APP-XXXX
 export ORCID_CLIENT_SECRET=XXXX
 ```
 
-Enter the `frontend` directory, install the NPM packages and start the live server using the `npm` scripts:
+After starting the backend with `docker-compose`, enter the `frontend` directory, install the NPM packages and start the live server using the `npm` scripts:
 
 ```bash
 cd frontend
@@ -234,7 +234,7 @@ Then open your browser at http://localhost:19006
 You will need to ignore the `docker-compose.override.yml` to deploy the app with production config: 
 
 ```bash
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
 ## ➕ Docker Compose files and env vars

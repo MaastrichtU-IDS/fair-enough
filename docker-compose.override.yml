@@ -1,6 +1,10 @@
 version: "3.3"
 services:
 
+  mongodb:
+    volumes:
+      - mongodb-data:/data/db
+
   backend:
     ports:
       - "80:80"
@@ -8,8 +12,8 @@ services:
     volumes:
       - ./backend:/app
     environment:
+      - FRONTEND_URL=http://localhost:19006
       # - JUPYTER=jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888
-      - FRONTEND_URL=http://localhost:19006/#
       # - SERVER_HOST=http://${DOMAIN?Variable not set}
     build:
       context: ./backend
@@ -18,13 +22,7 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-true}
         INSTALL_JUPYTER: ${INSTALL_JUPYTER-false}
         
-    # command: bash -c "while true; do sleep 1; done"  # Infinite loop to keep container live doing nothing
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-    #   - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/rest`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
-    #   - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
-
+        
   # frontend:
   #   build:
   #     context: ./frontend
@@ -83,7 +81,6 @@ services:
   #   ports:
   #     - "5050:5050"
 
-# networks:
-#   traefik-public:
-#     # For local dev, don't expect an external Traefik network
-#     external: false
+
+volumes:
+  mongodb-data:

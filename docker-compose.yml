@@ -3,13 +3,11 @@ services:
 
   mongodb:
     image: mongo
-    restart: unless-stopped
-    volumes:
-      - mongodb-data:/data/db
+    # volumes:
+    #   - mongodb-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${SECRET_KEY-oursecretkey}
-      # MONGO_INITDB_ROOT_PASSWORD: oursecretkey
       MONGO_INITDB_DATABASE: evaluations
 
   backend:
@@ -19,21 +17,12 @@ services:
       dockerfile: backend.dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
-    restart: unless-stopped
-    volumes:
-      - ./backend:/app
-    # ports:
-    #   - 80:80
     depends_on:
       - mongodb
     env_file:
       - .env
     environment:
-      - FRONTEND_URL=https://fair-enough.semanticscience.org
       - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
-      - VIRTUAL_HOST=api.fair-enough.semanticscience.org
-      - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
-      - VIRTUAL_PORT=80
 
     # labels:
     #   - traefik.enable=true
@@ -43,7 +32,6 @@ services:
 
   queue:
     image: rabbitmq:3
-    restart: unless-stopped
     # networks:
     #   - default
     # Using the below image instead is required to enable the "Broker" tab in the flower UI:
@@ -55,7 +43,6 @@ services:
       dockerfile: celeryworker.dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
-    restart: unless-stopped
     depends_on:
       - mongodb
       - queue
@@ -69,69 +56,6 @@ services:
       # - SMTP_HOST=${SMTP_HOST?Variable not set}
     
 
-  # frontend:
-  #   build:
-  #     context: .
-  #     args:
-  #       # FRONTEND_ENV: dev
-  #       ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
-  #       ORCID_CLIENT_SECRET: ${ORCID_CLIENT_SECRET}
-  #       OAUTH_REDIRECT_FRONTEND: ${OAUTH_REDIRECT_FRONTEND}
-  #   # ports:
-  #   #   - 5000:4000
-  #   environment:
-  #     API_URL: https://api.fair-enough.semanticscience.org
-  #     VIRTUAL_HOST: fair-enough.semanticscience.org
-  #     LETSENCRYPT_HOST: fair-enough.semanticscience.org
-  #     VIRTUAL_PORT: 4000
 
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-    #   - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
-    #   - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
-
-
-  # proxy:
-  #   image: traefik:v2.2
-  #   networks:
-  #     - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
-  #     - default
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   command:
-  #     # Enable Docker in Traefik, so that it reads labels from Docker services
-  #     - --providers.docker
-  #     # Add a constraint to only use services with the label for this stack from the env var TRAEFIK_TAG
-  #     - --providers.docker.constraints=Label(`traefik.constraint-label-stack`, `${TRAEFIK_TAG?Variable not set}`)
-  #     # Do not expose all Docker services, only the ones explicitly exposed
-  #     - --providers.docker.exposedbydefault=false
-  #     # Enable Docker Swarm mode
-  #     - --providers.docker.swarmmode
-  #     # Enable the access log, with HTTP requests
-  #     - --accesslog
-  #     # Enable the Traefik log, for configurations and errors
-  #     - --log
-  #     # Enable the Dashboard and API
-  #     - --api
-  #   # environment:
-  #   #   - VIRTUAL_HOST=fair-enough.semanticscience.org
-  #   #   - LETSENCRYPT_HOST=fair-enough.semanticscience.org
-  #   #   - VIRTUAL_PORT=80
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.http.routers.${STACK_NAME?Variable not set}-traefik-public-http.rule=Host(`${DOMAIN?Variable not set}`)
-  #     - traefik.http.services.${STACK_NAME?Variable not set}-traefik-public.loadbalancer.server.port=80
-
-
-volumes:
-  mongodb-data:
-
-# networks:
-#   traefik-public:
-#     # For local dev, don't expect an external Traefik network
-#     external: false
-# networks:
-#   traefik-public:
-#     # Allow setting it to false for testing
-#     external: ${TRAEFIK_PUBLIC_NETWORK_IS_EXTERNAL-true}
+# volumes:
+#   mongodb-data:
