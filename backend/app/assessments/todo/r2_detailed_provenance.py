@@ -5,6 +5,7 @@ import requests
 class Assessment(AssessmentModel):
     fair_type = 'r'
     metric_id = '2'
+    role = 'check'
     title = 'Detailed Provenance'
     description = """That there is provenance information associated with the data, covering at least two primary types of provenance information:
 - Who/what/When produced the data (i.e. for citation)

@@ -8,4 +8,4 @@ class User(BaseModel):
     name: Optional[str] = None
     family_name: Optional[str] = None
     given_name: Optional[str] = None
-    assessments: List[str] = []
+    # assessments: List[str] = []

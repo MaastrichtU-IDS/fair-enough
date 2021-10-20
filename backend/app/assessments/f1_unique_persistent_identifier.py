@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '1'
+    role = 'check'
     title = 'Resource identifier is unique and persistent'
     description = 'Check if the identifier of the resource is unique (HTTP) and persistent (some HTTP domains)'
     author = 'https://orcid.org/0000-0002-1501-1082'

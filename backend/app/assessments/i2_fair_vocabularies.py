@@ -7,7 +7,8 @@ import io
 class Assessment(AssessmentModel):
     fair_type = 'i'
     metric_id = '2'
-    title = 'Use FAIR Vocabularies'
+    role = 'check'
+    title = 'Metadata uses FAIR Vocabularies'
     description = """The metadata values and qualified relations should 
 themselves be FAIR, for example, terms from open, community-accepted 
 vocabularies published in an appropriate knowledge-exchange format. 

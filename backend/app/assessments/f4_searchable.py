@@ -5,7 +5,8 @@ from googlesearch import search
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '4'
-    title = 'The resource Indexed in a searchable resource'
+    role = 'check'
+    title = 'The resource is indexed in a searchable resource'
     description = """Search for existing metadata about the resource URI in data repositories, such as DataCite, RE3data. 
 Search for the URI using the resource title in search engines (Google)"""
     author = 'https://orcid.org/0000-0002-1501-1082'

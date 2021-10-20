@@ -27,7 +27,7 @@ import UserContext from '../UserContext';
 export default function Evaluation() {
   const theme = useTheme();
   const history = useHistory();
-  const { user } = useContext(UserContext);
+  const { user }: any = useContext(UserContext);
   // const auth = useAuth();
 
   const useStyles = makeStyles(() => ({
@@ -194,6 +194,13 @@ export default function Evaluation() {
       'r': '♻️'
     }
     return <Chip size='medium' label={emojiMap[fairType] + ' ' + fairType.toUpperCase() + metricId.toString()}/> // blue
+  }
+  const getBadgeRole  = (role: string) => {
+    const colorMap: any = {
+      'harvest': 'secondary',
+      'test': 'default',
+    }
+    return <Chip size='medium' color={colorMap[role]} label={role}/>
   }
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -379,10 +386,16 @@ export default function Evaluation() {
                   <div onClick={() => removeAssessment(item.id)}>
                     <Tooltip title='Click to remove this assessment from your collection'>
                       <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left', cursor: 'pointer'}}>
-                        {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
+                        {/* <Box display='flex' style={{alignItems: 'center'}}> */}
                         <Typography>
                           {item.title}
                         </Typography>
+                        {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
+                        {getBadgeRole(item.role)}&nbsp;
+                        {/* </Box> */}
+                        {/* <Typography variant='body2'>
+                          <a href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
+                        </Typography> */}
                       </Paper>
                     </Tooltip>
                   </div>
@@ -402,6 +415,11 @@ export default function Evaluation() {
           <Typography variant="h5" style={{textAlign: 'center', margin: theme.spacing(3, 0)}}>
             Add assessments to your collection:
           </Typography>
+          <Typography variant="body1" style={{textAlign: 'center', margin: theme.spacing(3, 0)}}>
+            ⚠️ The order of the assessments in your collection matters, since they will be run one after the other in this order.
+            Some assessments harvest metadata, when others assessments will run some checks (sometime on the previously harvested metadata). 
+            It is recommended to put harvester assessments at the start of your collection.
+          </Typography>
           <Grid container spacing={1}>
             { state.assessmentsList
               .filter((item: any) => {
@@ -414,7 +432,13 @@ export default function Evaluation() {
                 return filterItem
               })
               .sort((a: any, b: any) => {
-                // f first, then per alphabetic order to get fair
+                // harvest first, then F, then per alphabetic order to get FAIR order
+                if ( a.role == 'harvest' && b.role != 'harvest' ){
+                  return -1;
+                }
+                if ( a.role != 'harvest' && b.role == 'harvest' ){
+                  return 1;
+                }
                 if ( a.fair_type == 'f' && b.fair_type != 'f' ){
                   return -1;
                 }
@@ -430,13 +454,19 @@ export default function Evaluation() {
                 return 0;
               })
               .map((item: any, key: number) => (
-                <Grid item xs={6} key={key}>
+                <Grid item xs={6} key={key} style={{alignItems: 'center'}}>
                   {/* onClick={addAssessment(item)}  */}
                   <div onClick={() => addAssessment(item)}>
                     <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left', cursor: 'pointer'}}>
-                        <Typography variant='h6'>
+                        <Box display='flex' style={{alignItems: 'center'}}>
                           {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
-                          {item.title}
+                          {getBadgeRole(item.role)}&nbsp;
+                          <Typography variant='h6'>
+                            {item.title}
+                          </Typography>
+                        </Box>
+                        <Typography variant='body2'>
+                          <a href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
                         </Typography>
                         <Typography variant='body2'>{item.description}</Typography>
                         <Typography variant='body2'>Max score: {item.max_score} | Max bonus: {item.max_bonus}</Typography>

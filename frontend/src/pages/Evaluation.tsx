@@ -14,6 +14,7 @@ import FailIcon from '@mui/icons-material/Error';
 // import EvaluationIcon from '@mui/icons-material/Send';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+import HelpIcon from '@mui/icons-material/Help';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -302,13 +303,8 @@ export default function Evaluation() {
                               Assessment URL: {getUrlHtml(item.file_url)}
                             </Typography>
                             <Typography variant="body1">
-                              FAIR score: {item.score}/{item.max_score}
+                              FAIR score: {item.score}/{item.max_score} | Bonus score: {item.bonus_score}/{item.max_bonus}
                             </Typography>
-                            { item.bonus_score > 0 || item.max_bonus > 0 &&
-                              <Typography variant="body1">
-                                Bonus score: {item.bonus_score}/{item.max_bonus}
-                              </Typography>
-                            }
                           </>
                         </Grid>
 
@@ -442,17 +438,28 @@ export default function Evaluation() {
           </Grid>
 
           {/* Log level dropdown select */}
-          <TextField select
-              value={state.logLevel} 
-              label={"Log level"} 
-              id="logLevel" 
-              style={{backgroundColor: 'white'}}
-              onChange={handleLogLevelChange} 
-              variant="outlined"> 
-            <MenuItem value={'all'}>All logs</MenuItem>
-            <MenuItem value={'warning'}>Warnings and errors</MenuItem>
-            <MenuItem value={'error'}>Errors only</MenuItem>  
-          </TextField>
+          <Box style={{alignItems: 'center'}}>
+            <TextField select
+                value={state.logLevel} 
+                label={"Log level"} 
+                id="logLevel" 
+                style={{backgroundColor: 'white', marginRight: theme.spacing(2)}}
+                onChange={handleLogLevelChange} 
+                variant="outlined"> 
+              <MenuItem value={'all'}>All logs</MenuItem>
+              <MenuItem value={'warning'}>Warnings and errors</MenuItem>
+              <MenuItem value={'error'}>Errors only</MenuItem>  
+            </TextField>
+            <Tooltip
+              title={<Typography>✅ Indicates a successful test, +1 to the FAIR score<br/>
+                  🚀 Indicates a successful non-mandatory test, +1 to the bonus score<br/>
+                  ❌ Indicates a failed test<br/>
+                  ⚠️ Indicates a warning from a test<br/>
+                  🔎 Gives informations on the test performed<br/>
+                </Typography>}>
+              <HelpIcon />
+            </Tooltip>
+          </Box>
 
           {/* Display results per category */}
           {getResultsForCategory('Findable')}

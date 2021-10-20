@@ -8,6 +8,7 @@ from app.utils import mime_types
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '2'
+    role = 'harvest'
     title = 'Metadata is machine-readable'
     description = """This assessment will try to extract as much metadata it can from the resource URI, and put it in eval.data
 It can be useful to put it at the start of your collection, and then search for properties in the metadata extracted.

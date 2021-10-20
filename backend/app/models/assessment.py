@@ -24,6 +24,7 @@ class AssessmentModel(BaseModel):
     file_url: Optional[str]
     fair_type: str
     metric_id: str
+    role: str = 'check'
     author: str = 'https://orcid.org/0000-0002-1501-1082'
     score: int = 0
     max_score: int = 1
@@ -64,7 +65,7 @@ class AssessmentModel(BaseModel):
             if '@context' in rdf_data.keys() and (rdf_data['@context'].startswith('http://schema.org') or rdf_data['@context'].startswith('https://schema.org')):
                 # Regular content negotiation dont work with schema.org: https://github.com/schemaorg/schemaorg/issues/2578
                 rdf_data['@context'] = 'https://schema.org/docs/jsonldcontext.json'
-            self.log('Convert dict ton JSON string before RDF parsing')
+            # self.log('Convert dict ton JSON string before RDF parsing')
             # RDFLib JSON-LD has issue with encoding: https://github.com/RDFLib/rdflib/issues/1416
             rdf_data = jsonld.expand(rdf_data)
             rdf_data = json.dumps(rdf_data)

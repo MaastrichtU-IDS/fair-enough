@@ -252,7 +252,7 @@ export default function NavBar() {
             onSuccess={onSuccess}
             onFailure={onFailure}>
               <Button variant='contained' color='primary' size='small' component="span">
-                Login
+                Login with ORCID
               </Button>
           </OAuth2Login>
           }

@@ -27,7 +27,12 @@ pre, code {
   background-color: #757575; */
   /* background-color: #78909c; */
 }
-  
+
+/* a:hover {
+  color: #ff7043;
+  text-decoration: none
+} */
+
 /* @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 body {
   margin: 0;

@@ -10,6 +10,7 @@ import rdflib
 class Assessment(AssessmentModel):
     fair_type = 'i'
     metric_id = '1'
+    role = 'check'
     title = 'Metadata uses a formal knowledge representation language'
     description = "Parse resource metadata found as RDF using rdflib"
     author = 'https://orcid.org/0000-0002-1501-1082'

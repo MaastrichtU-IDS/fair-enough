@@ -41,7 +41,8 @@ const theme = createTheme({
     primary: { light: '#63a4ff', main: blue[700], dark: '#004ba0' }, // blue
     secondary: { light: '#4caf50', main: '#087f23', dark: '#00600f' }, // green
     // primary: { light: blue[50], main: blue[600], dark: blue[900] },
-    // secondary: { light: '#ff7043', main: '#ff5722', dark: '#087f23' },
+    // secondary: { light: '#ffcc80', main: '#ffa726', dark: '#c88719' }, // Orange
+    // secondary: { light: '#ff7043', main: '#ff5722', dark: '#087f23' }, // Orange
     // red: { light: '#f05545', main: '#b71c1c', dark: '#7f0000' },
     // default: { light: '#fafafa', main: '#eceff1', dark: grey[600] }
     // success: { light: '#ffe0b2', main: '#a5d6a7', dark: '#00600f' }, // green
@@ -73,6 +74,7 @@ const theme = createTheme({
 // app.get('/mysub-application1/*', (req,res) => { //this is required to support any client side routing written in react.
 //  res.sendFile(path.join(__dirname, '../../public', 'index.html'))
 // })
+
 
 // context for User
 function reducer(state: any, item: any) {

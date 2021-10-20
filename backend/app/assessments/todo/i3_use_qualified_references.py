@@ -4,6 +4,7 @@ import os
 class Assessment(AssessmentModel):
     fair_type = 'i'
     metric_id = '3'
+    role = 'check'
     title = 'Use Qualified References'
     description = """Relationships within (meta)data, and between local 
 and third-party data, have explicit and 'useful' semantic meaning. 

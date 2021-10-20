@@ -6,7 +6,8 @@ from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS
 class Assessment(AssessmentModel):
     fair_type = 'a'
     metric_id = '1'
-    title = 'Access Protocol'
+    role = 'check'
+    title = 'Check Access Protocol'
     description = """The access protocol and authorization (if content restricted).
 For the protocol , do an HTTP get on the URL to see if it returns a valid document.
 Find information about authorization in metadata"""

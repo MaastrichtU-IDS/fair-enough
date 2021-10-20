@@ -5,6 +5,7 @@ import requests
 class Assessment(AssessmentModel):
     fair_type = 'a'
     metric_id = '2'
+    role = 'check'
     title = 'Metadata Longevity'
     description = """The existence of metadata even in the absence/removal of data
 Cross-references to data from third-party's FAIR data and metadata will 

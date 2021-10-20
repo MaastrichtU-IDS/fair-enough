@@ -35,6 +35,7 @@ class CollectionModel:
     homepage: Optional[str]
     assessments: List[str]
     author: str
+    created: str
     # uri: str = Field(alias="@id")
     # context: str = Field(alias="@context")
 
@@ -73,6 +74,7 @@ class EvaluationModel:
     score: Optional[EvaluationScore]
     results: Optional[List[EvaluationResults]]
     data: str
+    created: str
     # data: Optional[EvaluationData] = EvaluationData()
     # uri: str = Field(..., alias="@id")
     # context: str = Field(..., alias="@context")

@@ -48,7 +48,6 @@ async def create_collection(
         'title': collection['title'],
         'description': collection['description'],
         'homepage': collection['homepage'],
-        'homepage': None,
         'assessments': collection['assessments'],
         'author': current_user['id'],
         'created': str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")),

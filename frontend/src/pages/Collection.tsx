@@ -159,6 +159,16 @@ export default function Collection() {
     document.body.removeChild(element);
   }
 
+  const getBadgeFair  = (fairType: string, metricId: number) => {
+    const emojiMap: any = {
+      'f': '🔍️',
+      'a': '📬️',
+      'i': '⚙️',
+      'r': '♻️'
+    }
+    return <Chip size='medium' label={emojiMap[fairType] + ' ' + fairType.toUpperCase() + metricId.toString()}/> // blue
+  }
+
   return(
     <Container className='mainContainer'>
 
@@ -198,17 +208,17 @@ export default function Collection() {
                   {/* <div onClick={() => removeAssessment(item.id)}> */}
                     {/* <Tooltip title='Click to remove this assessment from your collection'> */}
                       <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left'}}>
-                        {/* {getBadgeFair(item.fair_type, item.metric_id)}&nbsp; */}
                         { state.assessmentsDict[item] && 
                           <>
-                            <Typography variant='body1'>
-                              {/* {console.log(state.assessmentsDict)} */}
-                              {console.log(state.assessmentsDict[item])}
-                              <a href={state.assessmentsDict[item]['file_url']} target="_blank" 
-                                  rel="noopener noreferrer" style={{color: theme.palette.primary.main, textDecoration: 'none'}}>
-                                {state.assessmentsDict[item]['title']}
-                              </a>
-                            </Typography>
+                            <Box display='flex' style={{alignItems: 'center'}}>
+                              {getBadgeFair(state.assessmentsDict[item]['fair_type'], state.assessmentsDict[item]['metric_id'])}&nbsp;
+                              <Typography variant='body1'>
+                                <a href={state.assessmentsDict[item]['file_url']} target="_blank" 
+                                    rel="noopener noreferrer" style={{color: theme.palette.primary.main, textDecoration: 'none'}}>
+                                  {state.assessmentsDict[item]['title']}
+                                </a>
+                              </Typography>
+                            </Box>
                             <Typography variant='body2'>
                               {state.assessmentsDict[item]['description']}
                             </Typography>

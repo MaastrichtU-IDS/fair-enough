@@ -6,7 +6,8 @@ from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS, FOAF
 class Assessment(AssessmentModel):
     fair_type = 'r'
     metric_id = '1'
-    title = 'Accessible Usage License'
+    role = 'check'
+    title = 'Check accessible Usage License'
     description = """The existence of a license document, for BOTH (independently) the data and its associated metadata, and the ability to retrieve those documents
 Resolve the licenses IRI"""
     author = 'https://orcid.org/0000-0002-1501-1082'

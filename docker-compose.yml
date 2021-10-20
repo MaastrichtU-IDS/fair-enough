@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
     environment:
-      - FRONTEND_URL=https://fair-enough.semanticscience.org/
+      - FRONTEND_URL=https://fair-enough.semanticscience.org
       - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
       - VIRTUAL_HOST=api.fair-enough.semanticscience.org
       - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
@@ -69,21 +69,21 @@ services:
       # - SMTP_HOST=${SMTP_HOST?Variable not set}
     
 
-  frontend:
-    build:
-      context: .
-      args:
-        # FRONTEND_ENV: dev
-        ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
-        ORCID_CLIENT_SECRET: ${ORCID_CLIENT_SECRET}
-        OAUTH_REDIRECT_FRONTEND: ${OAUTH_REDIRECT_FRONTEND}
-    # ports:
-    #   - 5000:4000
-    environment:
-      API_URL: https://api.fair-enough.semanticscience.org
-      VIRTUAL_HOST: fair-enough.semanticscience.org
-      LETSENCRYPT_HOST: fair-enough.semanticscience.org
-      VIRTUAL_PORT: 4000
+  # frontend:
+  #   build:
+  #     context: .
+  #     args:
+  #       # FRONTEND_ENV: dev
+  #       ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
+  #       ORCID_CLIENT_SECRET: ${ORCID_CLIENT_SECRET}
+  #       OAUTH_REDIRECT_FRONTEND: ${OAUTH_REDIRECT_FRONTEND}
+  #   # ports:
+  #   #   - 5000:4000
+  #   environment:
+  #     API_URL: https://api.fair-enough.semanticscience.org
+  #     VIRTUAL_HOST: fair-enough.semanticscience.org
+  #     LETSENCRYPT_HOST: fair-enough.semanticscience.org
+  #     VIRTUAL_PORT: 4000
 
     # labels:
     #   - traefik.enable=true

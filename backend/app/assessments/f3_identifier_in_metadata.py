@@ -5,6 +5,7 @@ from rdflib.namespace import RDFS, XSD, DC, DCTERMS, VOID, OWL, SKOS, FOAF
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '3'
+    role = 'check'
     title = 'Resource Identifier is in Metadata'
     description = """Whether the metadata document contains the globally unique and persistent identifier for the digital resource.
 Parsing the metadata to search for the given digital resource GUID.
