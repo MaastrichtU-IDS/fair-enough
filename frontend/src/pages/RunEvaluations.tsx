@@ -9,7 +9,7 @@ import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText }
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 import UserContext from '../UserContext';
 
-import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
@@ -259,7 +259,9 @@ export default function Evaluation() {
       field: 'collection', headerName: 'Collection', flex: 0.4,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          {params.value as string}
+          <Link to={'/collection/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.main}}>
+            {params.value as string}
+          </Link>
         </>)
     },
     {
@@ -292,6 +294,12 @@ export default function Evaluation() {
     }
   ]
   
+  const [sortModel, setSortModel] = React.useState<GridSortModel>([
+    {
+      field: 'created',
+      sort: 'desc',
+    },
+  ]);
 
   return(
     <Container className='mainContainer'>
@@ -397,7 +405,7 @@ export default function Evaluation() {
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
-            Start the FAIR evaluation
+            Start the evaluation
         </Button>
       </form>
 
@@ -416,6 +424,8 @@ export default function Evaluation() {
             components={{
               Toolbar: GridToolbar,
             }}
+            sortModel={sortModel}
+            onSortModelChange={(model) => setSortModel(model)}
             style={{backgroundColor: '#fff'}}
           />
         </div>

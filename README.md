@@ -74,6 +74,14 @@ Feel free to add new assessments and send a pull request!  To create a new asses
 
 ## 🐳 Backend local development
 
+Create a `.env` file with your development settings in the root folder of this repository (you can copy `.env.sample`):
+
+```
+ORCID_CLIENT_ID=APP-XXX
+ORCID_CLIENT_SECRET=XXXX
+FRONTEND_URL=http://localhost:19006
+```
+
 Start the stack for development locally with Docker Compose from the root folder of this repository:
 
 ```bash
@@ -231,7 +239,15 @@ Then open your browser at http://localhost:19006
 
 ## 🚀 Production deployment 
 
-You will need to ignore the `docker-compose.override.yml` to deploy the app with production config: 
+Create a `.env` file with your production settings:
+
+```
+ORCID_CLIENT_ID=APP-XXX
+ORCID_CLIENT_SECRET=XXXX
+FRONTEND_URL=https://fair-enough.semanticscience.org
+```
+
+Deploy the app with production config: 
 
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d

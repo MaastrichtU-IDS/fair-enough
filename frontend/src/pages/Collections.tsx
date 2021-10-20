@@ -9,7 +9,7 @@ import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText }
 import CreateCollectionIcon from '@mui/icons-material/LibraryAdd';
 import CollectionIcon from '@mui/icons-material/CollectionsBookmark';
 
-import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
@@ -221,6 +221,12 @@ export default function Collections() {
     // }
   ]
   
+  const [sortModel, setSortModel] = React.useState<GridSortModel>([
+    {
+      field: 'created',
+      sort: 'desc',
+    },
+  ]);
 
   return(
     <Container className='mainContainer'>
@@ -262,6 +268,8 @@ export default function Collections() {
             components={{
               Toolbar: GridToolbar,
             }}
+            sortModel={sortModel}
+            onSortModelChange={(model) => setSortModel(model)}
             style={{backgroundColor: '#fff'}}
           />
         </div>

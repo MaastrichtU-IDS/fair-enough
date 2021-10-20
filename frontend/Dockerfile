@@ -1,6 +1,9 @@
 FROM node:12-alpine
 
 WORKDIR /webapp
+ARG ORCID_CLIENT_ID
+ARG ORCID_CLIENT_SECRET
+ARG OAUTH_REDIRECT_FRONTEND
 
 # Only install NPM packages if package.json or yarn.lock change
 COPY package.json package.json
