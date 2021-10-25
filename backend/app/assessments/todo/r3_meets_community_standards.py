@@ -19,11 +19,10 @@ e.g. the certification service provides a hash of the data, which can be used to
 
         self.check('Checking RDF metadata')
         # dct:conformsTo point to URI of JSON schema?
-        # People could point to JSON standard (not ideal)
+        # People could use it to point to the JSON standard (not ideal)
         # Best: get the schema (e.g. JSON schema)
 
-        # rdfs:isDefinedBy
-        # rdfs:seeAlso?
+        # Check also: rdfs:isDefinedBy, rdfs:seeAlso?
 
         return eval, g
 

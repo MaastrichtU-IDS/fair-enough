@@ -24,9 +24,8 @@ and extract metadata from the HTML landing page using extruct"""
         check_mime_types = [ mime_types['rdf'], 'text/turtle', mime_types['jsonld'] ]
         # mime_types['turtle'], mime_types['json']
 
+        # Check if URL resolve and if redirection
         r = requests.head(uri)
-        print('REQUESTS HEADERS')
-        print(r.headers)
         r = requests.get(uri)
         r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
         self.log('Successfully resolved ' + uri, '☑️')
@@ -34,9 +33,8 @@ and extract metadata from the HTML landing page using extruct"""
             self.log("Request was redirected to " + r.url + '. Adding as alternative URI')
             eval.data['alternative_uris'].append(r.url)
         
-        print(r.headers)
-        found_signposting = False
         self.check('Checking if Signposting links can be found in the resource URI headers at ' + uri)
+        found_signposting = False
         if 'link' in r.headers.keys():
             signposting_links = r.headers['link']
             found_signposting = True
@@ -49,8 +47,9 @@ and extract metadata from the HTML landing page using extruct"""
         else:
             self.warning('Could not find Signposting links')
 
-        found_content_negotiation = False
+
         self.check('Checking if machine readable data (e.g. RDF, JSON-LD) can be retrieved using content-negotiation at ' + uri)
+        found_content_negotiation = False
         # self.check('Trying (in this order): ' + ', '.join(check_mime_types))
         for mime_type in check_mime_types:
             try:
@@ -60,8 +59,8 @@ and extract metadata from the HTML landing page using extruct"""
                 if 'content_negotiation' not in eval.data.keys():
                     eval.data['content_negotiation'] = {}
                 contentType = r.headers['Content-Type'].replace(' ', '').replace(';charset=utf-8', '')
-                if contentType == 'text/html':
-                    self.log('Content-Type retrieved is text/html, not a machine-readable format')
+                if contentType.startswith('text/html'):
+                    self.log('Content-Type retrieved is text/html, not a machine-readable format', '⏩️')
                     continue
 
                 try:
@@ -82,7 +81,7 @@ and extract metadata from the HTML landing page using extruct"""
 
         if found_content_negotiation:
             self.success('Found metadata in ' + ', '.join(eval.data['content_negotiation'].keys()) + ' format using content-negotiation')
-            # Parse RDF metadata
+            # Parse RDF metadata from content negotiation
             for mime_type, rdf_data in eval.data['content_negotiation'].items():
                 g = self.parseRDF(rdf_data, mime_type, msg='content negotiation RDF')
                 break # Only parse the first RDF metadata file entry

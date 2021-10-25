@@ -1,6 +1,7 @@
 from app.models import AssessmentModel, EvaluationModel
 import os
 from urllib.parse import urlparse
+import requests
 
 class Assessment(AssessmentModel):
     fair_type = 'f'
@@ -28,6 +29,17 @@ class Assessment(AssessmentModel):
             self.error('Could not validate the given resource URI ' + eval.resource_uri + ' is a URL')    
 
 
+        # Check if URL resolve and if redirection
+        r = requests.head(eval.resource_uri)
+        r = requests.get(eval.resource_uri)
+        r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
+        self.log('Successfully resolved ' + eval.resource_uri, '☑️')
+        if r.history:
+            self.log("Request was redirected to " + r.url + '. Adding as alternative URI')
+            eval.data['alternative_uris'].append(r.url)
+        
+
+
         self.check('Check if the given resource URI ' + eval.resource_uri + ' use a persistent URI, one of: ' + ', '.join(accepted_persistent))
         if eval.data['uri_location'] in accepted_persistent:
             # Checking URI location extracted by f1_1_assess_unique_identifier
@@ -40,6 +52,7 @@ class Assessment(AssessmentModel):
             else:
                 self.error('The given resource URI ' + eval.resource_uri + ' is not considered a persistent URL')
 
+        # Quick fix to add an alternative URI for doi.org that is used as identifier in the metadata
         if eval.data['uri_location'] == 'doi.org':
             eval.data['alternative_uris'].append(eval.resource_uri.replace('https://doi.org/', 'http://dx.doi.org/'))
 

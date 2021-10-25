@@ -51,6 +51,8 @@ def run_evaluation(evaluation: CreateEvaluationModel,
             print('❌ Error running the assessment ' + assess_name)
             print(e)
 
+    print('END ASSESS IN WORKER')
+
     # Calculate the total score
     # for fair_type in ['f', 'a', 'i', 'r']:
     for result in eval.results:
@@ -67,11 +69,15 @@ def run_evaluation(evaluation: CreateEvaluationModel,
         eval.score.bonus_percent = 0
 
     eval.created = str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S"))
+    print('AFTER SCORE')
+
+    print(eval.dict(by_alias=True))
 
     db = AsyncIOMotorClient(settings.MONGODB_URL).evaluations
     new_evaluation = db["evaluations"].insert_one(eval.dict(by_alias=True))
     # print(type(new_evaluation.inserted_id))
     # print(new_evaluation.inserted_id)
+    print(new_evaluation)
     # created_evaluation = db["evaluations"].find_one({"_id": new_evaluation.inserted_id})
     # created_evaluation['_id'] = str(created_evaluation['_id'])
     
@@ -82,3 +88,9 @@ def run_evaluation(evaluation: CreateEvaluationModel,
     eval = jsonable_encoder(eval)
 
     return eval
+
+# @celery_app.task(acks_late=True)
+# def task_evaluation(evaluation: CreateEvaluationModel,
+#         collection,
+#         current_user: User) -> EvaluationModel:
+#     return run_evaluation(evaluation, collection, current_user)

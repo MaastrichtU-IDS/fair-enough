@@ -70,7 +70,7 @@ Search for the URI using the resource title in search engines (Google)"""
             found_uris = list(set(resource_uris).intersection(search_results))
             # if any(i in resource_uris for i in search_results):
             if found_uris:
-                self.success('Found the resource URI ' + ', '.join(found_uris) + ' when searching on Google')
+                self.success('Found the resource URI ' + ', '.join(found_uris) + ' when searching on Google for ' + resource_title)
             else:
                 self.error('Did not find one of the resource URIs ' + ', '.join(resource_uris) + ' in: '+ ', '.join(search_results))
         else:

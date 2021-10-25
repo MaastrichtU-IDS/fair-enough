@@ -34,16 +34,18 @@ Resolve the licenses IRI"""
         else:
             self.error('Could not find license information in metadata')
 
+
         if 'license' in eval.data.keys():
-            self.check('Check for licenses infos in SPDX licenses list (isOsiApproved')
+            self.check('Check if license is approved by the Open Source Initiative, in the SPDX licenses list')
             # https://github.com/vemonet/fuji/blob/master/fuji_server/helper/preprocessor.py#L229
             spdx_licenses_url = 'https://raw.github.com/spdx/license-list-data/master/json/licenses.json'
             spdx_licenses = requests.get(spdx_licenses_url).json()['licenses']
             for license in spdx_licenses:
                 if eval.data['license'] in license['seeAlso']:
-                    self.bonus('Found the resource license ' + str(eval.data['license']) + ' in the SPDX license list')
-            # print('spdx_licenses')
-            # print(spdx_licenses)
+                    if license['isOsiApproved'] == True:
+                        self.bonus('License approved by the Open Source Initiative (' + str(eval.data['license']) + ')')
+                    else:
+                        self.log(f'License {str(eval.data["license"])} not approved by the Open Source Initiative')
 
         return eval, g
 

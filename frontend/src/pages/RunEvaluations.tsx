@@ -341,9 +341,6 @@ export default function Evaluation() {
             { state.collectionsList.map((collec: any, key: number) => (
               <MenuItem value={collec.id}>{collec.title} ({collec.id})</MenuItem>
             ))}
-            {/* // <MenuItem value={'all'}>All logs</MenuItem>
-            // <MenuItem value={'warning'}>Warnings and errors</MenuItem>
-            // <MenuItem value={'error'}>Errors only</MenuItem>   */}
           </TextField>
 
           {/* <Tooltip  title='Evaluator settings'>

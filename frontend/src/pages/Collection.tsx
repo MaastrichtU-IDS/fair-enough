@@ -191,9 +191,9 @@ export default function Collection() {
               Author: {getUrlHtml(state.collectionResults['author'])}
             </Typography>
           }
-          {state.collectionResults['date'] &&
+          {state.collectionResults['created'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Collection created on the {state.collectionResults['date']}
+              Collection created on the {state.collectionResults['created']}
             </Typography>
           }
 

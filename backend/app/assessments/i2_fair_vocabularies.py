@@ -61,7 +61,7 @@ Resolve IRIs, check FAIRness of the returned documents."""
                     validated_ns.add(tuple[1])
 
         if len(validated_ns) > 0:
-            self.success('Found vocabularies used by the resource metadata in the LOV: ' + ', '.join(validated_ns))
+            self.success('Found vocabularies used by the resource metadata in the Linked Open Vocabularies: ' + ', '.join(validated_ns))
         else:
             self.error('Could not find vocabularies used by the resource metadata in the LOV: ' + ', '.join(tested_ns))
         

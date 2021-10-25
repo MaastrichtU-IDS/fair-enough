@@ -169,7 +169,8 @@ export default function NavBar() {
       // })
     }
     // const { setSalad } = useContext(SaladContext)
-  }, [user])
+  // }, [user])
+  }, [])
 
   // const localStorageConfig = localStorage.getItem("fairEnoughSettings");
   //     if (localStorageConfig) {

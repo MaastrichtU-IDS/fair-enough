@@ -69,7 +69,7 @@ export default function Evaluation() {
   const [state, setState] = React.useState({
     evaluationResults: evaluationResults,
     adviceLogs: [],
-    logLevel: 'all',
+    logLevel: 'success',
     resourceMetadata: resourceMetadata,
   });
   const stateRef = React.useRef(state);
@@ -171,6 +171,8 @@ export default function Evaluation() {
   const filterLog = (log: string) => {
     if (state.logLevel == 'all') {
       return true
+    } else if (state.logLevel == 'success') {
+      return (log.startsWith('✅') || log.startsWith('🚀') || log.startsWith('❌') || log.startsWith('ℹ️'))
     } else if (state.logLevel == 'warning') {
       return (log.startsWith('❌') || log.startsWith('⚠️') || log.startsWith('ℹ️'))
     } else if (state.logLevel == 'error') {
@@ -338,16 +340,16 @@ export default function Evaluation() {
         // Display results from the JSON from the API
         <>
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-            {state.evaluationResults['resource_uri']}
+            {getUrlHtml(state.evaluationResults['resource_uri'])}
           </Typography>
-          {state.evaluationResults['author'] &&
-            <Typography variant="h5" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Author: {getUrlHtml(state.evaluationResults['author'])}
-            </Typography>
-          }
           {state.evaluationResults['created'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Evaluation created on the {state.evaluationResults['created']}
+              Evaluated with the <Link to={'/collection/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection on the {state.evaluationResults['created']}
+            </Typography>
+          }
+          {state.evaluationResults['author'] &&
+            <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+              By {getUrlHtml(state.evaluationResults['author'])}
             </Typography>
           }
           {state.resourceMetadata &&
@@ -357,11 +359,6 @@ export default function Evaluation() {
                 Metadata found
               </Typography> */}
               <Paper className={classes.paperPadding} style={{textAlign: 'left'}}>
-                {state.evaluationResults.collection &&
-                  <Typography variant="h5" style={{marginBottom: theme.spacing(1), textAlign: 'center'}}>
-                    Evaluated with the <Link to={'/collection/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection
-                  </Typography>
-                }
                 {state.resourceMetadata.resource_title &&
                   <Typography variant="h5" style={{marginBottom: theme.spacing(1)}}>
                     title: {state.resourceMetadata.resource_title}
@@ -446,9 +443,10 @@ export default function Evaluation() {
                 style={{backgroundColor: 'white', marginRight: theme.spacing(2)}}
                 onChange={handleLogLevelChange} 
                 variant="outlined"> 
+              <MenuItem value={'success'}>Success and failures</MenuItem>
+              <MenuItem value={'error'}>Failures only</MenuItem>
+              <MenuItem value={'warning'}>Additional warnings</MenuItem>
               <MenuItem value={'all'}>All logs</MenuItem>
-              <MenuItem value={'warning'}>Warnings and errors</MenuItem>
-              <MenuItem value={'error'}>Errors only</MenuItem>  
             </TextField>
             <Tooltip
               title={<Typography>✅ Indicates a successful test, +1 to the FAIR score<br/>

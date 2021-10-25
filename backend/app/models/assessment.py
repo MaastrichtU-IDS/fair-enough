@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 import datetime
 import json
-from rdflib import ConjunctiveGraph
+from rdflib import Graph
 from rdflib.term import URIRef
 # Plugin and serializer required for rdflib-jsonld
 # from rdflib import ConjunctiveGraph, Graph, plugin
@@ -65,7 +65,6 @@ class AssessmentModel(BaseModel):
             if '@context' in rdf_data.keys() and (rdf_data['@context'].startswith('http://schema.org') or rdf_data['@context'].startswith('https://schema.org')):
                 # Regular content negotiation dont work with schema.org: https://github.com/schemaorg/schemaorg/issues/2578
                 rdf_data['@context'] = 'https://schema.org/docs/jsonldcontext.json'
-            # self.log('Convert dict ton JSON string before RDF parsing')
             # RDFLib JSON-LD has issue with encoding: https://github.com/RDFLib/rdflib/issues/1416
             rdf_data = jsonld.expand(rdf_data)
             rdf_data = json.dumps(rdf_data)
@@ -73,7 +72,7 @@ class AssessmentModel(BaseModel):
             rdflib_formats = ['json-ld']
 
         # self.log(rdf_data)
-        g = ConjunctiveGraph()
+        g = Graph()
         for rdf_format in rdflib_formats:
             try:
                 # print(type(rdf_data))
@@ -133,11 +132,11 @@ class AssessmentModel(BaseModel):
 
     def success(self, log_msg: str):
         if self.score >= self.max_score:
-            self.bonus('Assessment score already at the max (' + str(self.score) + '), adding as a bonus point: ' + log_msg)
+            self.bonus(log_msg + '. Assessment score already at the max (' + str(self.score) + '), adding as a bonus point.')
             # self.warning('Could not increase assessment ' + self.id + ' score: already at ' + str(self.score) + ', the same value as the max score. Fix the scoring of this assessment')
         else:
             self.score += 1
-        self.log(log_msg, '✅')
+            self.log(log_msg, '✅')
 
 
     def bonus(self, log_msg: str):

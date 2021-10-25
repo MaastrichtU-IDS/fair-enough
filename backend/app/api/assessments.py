@@ -62,7 +62,7 @@ async def run_assessment(
         'resource_uri': assessment['resource_uri'],
         'title': 'Run assessment',
         'collection': 'fair-metrics',
-        'data': {'alternative_uris': []},
+        'data': {'alternative_uris': [assessment['resource_uri']]},
         '@id': f'{settings.BASE_URI}/evaluation/run-assessment',
         '@context': settings.CONTEXT
     }

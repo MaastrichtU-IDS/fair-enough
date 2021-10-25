@@ -53,7 +53,8 @@ def init_db() -> None:
                 "a1_access_protocol",
                 "i1_knowledge_representation",
                 "i2_fair_vocabularies",
-                "r1_accessible_license"
+                "r1_accessible_license",
+                "r2_detailed_provenance"
             ],
             "author": "https://orcid.org/0000-0002-1501-1082",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")),

@@ -13,6 +13,7 @@ services:
       - ./backend:/app
     environment:
       - FRONTEND_URL=http://localhost:19006
+      - DEV_MODE=true
       # - JUPYTER=jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888
       # - SERVER_HOST=http://${DOMAIN?Variable not set}
     build:
@@ -22,7 +23,18 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-true}
         INSTALL_JUPYTER: ${INSTALL_JUPYTER-false}
         
-        
+  celeryworker:
+    build:
+      context: ./backend
+      dockerfile: celeryworker.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-true}
+    volumes:
+      - ./backend:/app
+    environment:
+      - RUN=celery worker -A app.worker -l info -Q main-queue
+      # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
+
   # frontend:
   #   build:
   #     context: ./frontend
