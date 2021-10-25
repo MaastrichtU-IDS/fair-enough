@@ -51,6 +51,8 @@ def run_evaluation(evaluation: CreateEvaluationModel,
             print('❌ Error running the assessment ' + assess_name)
             print(e)
 
+    eval.data['main_rdf_metadata'] = g.serialize(format='turtle', indent=2)
+
     print('END ASSESS IN WORKER')
 
     # Calculate the total score

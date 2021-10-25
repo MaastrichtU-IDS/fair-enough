@@ -55,6 +55,7 @@ class Assessment(AssessmentModel):
         # Quick fix to add an alternative URI for doi.org that is used as identifier in the metadata
         if eval.data['uri_location'] == 'doi.org':
             eval.data['alternative_uris'].append(eval.resource_uri.replace('https://doi.org/', 'http://dx.doi.org/'))
+            eval.data['alternative_uris'].append(eval.resource_uri.lower())
 
         return eval, g
 

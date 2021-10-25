@@ -90,6 +90,7 @@ class AssessmentModel(BaseModel):
         for resource_uri in eval.data['alternative_uris']:
             uri_ref = URIRef(resource_uri)
             for pred in preds:
+                self.log('Extracting ' + str(pred))
                 if multi_results:
                     for s, p, o in g.triples((uri_ref,  pred, None)):
                         if property not in eval.data.keys():
@@ -98,7 +99,7 @@ class AssessmentModel(BaseModel):
                         self.log(f'Found a {property} with predicate {str(pred)} in the resource metadata: {str(o)}')
                 
                 else:
-                    # Single result
+                    # Single result (default)
                     if property not in eval.data.keys():
                         prop_value = g.value(uri_ref, pred)
                         if prop_value:

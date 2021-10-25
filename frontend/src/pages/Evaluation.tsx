@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 // import { makeStyles, useTheme, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
-import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
+import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Divider, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DownloadJsonIcon from '@mui/icons-material/GetApp';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -24,6 +24,15 @@ import axios from 'axios';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import {settings} from '../settings'
+
+import hljs from 'highlight.js/lib/core';
+// // import hljs from 'highlight.js'; // Too heavy, loading only required languages
+import 'highlight.js/styles/github-dark-dimmed.css';
+import json from 'highlight.js/lib/languages/json';
+// import turtle from 'highlightjs-turtle';
+// var hljsDefineTurtle = require('highlightjs-turtle');
+hljs.registerLanguage('json', json);
+// hljs.registerLanguage('turtle', turtle);
 
 
 export default function Evaluation() {
@@ -120,7 +129,7 @@ export default function Evaluation() {
           // }
         })
         updateState({resourceMetadata: resourceMetadata})
-        // hljs.highlightAll();
+        hljs.highlightAll();
       })
 
   }, [])
@@ -464,6 +473,38 @@ export default function Evaluation() {
           {getResultsForCategory('Accessible')}
           {getResultsForCategory('Interoperable')}
           {getResultsForCategory('Reusable')}
+            
+          { state.evaluationResults &&
+          <>
+            <Divider variant="middle" style={{margin: theme.spacing(6, 0)}}/>
+            <Accordion defaultExpanded={true}>
+              {/* // <Accordion key={category} defaultExpanded={true}
+              // style={{backgroundColor: colorsLight[charCategory]}}> */}
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="h4">
+                  📋️ Evaluation output
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails style={{textAlign: 'left'}}>
+                <Typography>
+                  All metadata found:
+                </Typography>
+                <pre>
+                  <code className="language-json" style={{whiteSpace: 'pre-wrap', overflowX: 'auto'}}>
+                    {JSON.stringify(state.evaluationResults.data, null, 2)}
+                  </code>
+                </pre>
+                <Typography>
+                  Main RDF metadata retrieved:
+                </Typography>
+                <pre>
+                  <code className="language-json" style={{whiteSpace: 'pre-wrap', overflowX: 'auto'}}>
+                    {state.evaluationResults.data['main_rdf_metadata']}
+                  </code>
+                </pre>
+              </AccordionDetails>
+            </Accordion>
+          </>}
           
           <Button
             variant="contained" 

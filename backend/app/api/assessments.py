@@ -3,7 +3,7 @@ from typing import List
 import os
 import importlib
 import pathlib
-from rdflib import ConjunctiveGraph
+from rdflib import Graph
 
 from app.models import AssessmentModel, EvaluationModel
 from app.config import settings
@@ -68,10 +68,14 @@ async def run_assessment(
     }
     eval = EvaluationModel(**init_eval)
     assess = Assessment(assessment['assessment_id'])
-    g = ConjunctiveGraph()
+    g = Graph()
     try: 
         eval, g = assess.runEvaluate(eval, g)
-        return eval.results[0].dict(with_alias=True)
+        # return eval.results[0].dict(with_alias=True)
+        print('yeeee')
+        print(eval.results[0])
+        eval.results[0]['data'] = eval.data
+        return eval.results[0]
     except Exception as e:
         print('❌ Error running the assessment ' + assessment['assessment_id'])
         print(e)

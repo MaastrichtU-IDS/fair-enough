@@ -10,6 +10,7 @@ import ApiIcon from '@mui/icons-material/Http';
 import GraphqlIcon from '@mui/icons-material/Code';
 import LoginIcon from '@mui/icons-material/Login';
 import CollectionsIcon from '@mui/icons-material/CollectionsBookmark';
+import AssessmentsIcon from '@mui/icons-material/CollectionsBookmark';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 import axios from 'axios';
 
@@ -198,6 +199,13 @@ export default function NavBar() {
           <Tooltip title='Browse existing Collections of assessments'>
             <Button style={{color: '#fff'}}>
               <CollectionsIcon />&nbsp;Collections
+            </Button>
+          </Tooltip>
+        </Link>
+        <Link to="/assessments" className={classes.linkButton}>
+          <Tooltip title='Browse existing Assessments of assessments'>
+            <Button style={{color: '#fff'}}>
+              <AssessmentsIcon />&nbsp;Assessments
             </Button>
           </Tooltip>
         </Link>

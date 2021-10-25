@@ -13,6 +13,16 @@
 pre {
   border: 2px solid grey;
   padding: 1em;
+  /* background: #22272e; */
+}
+
+code {
+  font-family: monospace, monospace;
+  border-radius: 10px;
+  padding: 3px;
+  /* color: white; */
+  /* background-color: #757575; */
+  /* background-color: #78909c; */
 }
 
 pre, code {
@@ -26,6 +36,10 @@ pre, code {
   /* color: white;
   background-color: #757575; */
   /* background-color: #78909c; */
+}
+
+a {
+  text-decoration: none;
 }
 
 /* a:hover {

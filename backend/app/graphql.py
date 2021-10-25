@@ -48,6 +48,7 @@ class EvaluationResults:
     file_url: str
     fair_type: str
     metric_id: str
+    role: str
     logs: List[str]
     score: int = 0
     max_score: int = 1
@@ -155,5 +156,6 @@ class Query:
             eval['data'] = json.dumps(eval['data'], indent=2)
             if 'author' not in eval.keys():
                 eval['author'] = "noone"
+            print(eval)
             eval_list.append(EvaluationModel(**eval))
         return eval_list

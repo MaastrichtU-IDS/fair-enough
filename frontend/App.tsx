@@ -14,6 +14,7 @@ import Evaluation from "./src/pages/Evaluation";
 import Collection from "./src/pages/Collection";
 import CreateCollection from "./src/pages/CreateCollection";
 import Collections from "./src/pages/Collections";
+import Assessments from "./src/pages/Assessments";
 import About from "./src/pages/About";
 import UserContext from "./src/UserContext";
 import { AuthProvider, useAuth } from 'oidc-react';
@@ -99,6 +100,7 @@ const App = () => {
           <Route exact path="/collection/:id" component={Collection} />
           <Route path="/about" component={About} />
           <Route path="/collections" component={Collections} />
+          <Route path="/assessments" component={Assessments} />
           <Route path="/collection/create" component={CreateCollection} />
           <Route exact path="/" component={RunEvaluations} />
           <Footer />

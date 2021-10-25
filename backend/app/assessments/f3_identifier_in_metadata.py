@@ -8,8 +8,8 @@ class Assessment(AssessmentModel):
     role = 'check'
     title = 'Resource Identifier is in Metadata'
     description = """Whether the metadata document contains the globally unique and persistent identifier for the digital resource.
-Parsing the metadata to search for the given digital resource GUID.
-And retrieving informations about this resource (title, description, date created, etc)"""
+Parse the metadata to search for the given digital resource GUID.
+If found, retrieve informations about this resource (title, description, date created, etc)"""
     author = 'https://orcid.org/0000-0002-1501-1082'
     max_score = 1
     max_bonus = 1
@@ -42,14 +42,6 @@ And retrieving informations about this resource (title, description, date create
             # print('identifier_in_metadata')
             # print(eval.data['identifier_in_metadata'])
 
-            if found_link:
-                self.success('Found links to the URI ' + alt_uri + ' in the metadata: ' 
-                    + ', '.join(list(eval.data['identifier_in_metadata']['properties'].keys()) + list(eval.data['identifier_in_metadata']['linked_to'].keys()))
-                )
-                break
-            else: 
-                self.warning('Could not find links to the resource URI ' + alt_uri + ' in the metadata')
-
             # Try to extract some metadata from the parsed RDF
             title_preds = [ DC.title, DCTERMS.title, RDFS.label, URIRef('http://schema.org/name')]
             eval, g = self.extract_property('resource_title', title_preds, eval, g)
@@ -57,8 +49,17 @@ And retrieving informations about this resource (title, description, date create
             description_preds = [ DCTERMS.description, URIRef('http://schema.org/description')]
             eval, g = self.extract_property('resource_description', description_preds, eval, g)
 
-            date_created_preds = [ DCTERMS.created, URIRef('http://schema.org/dateCreated')]
+            date_created_preds = [ DCTERMS.created, URIRef('http://schema.org/dateCreated'), URIRef('http://schema.org/datePublished')]
             eval, g = self.extract_property('date_created', date_created_preds, eval, g)
+
+            if found_link:
+                self.success('Found properties/links for the URI ' + alt_uri + ' in the metadata: ' 
+                    + ', '.join(list(eval.data['identifier_in_metadata']['properties'].keys()) + list(eval.data['identifier_in_metadata']['linked_to'].keys()))
+                )
+                break
+            else: 
+                self.warning('Could not find links to the resource URI ' + alt_uri + ' in the metadata')
+
 
         return eval, g
 
