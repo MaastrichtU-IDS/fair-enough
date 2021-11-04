@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useLocation, useHistory } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
-import { Typography, Container, Button, Paper, Card, CardContent, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
+import { Typography, Container, Button, IconButton, Paper, Card, CardContent, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
@@ -10,6 +10,7 @@ import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText }
 // import CreateCollectionIcon from '@mui/icons-material/PlaylistAddCheck';
 import CreateCollectionIcon from '@mui/icons-material/LibraryAdd';
 import ArrowIcon from '@mui/icons-material/ArrowForward';
+import AddIcon from '@mui/icons-material/Add';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -456,9 +457,17 @@ export default function Evaluation() {
               .map((item: any, key: number) => (
                 <Grid item xs={6} key={key} style={{alignItems: 'center'}}>
                   {/* onClick={addAssessment(item)}  */}
-                  <div onClick={() => addAssessment(item)}>
-                    <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left', cursor: 'pointer'}}>
+                  {/* <div onClick={(event) => { addAssessment(item)} }> */}
+                    <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'left'}}>
                         <Box display='flex' style={{alignItems: 'center'}}>
+                          <Tooltip title={'Add ' + item.id + ' to your collection'}>
+                            <IconButton color='primary'
+                                // sx={{ borderRadius: 28 }} 
+                                style={{marginRight: theme.spacing(1)}} 
+                                onClick={() => addAssessment(item)}>
+                              <AddIcon />
+                            </IconButton>
+                          </Tooltip>
                           {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
                           {getBadgeRole(item.role)}&nbsp;
                           <Typography variant='h6'>
@@ -466,12 +475,12 @@ export default function Evaluation() {
                           </Typography>
                         </Box>
                         <Typography variant='body2'>
-                          <a href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
+                          <a onClick={(event) => {} } href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
                         </Typography>
                         <Typography variant='body2'>{item.description}</Typography>
                         <Typography variant='body2'>Max score: {item.max_score} | Max bonus: {item.max_bonus}</Typography>
                     </Paper>
-                  </div>
+                  {/* </div> */}
                 </Grid>
             ))}
           </Grid>

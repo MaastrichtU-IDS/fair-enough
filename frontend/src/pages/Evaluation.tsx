@@ -452,10 +452,10 @@ export default function Evaluation() {
                 style={{backgroundColor: 'white', marginRight: theme.spacing(2)}}
                 onChange={handleLogLevelChange} 
                 variant="outlined"> 
-              <MenuItem value={'success'}>Success and failures</MenuItem>
-              <MenuItem value={'error'}>Failures only</MenuItem>
-              <MenuItem value={'warning'}>Additional warnings</MenuItem>
-              <MenuItem value={'all'}>All logs</MenuItem>
+              <MenuItem key='success' value={'success'}>Success and failures</MenuItem>
+              <MenuItem key='error' value={'error'}>Failures only</MenuItem>
+              <MenuItem key='warning' value={'warning'}>Additional warnings</MenuItem>
+              <MenuItem key='all' value={'all'}>All logs</MenuItem>
             </TextField>
             <Tooltip
               title={<Typography>✅ Indicates a successful test, +1 to the FAIR score<br/>

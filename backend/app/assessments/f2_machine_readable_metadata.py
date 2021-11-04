@@ -42,7 +42,8 @@ and extract metadata from the HTML landing page using extruct"""
             signposting_links = r.headers['Link']
             found_signposting = True
         if found_signposting:
-            self.bonus('Found Signposting links: ' + str(signposting_links))
+            self.bonus('Found Signposting links: ')
+            self.bonus('Signposting links found: ' + str(signposting_links))
             eval.data['signposting'] = str(signposting_links)
         else:
             self.warning('Could not find Signposting links')

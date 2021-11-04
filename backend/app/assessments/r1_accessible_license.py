@@ -44,8 +44,6 @@ Resolve the licenses IRI"""
                 if eval.data['license'] in license['seeAlso']:
                     if license['isOsiApproved'] == True:
                         self.bonus('License approved by the Open Source Initiative (' + str(eval.data['license']) + ')')
-                    else:
-                        self.log(f'License {str(eval.data["license"])} not approved by the Open Source Initiative')
 
         return eval, g
 

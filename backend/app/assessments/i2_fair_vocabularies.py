@@ -29,7 +29,7 @@ Resolve IRIs, check FAIRness of the returned documents."""
         rdflib_ns = [n for n in g.namespaces()]
         print(rdflib_ns)
 
-        # Extract namespace manually since RDFLib can't do it
+        # Extract namespace manually because RDFLib can't do it
         extracted_ns = []
         for row in io.StringIO(g.serialize(format='turtle')):
             if row.startswith('@prefix'):
@@ -63,7 +63,7 @@ Resolve IRIs, check FAIRness of the returned documents."""
         if len(validated_ns) > 0:
             self.success('Found vocabularies used by the resource metadata in the Linked Open Vocabularies: ' + ', '.join(validated_ns))
         else:
-            self.error('Could not find vocabularies used by the resource metadata in the LOV: ' + ', '.join(tested_ns))
+            self.error('Could not find vocabularies used by the resource metadata in the Linked Open Vocabularies: ' + ', '.join(tested_ns))
         
         
         # self.check('Check if used vocabularies in the LOD cloud: ' + lod_cloudnet)

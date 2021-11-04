@@ -211,14 +211,14 @@ export default function NavBar() {
         </Link>
         <div className="flexGrow"></div>
 
-        <Tooltip title='Access the OpenAPI documentation of the API used by this web interface'>
+        <Tooltip title='Access the OpenAPI documentation of the API used by this website'>
           <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
           href={settings.docsUrl}>
             <ApiIcon style={{ marginRight: theme.spacing(1)}} />
             API
           </Button>
         </Tooltip>
-        <Tooltip title='Access the GraphQL API used by this web interface'>
+        <Tooltip title='Access the GraphQL API'>
           <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
           href={settings.graphqlUrl}>
             {/* + '?query=query%20%7B%0A%20%20evaluations%20%7B%0A%20%20%20%20title%0A%20%20%20%20resourceUri%0A%20%20%20%20collection%0A%20%20%20%20score%20%7B%0A%20%20%20%20%20%20totalScore%0A%20%20%20%20%20%20totalScoreMax%0A%20%20%20%20%20%20percent%0A%20%20%20%20%20%20totalBonus%0A%20%20%20%20%20%20totalBonusMax%0A%20%20%20%20%20%20bonusPercent%0A%20%20%20%20%7D%0A%20%20%20%20results%20%7B%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20fairType%0A%20%20%20%20%20%20metricId%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20maxScore%0A%20%20%20%20%20%20bonusScore%0A%20%20%20%20%20%20maxBonus%0A%20%20%20%20%20%20logs%0A%20%20%20%20%7D%0A%20%20%20%20data%0A%20%20%7D%0A%7D' */}

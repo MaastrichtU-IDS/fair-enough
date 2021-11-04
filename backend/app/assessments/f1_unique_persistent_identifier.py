@@ -3,6 +3,7 @@ import os
 from urllib.parse import urlparse
 import requests
 
+
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '1'
@@ -15,6 +16,8 @@ class Assessment(AssessmentModel):
 
     def evaluate(self, eval: EvaluationModel, g):
         accepted_persistent = ['doi.org', 'purl.org', 'identifiers.org', 'w3id.org']
+
+        # TODO: use https://pythonhosted.org/IDUtils/
 
         self.check('Checking if the given resource URI ' + eval.resource_uri + ' is a valid URL using urllib.urlparse')
         result = urlparse(eval.resource_uri)

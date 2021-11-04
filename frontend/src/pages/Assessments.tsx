@@ -76,14 +76,7 @@ export default function Assessments() {
   let resourceMetadata: any = null;
   let fairDoughnutConfig: any = null;
   const [state, setState] = React.useState({
-    // urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
-    // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
-    // evaluationResults: evaluationResults,
     assessmentsList: [],
-    // evaluationRunning: false,
-    // evaluationsList: [],
-    // metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
-    // use_datacite: true,
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -127,7 +120,8 @@ export default function Assessments() {
           console.log(res.data)
           let assessmentsList: any = []
           res.data.map((collec: any, key: number) => {
-            collec['id'] = collec['file_url']
+            // collec['id'] = collec['file_url']
+            // collec['id'] = collec['filename']
             collec['fair_metric'] = collec['fair_type'].toUpperCase() + collec['metric_id'] + ' (' + collec['role'] + ')'
             // evaluation['score_percent'] = evaluation['score']['percent']
             // evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
@@ -189,16 +183,17 @@ export default function Assessments() {
   const columns: GridColumns = [
     // { field: 'id', headerName: 'ID', hide: false },
     { 
-      field: 'id', headerName: 'Access assessment', flex: 0.3,
+      field: 'id', headerName: 'Access assessment', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         // <Button href={'/#/evaluation/' + params.value as string}
         // <Link to={'/assessment/' + params.value as string}>
         <Button variant="contained" target="_blank" rel="noopener noreferrer"
-            href={params.value as string}
+            href={'https://github.com/MaastrichtU-IDS/fair-enough/blob/main/backend/app/assessments/' + params.value as string + '.py'}
             className={classes.submitButton} 
             // startIcon={<CollectionIcon />}
+            style={{textTransform: 'none'}}
             color="primary">
-          Assessment file
+          {params.value as string}.py
         </Button>
         )
     },
@@ -295,7 +290,7 @@ export default function Assessments() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText>
-            Optionally, create a folder if you want to group multiple assessments under a same folder 
+            Fork this repository, and optionally create a new folder in <code>backend/app/assessments</code> if you want to group multiple assessments under a same folder 
           </ListItemText>
         </ListItem>
         <ListItem>
@@ -305,7 +300,7 @@ export default function Assessments() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText>
-            Copy an existing assessment to get started
+            Copy an existing assessment to get started, such as <code>a1_access_protocol.py</code>
           </ListItemText>
         </ListItem>
         <ListItem>
@@ -388,7 +383,9 @@ g = self.parseRDF(rdf_data, 'text/turtle', msg='content negotiation RDF')`}
       <Typography variant="body1" style={{textAlign: 'left', marginBottom: theme.spacing(1)}}>
         Once you created your assessment, you can test it locally before submitting a pull request.
         <br/><br/>
-        Start the stack with docker-compose following the instructions in the <a href='https://github.com/MaastrichtU-IDS/fair-enough#readme' target="_blank" rel="noopener noreferrer">README</a>. You can quickly test only your assessment on a resource URI with the <a href={settings.docsUrl + '#/assessments/run_assessment_rest_assessments_post'} target="_blank" rel="noopener noreferrer">POST /assessments</a> operation in the API, or you can also create a new collection with your assessment in it if you want to try it as part of a collection.
+        Start the stack with docker-compose following the instructions in the <a href='https://github.com/MaastrichtU-IDS/fair-enough#readme' target="_blank" rel="noopener noreferrer">README</a>. 
+        You can quickly test your assessment only on a resource URI with the <a href={settings.docsUrl + '#/assessments/run_assessment_rest_assessments_post'} target="_blank" rel="noopener noreferrer">POST /assessments</a> operation in the API, 
+        or you can also create a new collection, if you want to try it as part of a collection.
       </Typography>
 
       {/* <Link to="/collection/create">
