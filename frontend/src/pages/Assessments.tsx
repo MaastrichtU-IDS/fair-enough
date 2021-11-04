@@ -279,7 +279,7 @@ export default function Assessments() {
       </Typography>
 
       <Typography variant="body1" style={{textAlign: 'left', marginBottom: theme.spacing(1), marginTop: theme.spacing(4)}}>
-        Feel free to add new assessments and send a pull request! To create a new assessment:
+        To add new assessments you will need to fork the <a href='https://github.com/MaastrichtU-IDS/fair-enough' target="_blank" rel="noopener noreferrer">fair-enough GitHub repository</a>, add new assessments in <a href='https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments' target="_blank" rel="noopener noreferrer">backend/app/assessments</a>, and send a pull request! To create a new assessment follow those instructions:
       </Typography>
 
       <List>
@@ -300,7 +300,7 @@ export default function Assessments() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText>
-            Copy an existing assessment to get started, such as <code>a1_access_protocol.py</code>
+            Copy an existing assessment to get started, such as <a href='https://github.com/MaastrichtU-IDS/fair-enough/blob/main/backend/app/assessments/a1_access_protocol.py' target="_blank" rel="noopener noreferrer"><code>a1_access_protocol.py</code></a>
           </ListItemText>
         </ListItem>
         <ListItem>
