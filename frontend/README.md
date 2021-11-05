@@ -1,65 +1,45 @@
-# FAIRificator, FAIR evaluation tool
+# Server for React app
 
-[![Deploy to GitHub Pages](https://github.com/MaastrichtU-IDS/fairificator/workflows/Deploy%20website%20to%20GitHub%20Pages/badge.svg)](https://github.com/MaastrichtU-IDS/fairificator/actions/workflows/deploy-github.yml) [![CodeQL analysis](https://github.com/MaastrichtU-IDS/fairificator/workflows/CodeQL%20analysis/badge.svg)](https://github.com/MaastrichtU-IDS/fairificator/actions/workflows/codeql-analysis.yml)
+This ExpressJS server serves a React app to fix issues where React router is not enough to handle multi-pages app.
 
-Evaluate how FAIR (Findable, Accessible, Interoperable, Reusable) is a resource URL with the [FAIRsFAIR F-UJI API](https://github.com/pangaea-data-publisher/fuji)
+So we don't need to use the ugly HashRouter.
 
-Built with [TypeScript](https://www.typescriptlang.org/), [React](https://reactjs.org/), and [Material-UI](https://material-ui.com/). Deployed as a static website on [GitHub Pages](https://pages.github.com/).
+https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
 
-## Access 👩‍💻
+## Development
 
-Access the website at **[https://maastrichtu-ids.github.io/fairificator 🔗](https://maastrichtu-ids.github.io/fairificator)**
-
-It uses the API hosted at https://fair-enough.semanticscience.org/api
-
-You can provide the resource URL to evaluate directly as a URL parameter to load the evaluation for a specific URL with `?evaluate=https://resource`
-
-## Run in development 🏗️
-
-Requirements:  [npm](https://www.npmjs.com/get-npm) and [yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable) installed.
-
-Clone the repository, and get in the folder:
-
-```bash
-git clone https://github.com/MaastrichtU-IDS/fairificator 
-cd fairificator
-```
-
-Install dependencies :inbox_tray:
+Install
 
 ```bash
 yarn
 ```
 
-Web app will run on [http://localhost:19006 🏃](http://localhost:19006)
+Build the React app and start the express server on http://localhost:4000
 
 ```bash
-yarn dev
+yarn start
 ```
 
-> The website should reload automatically at each changes to the code :arrows_clockwise:
+## Production
 
-Upgrade the packages versions in `yarn.lock` ⏫️
-
-```bash
-yarn upgrade
-```
-
-## Run in production 🛩️
-
-This website is automatically deployed by a [GitHub Actions worklow](https://github.com/MaastrichtU-IDS/fairificator/actions?query=workflow%3A%22Deploy+to+GitHub+Pages%22) to GitHub Pages at https://maastrichtu-ids.github.io/fairificator
-
-You can build locally in the `/web-build` folder, and serve on [http://localhost:5000](http://localhost:5000)
+The react website is built first, the bundle is placed in the server `public` folder, and the React app is served from this folder in production on http://localhost:4000
 
 ```bash
 yarn build
 yarn serve
 ```
 
-Or run directly using [Docker :whale:](https://docs.docker.com/get-docker/) (requires [docker installed](https://docs.docker.com/get-docker/))
+## Deploy with Docker
+
+Build:
 
 ```bash
-docker-compose up
+docker build -t fair-enough-server .
 ```
 
-> Checkout the [docker-compose.yml](/docker-compose.yml) file to see how we run the Docker image ⛵️
+Run:
+
+```bash
+docker run -it -p 4000:4000 fair-enough-server
+```
+

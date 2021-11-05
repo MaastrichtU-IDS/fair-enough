@@ -233,10 +233,10 @@ export ORCID_CLIENT_ID=APP-XXXX
 export ORCID_CLIENT_SECRET=XXXX
 ```
 
-After starting the backend with `docker-compose`, enter the `frontend` directory, install the NPM packages and start the live server using the `npm` scripts:
+After starting the backend with `docker-compose`, enter the `frontend/app` directory, install the NPM packages and start the live server using the scripts in `package.json`:
 
 ```bash
-cd frontend
+cd frontend/app
 yarn
 yarn dev
 ```

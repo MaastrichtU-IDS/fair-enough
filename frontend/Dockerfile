@@ -1,23 +1,41 @@
-FROM node:12-alpine
+## Install server dependencies only when needed
+FROM node:alpine AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+# RUN apk add --no-cache libc6-compat
 
-WORKDIR /webapp
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+
+## Build React website
+FROM node:alpine AS build-react
+COPY app /app
 ARG ORCID_CLIENT_ID
 ARG ORCID_CLIENT_SECRET
 ARG OAUTH_REDIRECT_FRONTEND
+WORKDIR /app
+RUN yarn install --frozen-lockfile
+RUN yarn build-prod
 
-# Only install NPM packages if package.json or yarn.lock change
-COPY package.json package.json
-COPY yarn.lock yarn.lock
-RUN yarn install
 
-COPY . .
+## Build and run the server
+FROM node:alpine AS runner
 
-# Build in /web-build folder
-RUN yarn build
+ENV NODE_ENV production
+WORKDIR /app
 
-## Serving directly does not work with router:
-# expo web --no-dev
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
 
-EXPOSE 5000
+COPY server.ts package.json yarn.lock ./ 
+RUN chown -R nodejs:nodejs /app
 
-ENTRYPOINT [ "yarn", "serve" ]
+COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=build-react --chown=nodejs:nodejs /app/web-build ./public
+
+
+USER nodejs
+
+EXPOSE 4000
+CMD ["yarn", "serve"]

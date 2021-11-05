@@ -40,7 +40,7 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ./frontend
       args:
         # FRONTEND_ENV: dev
         ORCID_CLIENT_ID: ${ORCID_CLIENT_ID}
