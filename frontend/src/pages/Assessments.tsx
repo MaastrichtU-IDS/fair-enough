@@ -320,7 +320,8 @@ export default function Assessments() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText> 
-            Add the code in the <code>evaluate()</code> function, 2 variables are passed to the assessment, plus you can access the assessment object itself to log what the test is trying to do, and why it success or fail:
+            Add the code in the <code>evaluate()</code> function, 2 variables are passed to the assessment, plus you can access the assessment object itself to log what the test is trying to do, and why it success or fail. 
+            Here are the main variables you have access to in the assessment:
           </ListItemText>
         </ListItem>
         <ListItem>
@@ -380,11 +381,11 @@ g = self.parseRDF(rdf_data, 'text/turtle', msg='content negotiation RDF')`}
         </code>
       </pre>
 
-      <Typography variant="body1" style={{textAlign: 'left', marginBottom: theme.spacing(1)}}>
+      <Typography variant="body1" style={{textAlign: 'left', marginTop: theme.spacing(3), marginBottom: theme.spacing(1)}}>
         Once you created your assessment, you can test it locally before submitting a pull request.
         <br/><br/>
         Start the stack with docker-compose following the instructions in the <a href='https://github.com/MaastrichtU-IDS/fair-enough#readme' target="_blank" rel="noopener noreferrer">README</a>. 
-        You can quickly test your assessment only on a resource URI with the <a href={settings.docsUrl + '#/assessments/run_assessment_rest_assessments_post'} target="_blank" rel="noopener noreferrer">POST /assessments</a> operation in the API, 
+        You can directly test your assessment on a given resource URI with the <a href={settings.docsUrl + '#/assessments/run_assessment_rest_assessments_post'} target="_blank" rel="noopener noreferrer">POST /assessments</a> operation in the API, 
         or you can also create a new collection, if you want to try it as part of a collection.
       </Typography>
 

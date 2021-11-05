@@ -144,6 +144,12 @@ To add new dependencies, run:
 poetry add my-package
 ```
 
+> If you don't have poetry installed locally or are facin issue with it, you can also add new packages with `docker-compose`, while the docker-compose is running run:
+>
+> ```bash
+> docker-compose exec backend poetry add my-package
+> ```
+
 If you install a new package you will need to stop the current docker-compose running, then restarting it to rebuild the docker image:
 
 ```bash
