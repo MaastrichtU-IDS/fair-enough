@@ -25,6 +25,8 @@ PyLD = "^2.0.3"
 google = "^3.0.0"
 beautifulsoup4 = "^4.10.0"
 strawberry-graphql = {extras = ["asgi"], version = "^0.83.4"}
+aiofiles = "^0.7.0"
+Jinja2 = "^3.0.2"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.770"

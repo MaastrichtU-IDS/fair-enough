@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header
+from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header, Request
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 # from typing import Collection, List, Optional
@@ -160,11 +160,16 @@ async def list_evaluations():
     db = get_db()
     return await db["evaluations"].find().to_list(1000)
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+router.mount("/static", StaticFiles(directory="static", html = True), name="static")
+# router.mount("/ui", StaticFiles(directory="web-build"), name="static")
+templates = Jinja2Templates(directory="static")
 
 @router.get(
     "/evaluations/{id}", response_description="Get a single evaluation", response_model=EvaluationModel
 )
-async def show_evaluation(id: PyObjectId, accept: Optional[str] = Header(None)) -> EvaluationModel:
+async def show_evaluation(request: Request, id: PyObjectId, accept: Optional[str] = Header(None)) -> EvaluationModel:
     # 61677ca946a6770a020fd173
     # print(id)
     # from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
@@ -180,7 +185,10 @@ async def show_evaluation(id: PyObjectId, accept: Optional[str] = Header(None)) 
     
     if evaluation is not None:
         if accept.startswith('text/html'):
-            return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluation/{str(id)}')
+            # If asking for html we redirect to frontend
+            # return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluation/{str(id)}')
+            # return RedirectResponse(url=f'/ui/evaluation/{str(id)}')
+            return templates.TemplateResponse("index.html", {"request": request})
         return evaluation
 
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
