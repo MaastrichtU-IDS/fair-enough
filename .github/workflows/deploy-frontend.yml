@@ -25,7 +25,7 @@ jobs:
       run: |
         git config --global user.email "vincent.emonet@gmail.com"
         git config --global user.name "Vincent Emonet"
-        cd frontend
+        cd frontend/app
         yarn install
         yarn build
 
@@ -34,7 +34,7 @@ jobs:
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
-        FOLDER: frontend/web-build
+        FOLDER: frontend/app/web-build
         CLEAN: true
 
     # - name: Deploy on GitHub

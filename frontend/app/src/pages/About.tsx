@@ -59,6 +59,12 @@ export default function About() {
       <Typography variant="body1" className={classes.mainText}>
         Developed and hosted by the <a href="https://www.maastrichtuniversity.nl/research/institute-data-science" className={classes.link} target="_blank" rel="noopener noreferrer">Institute of Data Science</a> at Maastricht University.
       </Typography>
+
+      <Typography variant="body1" className={classes.mainText}>
+        This platform take inspiration from existing FAIR evaluation implementations: the <a href="https://fairsharing.github.io/FAIR-Evaluator-FrontEnd/#!/" className={classes.link} target="_blank" rel="noopener noreferrer">FAIR evaluator</a>, 
+        FAIRsFAIR's <a href="https://f-uji.net/" className={classes.link} target="_blank" rel="noopener noreferrer">F-UJI</a>, 
+        and <a href="https://foops.linkeddata.es/FAIR_validator.html" className={classes.link} target="_blank" rel="noopener noreferrer">FOOPS!</a> ontology validator.
+      </Typography>
       
 
       <Typography variant="h4" className={classes.mainText} style={{margin: theme.spacing(2,0)}}>
