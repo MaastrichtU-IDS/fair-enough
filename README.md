@@ -1,6 +1,6 @@
 # ♻️ FAIR enough 🎯
 
-[![Run backend tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml) [![Deploy frontend to GitHub Pages](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/deploy-frontend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/deploy-frontend.yml) [![CodeQL analysis](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/codeql-analysis.yml)
+[![Run backend tests](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml) [![CodeQL analysis](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/codeql-analysis.yml)
 
 A service where anyone can run evaluations to assess how compliant to the FAIR principles is a resource, given the resource identifier (URI/URL).
 

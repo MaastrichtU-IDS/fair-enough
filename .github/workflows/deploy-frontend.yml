@@ -1,10 +1,11 @@
 name: Deploy frontend to GitHub Pages
+# Not used anymore because we deploy it on NodeJS to fix react routing
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-    - 'frontend/**'
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #   - 'frontend/**'
 
 jobs:
   deploy:
