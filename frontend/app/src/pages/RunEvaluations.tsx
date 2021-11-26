@@ -400,11 +400,16 @@ export default function Evaluation() {
         <Button type="submit" 
           variant="contained" 
           // className={classes.submitButton} 
-          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(2)}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
             Start the evaluation
         </Button>
+        {user.id &&
+          <Typography variant='body2' color='primary' style={{marginBottom: theme.spacing(3)}}>
+            ⚠️ Your ORCID will be publicly linked to the results of the evaluations you run while logged in.
+          </Typography>
+        }
       </form>
 
       {state.evaluationRunning && 

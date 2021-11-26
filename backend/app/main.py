@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import strawberry
@@ -71,3 +72,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
+@app.get("/", include_in_schema=False)
+def redirect_root_to_docs():
+    """Redirect the route / to /docs"""
+    return RedirectResponse(url='/docs')

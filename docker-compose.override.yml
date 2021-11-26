@@ -35,6 +35,7 @@ services:
       - RUN=celery worker -A app.worker -l info -Q main-queue
       # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
 
+  ## Use yarn dev locally to start it (easier than in docker)
   # frontend:
   #   build:
   #     context: ./frontend

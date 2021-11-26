@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocation, useHistory, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
@@ -17,10 +17,12 @@ import axiosRetry from 'axios-retry';
 // import { Doughnut } from 'react-chartjs-2';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { settings } from '../settings'
+import UserContext from '../UserContext';
 // import { useAuth } from 'oidc-react';
 
 export default function Collections() {
   const theme = useTheme();
+  const { user }: any = useContext(UserContext);
   const history = useHistory();
   // const auth = useAuth();
 
@@ -237,12 +239,18 @@ export default function Collections() {
       <Link to="/collection/create">
         <Button variant="contained" 
           // className={classes.submitButton} 
-          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(3)}}
           startIcon={<CreateCollectionIcon />}
           color="secondary" >
             Create a new collection
         </Button>
       </Link>
+
+      {user.id &&
+        <Typography variant='body2' color='primary' style={{marginBottom: theme.spacing(3)}}>
+          ⚠️ Your ORCID will be publicly linked to the collections you publish
+        </Typography>
+      }
 
       {/* <Link to="/collections" className={classes.linkButton}>
           <Tooltip title='Browse existing Collections of assessments'>
