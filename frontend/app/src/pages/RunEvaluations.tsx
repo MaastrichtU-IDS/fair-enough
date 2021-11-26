@@ -105,6 +105,7 @@ export default function Evaluation() {
     //   updateState({ urlToEvaluate: urlToEvaluate })
     //   doEvaluateUrl(urlToEvaluate)
     // }
+    updateState({ evaluationRunning: true })
     if (state.collectionsList.length < 1) {
       axios.get(settings.restUrl + '/collections', {
         headers: {'Content-Type': 'application/json'},
@@ -133,7 +134,7 @@ export default function Evaluation() {
             evaluationsList.push(evaluation)
           })
           updateState({ evaluationsList: evaluationsList })
-
+          updateState({ evaluationRunning: false })
         })
     }
   }, [])

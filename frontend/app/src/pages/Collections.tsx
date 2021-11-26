@@ -100,8 +100,8 @@ export default function Collections() {
     // if (urlToEvaluate) {
     //   updateState({ urlToEvaluate: urlToEvaluate })
     //   doEvaluateUrl(urlToEvaluate)
-    // }
-
+    // } 
+    updateState({ evaluationRunning: true })
     // Get the list of collections from API
     if (state.collectionsList.length < 1) {
       axios.get(settings.restUrl + '/collections', {
@@ -116,7 +116,7 @@ export default function Collections() {
             collectionsList.push(collec)
           })
           updateState({ collectionsList: collectionsList })
-
+          updateState({ evaluationRunning: false })
         })
     }
   }, [])
@@ -253,10 +253,6 @@ export default function Collections() {
           </Tooltip>
         </Link> */}
 
-      {/* {state.evaluationRunning && 
-        <CircularProgress style={{margin: theme.spacing(5, 0)}} />
-      } */}
-
       {/* Display the Data table listing the Evaluations */}
       {state.collectionsList.length > 0 && 
         <div style={{ height: 600, width: '100%' }}>
@@ -274,6 +270,11 @@ export default function Collections() {
           />
         </div>
       }
+
+
+      {/* {state.evaluationRunning && 
+        <CircularProgress style={{margin: theme.spacing(5, 0)}} />
+      } */}
     </Container>
   )
 }
