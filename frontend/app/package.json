@@ -4,7 +4,7 @@
   "scripts": {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "dev": "expo web",
+    "dev": "API_URL=http://localhost expo web",
     "eject": "expo eject",
     "build": "expo build:web",
     "build-prod": "API_URL=https://api.fair-enough.semanticscience.org expo build:web",

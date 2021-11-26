@@ -38,7 +38,6 @@ Search for the URI using the resource title in search engines (Google)"""
 
                     if 'titles' in datacite_data.keys():
                         eval.data['datacite']['title'] = datacite_data['titles'][0]['title']
-                        print('tiiitle')
                         print(eval.data['datacite']['title'])
                         if not 'resource_title' in eval.data:
                             eval.data['resource_title'] = eval.data['datacite']['title']

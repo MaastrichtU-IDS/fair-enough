@@ -413,7 +413,7 @@ export default function Evaluation() {
       {/* Display the Data table listing the Evaluations */}
       {state.evaluationsList.length > 0 && 
         <div style={{ height: 600, width: '100%' }}>
-          {console.log(state.evaluationsList)}
+          {/* {console.log(state.evaluationsList)} */}
           <DataGrid
             columns={columns}
             rows={state.evaluationsList}

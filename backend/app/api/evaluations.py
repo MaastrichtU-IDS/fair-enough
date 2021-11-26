@@ -154,11 +154,27 @@ async def create_evaluation(
 
 @router.get(
     "/evaluations", response_description="List all evaluations", 
-    response_model=List[EvaluationModel]
+    # response_model=List[EvaluationModel]
+    response_model=List[dict]
 )
 async def list_evaluations():
     db = get_db()
-    return await db["evaluations"].find().to_list(1000)
+    # full_evals = await db["evaluations"].find().to_list()
+    full_evals = await db["evaluations"].find().to_list(10000)
+
+    # Do not return large fields like data to make it faster for the frontend
+    partial_evals = []
+    for eval in full_evals:
+        partial_evals.append({
+            '_id': str(eval['_id']),
+            'resource_uri': eval['resource_uri'],
+            'collection': eval['collection'],
+            'score': eval['score'],
+            'created': eval['created'],
+            'author': eval['author'],
+            '@id': eval['@id'],
+        })
+    return partial_evals
 
 
 @router.get(

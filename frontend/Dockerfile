@@ -1,5 +1,5 @@
 ## Install server dependencies only when needed
-FROM node:alpine AS deps
+FROM node:16-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 # RUN apk add --no-cache libc6-compat
 
@@ -9,20 +9,22 @@ RUN yarn install --frozen-lockfile
 
 
 ## Build React website
-FROM node:alpine AS build-react
+FROM node:16-alpine AS build-react
 COPY app /app
 ARG ORCID_CLIENT_ID
 ARG ORCID_CLIENT_SECRET
 ARG OAUTH_REDIRECT_FRONTEND
+ENV API_URL=http://localhost
 WORKDIR /app
 RUN yarn install --frozen-lockfile
 RUN yarn build-prod
 
 
 ## Build and run the server
-FROM node:alpine AS runner
+FROM node:16-alpine AS runner
 
 ENV NODE_ENV production
+ENV API_URL=http://localhost
 WORKDIR /app
 
 RUN addgroup -g 1001 -S nodejs

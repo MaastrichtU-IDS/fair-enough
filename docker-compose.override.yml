@@ -40,16 +40,15 @@ services:
   #     context: ./frontend
   #     args:
   #       FRONTEND_ENV: dev
+  #       API_URL: http://localhost
   #   ports:
   #     - 19006:19006
+  #     - 4000:4000
   #   command: "yarn dev"
-  #   volumes:
-  #     - ./frontend:/webapp
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
-  #     - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5000
+  #   environment:
+  #     - API_URL=http://localhost
+  #   # volumes:
+  #   #   - ./frontend:/webapp
 
 
   # proxy:

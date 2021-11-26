@@ -5,7 +5,7 @@
   "license": "MIT",
   "homepage": ".",
   "scripts": {
-    "build": "cd ../frontend && yarn build && mkdir -p public && cd ../server && cp -R ../frontend/web-build/* public/",
+    "build": "cd ./app && yarn build && mkdir -p public && cd .. && cp -R app/web-build/* public/",
     "dev": "nodemon server.ts",
     "serve": "ts-node server.ts",
     "start": "yarn build && yarn serve",
