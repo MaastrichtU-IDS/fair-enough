@@ -102,6 +102,7 @@ Examples of resources to evaluate:
 * Kaggle: https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge 
 * RIVM data repository: https://data.rivm.nl/meta/srv/eng/rdf.metadata.get?uuid=1c0fcd57-1102-4620-9cfa-441e93ea5604&approved=true
 * NeuroDKG publication: https://doi.org/10.5281/zenodo.5541440
+* Human Protein Atlas page: https://www.proteinatlas.org/ENSG00000084110-HAL
 * ORCID profile: https://orcid.org/0000-0002-1501-1082""",
     response_description="Add a new evaluation", 
     response_model={})

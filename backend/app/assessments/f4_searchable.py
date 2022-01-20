@@ -1,7 +1,12 @@
-from app.models import AssessmentModel, EvaluationModel
+from app.models import AssessmentModel, EvaluationModel, MetricInput
 import requests
 # from googlesearch import search
 
+from fastapi import APIRouter, Body, Depends
+from fastapi_utils.cbv import cbv
+from rdflib import Graph
+
+# @cbv(router)
 class Assessment(AssessmentModel):
     fair_type = 'f'
     metric_id = '4'
@@ -77,4 +82,46 @@ class Assessment(AssessmentModel):
 
             
         return eval, g 
+
+
+    # class RunEvaluate:
+    #     # def evaluate(eval: EvaluationModel, g):
+    #     #     evaluate(eval, g)
+    #     def __init__(self, evaluate = None, metric_label: str = ''):
+    #         self.evaluate = evaluate()
+    #         self.metric_label = metric_label
+
+
+    metric_label = fair_type + metric_id + '_' + title.lower().replace(' ', '_')
+    api: APIRouter = APIRouter()
+    @api.post(
+        "/" + metric_label,
+        name=title,
+        description=description,
+        response_description="FAIR metric score", 
+    )
+    def fair_metrics(
+            self,
+            input: MetricInput = Body(...)
+        ) -> dict:
+        try: 
+            init_eval = {
+                'resource_uri': input.subject,
+                'title': 'Run assessment',
+                'collection': 'fair-metrics',
+                'data': {'alternative_uris': [input.subject]},
+                # '@id': f'{settings.BASE_URI}/evaluation/run-assessment',
+                # '@context': settings.CONTEXT
+            }
+            eval = EvaluationModel(**init_eval)
+            g = Graph()
+
+            eval, g = self.evaluate(eval, g)
+            # return eval.results[0].dict(with_alias=True)
+            print(eval.results[0])
+            eval.results[0]['data'] = eval.data
+            return eval.results[0]
+        except Exception as e:
+            print('❌ Error running the assessment ' + self.metric_label)
+            print(e)
 

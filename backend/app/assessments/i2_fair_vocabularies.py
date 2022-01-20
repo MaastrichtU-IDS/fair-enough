@@ -26,8 +26,11 @@ Resolve IRIs, check FAIRness of the returned documents."""
 
         # self.check('Checking RDF metadata vocabularies')
         # rdflib_ns = [n for n in g.namespace_manager.namespaces()]
-        rdflib_ns = [n for n in g.namespaces()]
-        print(rdflib_ns)
+        # rdflib_ns = [n for n in g.namespaces()]
+        # print(rdflib_ns)
+        # Checkout the prefixes/namespaces
+        for ns_prefix, namespace in g.namespaces():
+            print(ns_prefix, ' => ', namespace)
 
         # Extract namespace manually because RDFLib can't do it
         extracted_ns = []

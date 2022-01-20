@@ -17,6 +17,9 @@ from app.config import settings
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 
+class MetricInput(BaseModel):
+    subject: str
+
 class AssessmentModel(BaseModel):
     id: Optional[str]
     title: str
@@ -156,3 +159,5 @@ class AssessmentModel(BaseModel):
     def advice(self, log_msg: str):
         self.log(log_msg, 'ℹ️')
 
+    class Config:
+        arbitrary_types_allowed = True
