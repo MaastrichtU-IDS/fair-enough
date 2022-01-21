@@ -13,4 +13,4 @@ api_router.include_router(login.router, tags=["login"])
 
 ## Add FAIR metrics API calls here
 # api_router.include_router(metrics.router, prefix="/metrics", tags=["metrics"])
-api_router.include_router(fair_metrics.router, prefix="/metrics", tags=["metrics"])
+api_router.include_router(fair_metrics.router, prefix="/tests", tags=["tests"])

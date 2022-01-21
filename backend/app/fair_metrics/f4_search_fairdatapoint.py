@@ -1,21 +1,28 @@
 from fastapi import APIRouter, Body
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from app.models import MetricResult, MetricInput
 from rdflib import Graph, URIRef
 from rdflib.namespace import RDF, DC, DCTERMS, RDFS
 import requests
 
 
-metric_id = 'f4-search-fairdatapoint'
-metric_name = "Searchable in FAIR Data Point"
-metric_description = """FAIR Metrics F4: resource is indexed in a searchable resource. 
-Search for the resource title in FAIR Data Point, implemented originally for Rare Diseases"""
+metric_id = 'RD-F4'
+metric_name = "FAIR Metrics Domain Specific - Use of Rare Disease (RD) specific Search Engines to find the (meta)data of the indexed resource"
+metric_description = """We extract the title property of the resource from the metadata document and check if the RD specific search engine returns the metadata document of the resource that we are testing."""
 
 class TestInput(MetricInput):
     subject = 'https://w3id.org/ejp-rd/fairdatapoints/wp13/dataset/c5414323-eab1-483f-a883-77951f246972'
 
 
 api = APIRouter()
+
+@api.get(f"/{metric_id}", name=metric_name,
+    description=metric_description, response_model=str, response_class=PlainTextResponse(media_type='text/x-yaml'),
+)
+def metric_yaml() -> str:
+    return PlainTextResponse(content=yaml, media_type='text/x-yaml')
+
+
 @api.post(f"/{metric_id}", name=metric_name,
     description=metric_description, response_model=dict,
 )            
@@ -57,3 +64,51 @@ def metric_test(input: TestInput = Body(...)) -> dict:
         result.comment = f'The subject title could not be found in the resource RDF available at {input.subject}'
 
     return JSONResponse(result.toJsonld())
+
+
+yaml = f"""swagger: '2.0'
+info:
+ version: 'Hvst-1.4.0:RD-F4-Tst-0.0.3'
+ title: "{metric_name}"
+ x-tests_metric: 'https://w3id.org/rd-fairmetrics/RD-R1'
+ description: >-
+   {metric_description}
+ x-applies_to_principle: "F4"
+ contact:
+  x-organization: "EJP-RD & ELIXIR Metrics for Rare Disease"
+  url: "https://github.com/LUMC-BioSemantics/RD-FAIRmetrics"
+  name: 'Rajaram Kaliyaperumal'
+  x-role: "responsible developer"
+  email: r.kaliyaperumal@lumc.nl
+  x-id: '0000-0002-1215-167X'
+host: w3id.org/rd-fairness-tests
+basePath: /rest/tests/
+schemes:
+  - https
+paths:
+ {metric_id}:
+  post:
+   parameters:
+    - name: content
+      in: body
+      required: true
+      schema:
+        $ref: '#/definitions/schemas'
+   consumes:
+     - application/json
+   produces:
+     - application/json
+   responses:
+     "200":
+       description: >-
+        The response is a binary (1/0), success or failure
+definitions:
+  schemas:
+    required:
+     - subject
+    properties:
+        subject:
+          type: string
+          description: >-
+            the GUID being tested
+"""

@@ -1,24 +1,28 @@
 from fastapi import APIRouter, Body
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from app.models import MetricResult, MetricInput
 from rdflib import Graph, URIRef
 from rdflib.namespace import RDF, DC, DCTERMS, RDFS
 from pyshex import ShExEvaluator
 import requests
 
-
-metric_id = 'r3-validate-patient-registry'
-metric_name = "Validate Patient Registry metadata"
-metric_description = """FAIR Metrics R3 (meet community standards) for Patient Registry, 
-validates that all entities with the rdf:type <http://purl.org/ejp-rd/vocabulary/PatientRegistry> in the subject RDF metadata are valid using a ShEx expression.
-
-The ShEx expression used can be found at <https://github.com/ejp-rd-vp/resource-metadata-schema/blob/master/docs/patient-registry.md#shex>"""
+metric_id = 'RD-R1-3'
+metric_name = "FAIR Metrics Domain Specific - RD-R1.3 Metadata conforms to EJP RD model"
+metric_description = """A domain-specific test for metadata of resources in the Rare Disease domain. It tests if the metadata is structured conforming to the EJP RD DCAT-based metadata model. No failures in the ShEx validation of the metadata content of the resource against the EJP RD ShEx shapes, will be sufficient to pass the test."""
 
 class TestInput(MetricInput):
     subject = 'https://raw.githubusercontent.com/ejp-rd-vp/resource-metadata-schema/master/data/example-rdf/turtle/patientRegistry.ttl'
 
 
 api = APIRouter()
+
+@api.get(f"/{metric_id}", name=metric_name,
+    description=metric_description, response_model=str, response_class=PlainTextResponse(media_type='text/x-yaml'),
+)
+def metric_yaml() -> str:
+    return PlainTextResponse(content=yaml, media_type='text/x-yaml')
+
+
 @api.post(f"/{metric_id}", name=metric_name,
     description=metric_description, response_model=dict,
 )            
@@ -55,6 +59,54 @@ def metric_test(input: TestInput = Body(...)) -> dict:
     return JSONResponse(result.toJsonld())
 
 
+#  x-tests_metric: 'https://api.fair-enough.semanticscience.org/rest/tests/RD-R1-3'
+yaml = f"""swagger: '2.0'
+info:
+ version: 'Hvst-1.4.0:RD-R1-3-Tst-0.0.3'
+ title: "{metric_name}"
+ x-tests_metric: 'https://w3id.org/rd-fairmetrics/RD-R1-3'
+ description: >-
+  {metric_description}
+ x-applies_to_principle: "R1.3"
+ contact:
+  x-organization: "EJP-RD & ELIXIR Metrics for Rare Disease"
+  url: "https://github.com/LUMC-BioSemantics/RD-FAIRmetrics"
+  name: 'Núria Queralt Rosinach'
+  x-role: "responsible developer"
+  email: n.queralt_rosinach@lumc.nl
+  x-id: '0000-0003-0169-8159'
+host: w3id.org/rd-fairness-tests
+basePath: /rest/tests/
+schemes:
+  - https
+paths:
+ {metric_id}:
+  post:
+   parameters:
+    - name: content
+      in: body
+      required: true
+      schema:
+        $ref: '#/definitions/schemas'
+   consumes:
+     - application/json
+   produces:  
+     - application/json
+   responses:
+     "200":
+       description: >-
+        The response is a binary (1/0), success or failure
+definitions:
+  schemas:
+    required:
+     - subject
+    properties:
+        subject:
+          type: string
+          description: >-
+            the GUID being tested"""
+
+
 patientregistry_shex = """PREFIX : <http://purl.org/ejp-rd/metadata-model/v1/shex/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX dct:   <http://purl.org/dc/terms/>
@@ -88,29 +140,4 @@ PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
   a [sio:SIO_001166];
   rdfs:label ["National" "International" "Regional"]
 }"""
-
-# TO REMOVE: A test case that fails to check pyshex works
-rdf_test = """@prefix : <http://purl.org/ejp-rd/metadata-model/v1/example-rdf/> .
-@prefix dcat:  <http://www.w3.org/ns/dcat#> .
-@prefix dct:   <http://purl.org/dc/terms/> .
-@prefix ejp:   <http://purl.org/ejp-rd/vocabulary/> .
-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
-@prefix sio:  <http://semanticscience.org/resource/> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix ordo: <http://www.orpha.net/ORDO/> .
-:patientRegistry a ejp:PatientRegistry ;
-  dct:publisher :organisation ;        
-  dct:title "Von Hippel-Lindau registry" ;
-  dct:description "Registry from Von Hippel-Lindau";
-  ejp:populationCoverage  :population_coverage ;
-  dcat:theme  ordo:Orphanet_892 ;
-  foaf:page "https://www.uniklinik-freiburg.de/medizin4.html" .
-
-:organisation a foaf:NotAnOrganisation ;
-  dct:title "EKlinik für Innere Medizin IV" ;
-  dct:spatial  :location .
-:population_coverage  a sio:SIO_001166 ;
-  rdfs:label  "Regional" .
-:location a dct:Location ;
-  dct:title  "Germany" ."""
 
