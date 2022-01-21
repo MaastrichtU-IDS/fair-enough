@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
 from app.api import login, evaluations, collections, assessments
-from app.fair_metrics import fairmetrics_f4, fairmetrics_shex
 from app import fair_metrics
 # from app.metrics import 
 

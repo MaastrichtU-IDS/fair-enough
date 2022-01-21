@@ -17,9 +17,6 @@ from app.config import settings
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
 
-class MetricInput(BaseModel):
-    subject: str
-
 class AssessmentModel(BaseModel):
     id: Optional[str]
     title: str
