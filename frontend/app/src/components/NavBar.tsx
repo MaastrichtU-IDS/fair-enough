@@ -95,28 +95,29 @@ export default function NavBar() {
 
 
   const onSuccess = (response: any) => {
+    getCurrentUser(response)
     // console.log(response)
     // const tokenRes: any = JSON.stringify(response)
     // console.log('tokenRes')
     // console.log(response['access_token'])
     // console.log(response)
 
-    axios.get(settings.restUrl + '/current-user', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + response['access_token']
-      },
-    })
-      .then((res: any) => {
-        console.log('got current user')
-        let user = res.data
-        user['access_token'] = response['access_token']
-        console.log(user)
-        setUser(user)
-        localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
-        // window.location.reload();
-        // TODO: refactor to use Context without reload
-      })
+    // axios.get(settings.restUrl + '/current-user', {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'Bearer ' + response['access_token']
+    //   },
+    // })
+    //   .then((res: any) => {
+    //     console.log('got current user')
+    //     let user = res.data
+    //     user['access_token'] = response['access_token']
+    //     console.log(user)
+    //     setUser(user)
+    //     localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
+    //     // window.location.reload();
+    //     // TODO: refactor to use Context without reload
+    //   })
 
     // localStorage.setItem("fairEnoughSettings", JSON.stringify(response));
     // window.location.reload();
@@ -126,38 +127,56 @@ export default function NavBar() {
   const logout = () => {
     localStorage.clear();
     setUser({})
+    handleClickAway()
     // window.location.reload();
   }
 
-  React.useEffect(() => {
-    const localStorageConfig: any = localStorage.getItem("fairEnoughSettings");
-    // console.log(localStorageConfig)
-    let configState: any = JSON.parse(localStorageConfig);
-    if (configState && configState['access_token']) {
-      axios.get(settings.restUrl + '/current-user', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + configState['access_token']
-        },
-      })
-        .then((res: any) => {
-          let user = res.data
-          if (!user.error) {
-            user['access_token'] = configState['access_token']
-            if (user['given_name'] || user['family_name']) {
-              user['username'] = configState['given_name'] + ' ' + configState['family_name']
-            } else if (user['name']) {
-              user['username'] = user['name']
-            }
-            setUser(user)
+
+  const getCurrentUser = (configState: any) => {
+    axios.get(settings.restUrl + '/current-user', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + configState['access_token']
+      },
+    })
+      .then((res: any) => {
+        let current_user = res.data
+        console.log('current_user!!', current_user)
+        current_user['access_token'] = configState['access_token']
+        // setUser(current_user)
+        if (!current_user.error) {
+          current_user['access_token'] = configState['access_token']
+          if (current_user['given_name'] || current_user['family_name']) {
+            current_user['username'] = current_user['given_name'] + ' ' + current_user['family_name']
+          } else if (current_user['name']) {
+            current_user['username'] = current_user['name']
+          } else {
+            current_user['username'] = current_user['sub']
           }
-          // https://stackoverflow.com/questions/25686484/what-is-intent-of-id-token-expiry-time-in-openid-connect
-          // If the token is expired, it should make another auth request, except this time with prompt=none in the URL parameter
-          // Getting an error with prompt if not login
-          
-          // localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
-          // window.location.reload();
-        })
+          setUser(current_user)
+          localStorage.setItem("fairEnoughSettings", JSON.stringify(current_user));
+        }
+        // https://stackoverflow.com/questions/25686484/what-is-intent-of-id-token-expiry-time-in-openid-connect
+        // If the token is expired, it should make another auth request, except this time with prompt=none in the URL parameter
+        // Getting an error with prompt if not login
+        
+        // localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
+        // window.location.reload();
+      })
+      .catch((error: any) => {
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+      })
       // Also possible and lighter on the Auth API: just check the cookie
       // const username = configState['given_name'] + ' ' + configState['family_name']
       // updateState({ currentUsername: username, accessToken: configState['access_token'], loggedIn: true})
@@ -168,7 +187,52 @@ export default function NavBar() {
       //   access_token: configState['access_token'],
       //   id: configState['id'],
       // })
+  }
+
+  React.useEffect(() => {
+    const localStorageConfig: any = localStorage.getItem("fairEnoughSettings");
+    // console.log(localStorageConfig)
+    let configState: any = JSON.parse(localStorageConfig);
+    if (configState && configState['access_token']) {
+      getCurrentUser(configState)
     }
+
+    // if (configState && configState['access_token']) {
+    //   axios.get(settings.restUrl + '/current-user', {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': 'Bearer ' + configState['access_token']
+    //     },
+    //   })
+    //     .then((res: any) => {
+    //       let user = res.data
+    //       if (!user.error) {
+    //         user['access_token'] = configState['access_token']
+    //         if (user['given_name'] || user['family_name']) {
+    //           user['username'] = configState['given_name'] + ' ' + configState['family_name']
+    //         } else if (user['name']) {
+    //           user['username'] = user['name']
+    //         }
+    //         setUser(user)
+    //       }
+    //       // https://stackoverflow.com/questions/25686484/what-is-intent-of-id-token-expiry-time-in-openid-connect
+    //       // If the token is expired, it should make another auth request, except this time with prompt=none in the URL parameter
+    //       // Getting an error with prompt if not login
+          
+    //       // localStorage.setItem("fairEnoughSettings", JSON.stringify(user));
+    //       // window.location.reload();
+    //     })
+    //   // Also possible and lighter on the Auth API: just check the cookie
+    //   // const username = configState['given_name'] + ' ' + configState['family_name']
+    //   // updateState({ currentUsername: username, accessToken: configState['access_token'], loggedIn: true})
+    //   // console.log('access_token before setUser')
+    //   // console.log(configState)
+    //   // setUser({
+    //   //   username: username, 
+    //   //   access_token: configState['access_token'],
+    //   //   id: configState['id'],
+    //   // })
+    // }
     // const { setSalad } = useContext(SaladContext)
   // }, [user])
   }, [])
@@ -244,7 +308,8 @@ export default function NavBar() {
         {/* <Button variant='contained' color='primary' size='small' component="span"> */}
         {/* {} */}
         { user.username && 
-            <Button variant='contained' onClick={showUserInfo} color='secondary' size='small'>
+            <Button variant='contained' onClick={showUserInfo} color='secondary' 
+                style={{textTransform: 'none'}} size='small'>
               {user.username}
             </Button>
         }

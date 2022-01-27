@@ -26,23 +26,6 @@ async def list_tests() -> List[dict]:
     return tests
 
 
-# async def register_test(test, db):
-#     existing_test = await db["metrics_tests"].find_one({"_id": test['url']})
-#     if not existing_test is None:
-#         raise HTTPException(status_code=500, detail=f"Provided metrics test URL {test['url']} has already been registered")
-
-#     try: 
-#         res = requests.get(test['url'])
-#         testInfo = yaml.load(res.text, Loader=yaml.FullLoader)
-#         testInfo['_id'] = test['url']
-#         print(testInfo)
-#         new_entry = await db["metrics_tests"].insert_one(testInfo)
-#         return JSONResponse(status_code=status.HTTP_201_CREATED, content=testInfo)
-#     except Exception as e:
-#         print(e)
-#         raise HTTPException(status_code=404, detail=f"Error registering the URL {test['url']}")
-
-
 @router.post(
     "/metric-test", 
     response_description="Register a metric test by providing its URL", 

@@ -22,14 +22,14 @@ async def create_collection(
     db = get_db()
 
     if not re.match('^[0-9a-zA-Z-]{3,}$', collection['_id']):
-        raise HTTPException(status_code=403, detail=f"Collection {collection['_id']} should be at least 3 characters long, and not contains strange characters, only alphanumeric and dash, e.g. fair-metrics")
+        raise HTTPException(status_code=422, detail=f"Collection {collection['_id']} should be at least 3 characters long, and not contains strange characters, only alphanumeric and dash, e.g. fair-metrics")
 
     if len(collection['assessments']) < 1:
-        raise HTTPException(status_code=403, detail=f"Collection should contain at least 1 assessment")
+        raise HTTPException(status_code=422, detail=f"Collection should contain at least 1 assessment")
     if len(collection['title']) < 1:
-        raise HTTPException(status_code=403, detail=f"Provide a title for the collection")
+        raise HTTPException(status_code=422, detail=f"Provide a title for the collection")
     if len(collection['description']) < 1:
-        raise HTTPException(status_code=403, detail=f"Provide a description for the collection")
+        raise HTTPException(status_code=422, detail=f"Provide a description for the collection")
 
     # Check if given tests URLs are valid (check the YAML)
     # all_assessments = await 
@@ -63,7 +63,7 @@ async def create_collection(
         created_collection = await db["collections"].find_one({"_id": new_collection.inserted_id})
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_collection)
     except DuplicateKeyError:
-        raise HTTPException(status_code=403, detail=f"Collection {collection['_id']} already exists")
+        raise HTTPException(status_code=422, detail=f"Collection {collection['_id']} already exists")
 
 
 @router.get(
@@ -109,7 +109,7 @@ async def update_collection(
 
     # Check if the collection updated has been published by the same ORCID user
     if current_user['id'] != existing_collection['author']:
-        raise HTTPException(status_code=503, detail=f"Collection belongs to {existing_collection['author']}, but you are logged with {current_user['id']}")
+        raise HTTPException(status_code=403, detail=f"Collection belongs to {existing_collection['author']}, but you are logged with {current_user['id']}")
 
     if len(collection) >= 1:
         update_result = await db["collections"].update_one({"_id": id}, {"$set": collection})
@@ -133,7 +133,7 @@ async def delete_collection(id: str, current_user: models.User = Depends(login.g
     # Check if the deleted collection has been published by the same ORCID user
     existing_collection = await db["collections"].find_one({"_id": id})
     if current_user['id'] != existing_collection['author']:
-        raise HTTPException(status_code=503, detail=f"Collection belongs to {existing_collection['author']}, but you are logged with {current_user['id']}")
+        raise HTTPException(status_code=403, detail=f"Collection belongs to {existing_collection['author']}, but you are logged with {current_user['id']}")
 
     if delete_result.deleted_count == 1:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)

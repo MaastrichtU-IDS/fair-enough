@@ -60,10 +60,12 @@ async def create_evaluation(
     print('Start evaluation!')
 
     if len(evaluation['resource_uri']) < 2:
-        raise HTTPException(status_code=500, detail=f"No URL has been provided as resource_uri to evaluate")
+        print('FAIL for resource_uri')
+        raise HTTPException(status_code=422, detail=f"No URL has been provided as resource_uri to evaluate")
 
     collection = await db["collections"].find_one({"_id": evaluation['collection']})
     if collection is None:
+        print('FAIL for collec')
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
 
     print(collection['assessments'])

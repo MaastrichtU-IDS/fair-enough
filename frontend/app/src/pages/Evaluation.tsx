@@ -4,25 +4,13 @@ import { useLocation, useParams, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 // import { makeStyles, useTheme, withStyles } from '@mui/styles';
-import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
-import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Divider, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
+import { Typography, Container, Button, Paper, Box, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem } from "@mui/material";
+import { LinearProgress, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DownloadJsonIcon from '@mui/icons-material/GetApp';
-import SettingsIcon from '@mui/icons-material/Settings';
 import PassIcon from '@mui/icons-material/CheckCircle';
 import FailIcon from '@mui/icons-material/Error';
-// import EvaluationIcon from '@mui/icons-material/Send';
-// import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
-import EvaluationIcon from '@mui/icons-material/NetworkCheck';
-import HelpIcon from '@mui/icons-material/Help';
-
-import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
-// import Pagination from '@mui/material/Pagination';
-
 import axios from 'axios';
-// import { Doughnut } from 'react-chartjs-2';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
-
 import {settings} from '../settings'
 
 import hljs from 'highlight.js/lib/core';
@@ -119,13 +107,41 @@ export default function Evaluation() {
         const evalArray: any = []
         Object.keys(evalResults).map((metricTest: any) => {
           if (metricTest !== 'summary' && metricTest !== '_id' && metricTest !== '@id') {
-            const metricWithUrl: any = {'results': evalResults[metricTest]}
-            metricWithUrl['metrics_test_url'] = metricTest
-            evalArray.push(metricWithUrl)
+            // const metricWithUrl: any = {'results': evalResults[metricTest]}
+            const metricRes: any = {'metrics_test_url': metricTest}
+
+            try {
+              metricRes['score'] = evalResults[metricTest][0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']
+            } catch (e) {
+              metricRes['score'] = 0
+            }
+            try {
+              metricRes['subject'] = evalResults[metricTest][0]['http://semanticscience.org/resource/SIO_000332'][0]['@id']
+            } catch (e) {
+              metricRes['subject'] = 'Not provided'
+            }
+            try {
+              metricRes['version'] = evalResults[metricTest][0]['http://schema.org/softwareVersion'][0]['@value']
+            } catch (e) {
+              metricRes['version'] = 'not provided'
+            }
+            try {
+              metricRes['test_url'] = evalResults[metricTest][0]['@id']
+            } catch (e) {
+              metricRes['test_url'] = 'not provided'
+            }
+            try {
+              metricRes['comment'] = evalResults[metricTest][0]['http://schema.org/comment'][0]['@value']
+            } catch (e) {
+              metricRes['comment'] = 'FAILURE: The metric test endpoint did not returned anything'
+            }
+            evalArray.push(metricRes)
           }
         })
-
-        updateState({ evaluationResults: evalResults, evalArray: evalArray })
+        updateState({ 
+          evaluationResults: evalResults, 
+          evalArray: evalArray 
+        })
 
         axios.get(settings.restUrl + '/metric-tests')
           .then((res: any) => {
@@ -135,7 +151,6 @@ export default function Evaluation() {
               metricsTestsMap[test['_id']] = test
               metricsTestsArray.push(test)
             })
-
             updateState({ metricsTestsMap: metricsTestsMap, metricsTestsArray: metricsTestsArray })
           })
 
@@ -248,12 +263,12 @@ export default function Evaluation() {
             // Iterate over the evaluation results to show the different metrics tests, output and debug log
             filteredResults.map((item: any, key: number) => (
                 <Grid item xs={12} md={12} key={key}>
-                  <Accordion defaultExpanded={item['results'][0]['http://semanticscience.org/resource/SIO_000300'][0]['@value'] == 0 ? true : false}>
+                  <Accordion defaultExpanded={item['score'] == 0 ? true : false}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                       {/* {getBadgeTestStatus(item.test_status)}&nbsp; */}
                       {/* {getBadgeMaturity(item['results'][0]['http://semanticscience.org/resource/SIO_000300'][0]['@value'])}&nbsp; */}
                       <Typography variant="h6" style={{display: 'inline-flex',alignItems: 'center'}}>
-                        {getBadgeMaturity(item['results'][0]['http://semanticscience.org/resource/SIO_000300'][0]['@value'])}&nbsp;
+                        {getBadgeMaturity(item['score'])}&nbsp;
                         {state.metricsTestsMap[item.metrics_test_url]['info']['x-applies_to_principle']} - {state.metricsTestsMap[item.metrics_test_url]['info']['title']}
                       </Typography>
                     </AccordionSummary>
@@ -263,14 +278,16 @@ export default function Evaluation() {
                           <>
                             <Typography variant="body1" style={{marginBottom: theme.spacing(1)}}>
                               <a href={item.metrics_test_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.metrics_test_url}</a>
-                              &nbsp;- Version: <i>{item['results'][0]['http://schema.org/softwareVersion'][0]['@value']}</i>
+                              &nbsp;- Version: <i>{item['version']}</i>
                               &nbsp;- {state.metricsTestsMap[item.metrics_test_url]['info']['description']}
                             </Typography>
                             {/* <Typography variant="body1" style={{marginBottom: theme.spacing(1)}}>
                               Test version: {item['results'][0]['http://schema.org/softwareVersion'][0]['@value']}
                             </Typography> */}
                             <Typography variant="body1">
-                              Test result URL: <a href={item['results'][0]['@id']} className={classes.link} target="_blank" rel="noopener noreferrer">{item['results'][0]['@id']}</a>
+                              Test result URL: <a href={item['test_url']} className={classes.link} target="_blank" rel="noopener noreferrer">
+                                {item['test_url']}
+                              </a>
                               {/* style={{textDecoration: 'none'}} */}
                             </Typography>
                           </>
@@ -279,7 +296,7 @@ export default function Evaluation() {
                           <pre>
                             <code className="language-pythonlogging" style={{whiteSpace: 'pre-wrap', overflowX: 'auto'}}>
                               {/* {item[0]['http://schema.org/comment'][0]['@value'].replace(/\n\n/g, '\n')} */}
-                              {item['results'][0]['http://schema.org/comment'][0]['@value'].split("\n\n")
+                              {item['comment'].split("\n\n")
                               .filter((log: string) => {
                                 return filterLog(log)
                               }).join("\n")}
@@ -343,28 +360,6 @@ export default function Evaluation() {
                 </Box>
               </Box>
             </Grid>
-
-            {/* <Grid item xs={3} md={3}>
-              <Typography variant="h5" style={{margin: theme.spacing(3, 0)}}>
-                Bonus score: {state.evaluationResults['summary']['score']['total_bonus']}/{state.evaluationResults['score']['total_bonus_max']}
-              </Typography>
-              <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                <CircularProgress variant="determinate" value={state.evaluationResults['score']['bonus_percent']}/>
-                <Box
-                  sx={{
-                    top: 0, left: 0, bottom: 0, right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography variant="caption" component="div">
-                    {`${state.evaluationResults['score']['bonus_percent']}%`}<br/>
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid> */}
           </Grid>
 
           {/* Log level dropdown select */}
@@ -391,7 +386,6 @@ export default function Evaluation() {
             </Tooltip> */}
           </Box>
 
-          {/* {getResultsForCategory('📋️ Tests results')} */}
           {/* Display results per category */}
           {getResultsForCategory('Findable')}
           {getResultsForCategory('Accessible')}

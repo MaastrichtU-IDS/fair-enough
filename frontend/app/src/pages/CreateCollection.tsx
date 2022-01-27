@@ -423,9 +423,7 @@ export default function Evaluation() {
             Add assessments to your collection:
           </Typography>
           <Typography variant="body1" style={{textAlign: 'center', margin: theme.spacing(3, 0)}}>
-            ⚠️ The order of the assessments in your collection matters, since they will be run one after the other in this order.
-            Some assessments harvest metadata, when others assessments will run some checks (sometime on the previously harvested metadata). 
-            It is recommended to put harvester assessments at the start of your collection.
+            ℹ️ The order of the assessments in your collection does not matter!
           </Typography>
           <Grid container spacing={1}>
             { state.assessmentsList

@@ -77,6 +77,8 @@ export default function Evaluation() {
     metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
     use_datacite: true,
     showReleaseMsg: true,
+    openError: 'none',
+    errorMessage: '',
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -175,7 +177,8 @@ export default function Evaluation() {
   const doEvaluateUrl  = (evaluateUrl: string) => {
     updateState({
       evaluationRunning: true,
-      evaluationResults: null
+      evaluationResults: null,
+      openError: 'none'
     })
     console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.docsUrl)
     const postJson: any = {
@@ -212,6 +215,30 @@ export default function Evaluation() {
             // Redirect to the page of the created evaluation
             history.push("/evaluation/" + evalId);
           })
+      })
+      .catch(function (error) {
+        updateState({
+          openError: 'inline', 
+          evaluationRunning: false,
+          errorMessage: 'Error when running the evaluation, please retry.'
+        })
+        if (error.response) {
+          // Request made and server responded
+          // {"detail":[{"loc":["body","homepage"],"msg":"invalid or missing URL scheme","type":"value_error.url.scheme"}]}
+          if (error.response.data["detail"]) {
+            updateState({ errorMessage: 'Error: ' + JSON.stringify(error.response.data["detail"])})
+          } else {
+            updateState({ errorMessage: JSON.stringify(error.response.data) })
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log('request err');
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+          updateState({ errorMessage: error.message })
+        }
       })
   }
 
@@ -473,9 +500,16 @@ export default function Evaluation() {
         }
       </form>
 
-      {state.evaluationRunning && 
-        <CircularProgress style={{margin: theme.spacing(5, 0)}} />
-      }
+      <Box style={{margin: theme.spacing(4, 0)}}>
+        {state.evaluationRunning && 
+          <CircularProgress style={{marginTop: '20px'}} />
+        }
+        <Card elevation={4} 
+            style={{background: "#e57373", padding: '15px', fontFamily: "Open Sans", fontSize: 12}} 
+            sx={{ display: state.openError }}>
+          ⚠️&nbsp;&nbsp;{state.errorMessage}
+        </Card>
+      </Box>
 
       {/* Display the Data table listing the Evaluations */}
       {state.evaluationsList.length > 0 && 
