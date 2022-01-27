@@ -3,8 +3,6 @@ services:
 
   mongodb:
     image: mongo
-    # volumes:
-    #   - mongodb-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${SECRET_KEY-oursecretkey}
@@ -23,39 +21,3 @@ services:
       - .env
     environment:
       - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
-
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-    #   - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/`) || PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/graphql`)
-    #   - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
-    
-  # queue:
-  #   image: rabbitmq:3
-  #   # networks:
-  #   #   - default
-  #   # Using the below image instead is required to enable the "Broker" tab in the flower UI:
-  #   # image: rabbitmq:3-management
-
-  # celeryworker:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: celeryworker.dockerfile
-  #     args:
-  #       INSTALL_DEV: ${INSTALL_DEV-false}
-  #   depends_on:
-  #     - mongodb
-  #     - queue
-  #   env_file:
-  #     - .env
-  #   # environment:
-  #   #   - SERVER_NAME=${DOMAIN?Variable not set}
-  #   #   - SERVER_HOST=https://${DOMAIN?Variable not set}
-  #     # - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
-  #     # Allow explicit env var override for tests
-  #     # - SMTP_HOST=${SMTP_HOST?Variable not set}
-    
-
-
-# volumes:
-#   mongodb-data:
