@@ -65,7 +65,8 @@ export default function Evaluation() {
   let resourceMetadata: any = null;
   let fairDoughnutConfig: any = null;
   const [state, setState] = React.useState({
-    urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
+    urlToEvaluate: "",
+    // urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
     // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
     adviceLogs: [],
@@ -390,7 +391,7 @@ export default function Evaluation() {
             onChange={handleTextFieldChange}
             // size='small'
             InputProps={{
-              className: classes.formInput
+              className: classes.formInput,
             }}
           />
           {/* Log level dropdown select */}
@@ -399,6 +400,7 @@ export default function Evaluation() {
               label={"Using the collection"} 
               id="collectionSelected" 
               onChange={handleCollectionChange} 
+              SelectProps={{ MenuProps: { disableScrollLock: true } }}
               style={{margin: theme.spacing(0, 2), backgroundColor: 'white'}}
               variant="outlined"> 
             { state.collectionsList.map((collec: any, key: number) => (
