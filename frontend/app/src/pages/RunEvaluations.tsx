@@ -379,7 +379,7 @@ export default function Evaluation() {
 
       {/* Form to provide the URL to evaludate */}
       <form onSubmit={handleSubmit}>
-        <Box display="flex" style={{margin: theme.spacing(0, 6)}}>
+        <Box display="flex">
           <TextField
             id='urlToEvaluate'
             label='URL of the resource to evaluate'

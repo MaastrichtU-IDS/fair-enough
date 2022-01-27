@@ -80,23 +80,6 @@ def init_db() -> None:
             '@context': settings.CONTEXT
         }
         new_collection = db["collections"].insert_one(collec_obj)
-        
-        collec_id = "rare-disease-metrics"
-        collec_obj = {
-            "_id": collec_id,
-            "title": "FAIR metrics for Rare Disease research",
-            "description": "Maturity Indicators for Rare Disease research",
-            "homepage": "https://github.com/LUMC-BioSemantics/RD-FAIRmetric-F4",
-            "assessments": [
-                f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4",
-                f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3",
-            ],
-            "author": "https://orcid.org/0000-0002-1501-1082",
-            'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
-            '@id': f'{settings.BASE_URI}/collection/{collec_id}',
-            '@context': settings.CONTEXT
-        }
-        new_collection = db["collections"].insert_one(collec_obj)
 
         collec_id = "fair-enough-metrics"
         collec_obj = {
@@ -113,13 +96,30 @@ def init_db() -> None:
                 f"https://metrics.api.fair-enough.semanticscience.org/tests/i1-knowledge-representation",
                 f"https://metrics.api.fair-enough.semanticscience.org/tests/i2-fair-vocabularies",
                 f"https://metrics.api.fair-enough.semanticscience.org/tests/r1-accessible-license",
-                # f"https://metrics.api.fair-enough.semanticscience.org/tests/f4-searchable",
+                f"https://metrics.api.fair-enough.semanticscience.org/tests/f4-searchable",
                 # f"https://metrics.api.fair-enough.semanticscience.org/tests/a2-metadata-longevity",
                 # f"https://metrics.api.fair-enough.semanticscience.org/tests/i3-check-sparl-endpoint",
                 # f"https://metrics.api.fair-enough.semanticscience.org/tests/i3-data-management-plan",
                 # f"https://metrics.api.fair-enough.semanticscience.org/tests/i3-use-references",
                 # f"https://metrics.api.fair-enough.semanticscience.org/tests/r2-detailed-provenance",
                 # f"https://metrics.api.fair-enough.semanticscience.org/tests/r3-meets-community-standards",
+            ],
+            "author": "https://orcid.org/0000-0002-1501-1082",
+            'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
+            '@id': f'{settings.BASE_URI}/collection/{collec_id}',
+            '@context': settings.CONTEXT
+        }
+        new_collection = db["collections"].insert_one(collec_obj)
+        
+        collec_id = "rare-disease-metrics"
+        collec_obj = {
+            "_id": collec_id,
+            "title": "FAIR metrics for Rare Disease research",
+            "description": "Maturity Indicators for Rare Disease research",
+            "homepage": "https://github.com/LUMC-BioSemantics/RD-FAIRmetric-F4",
+            "assessments": [
+                f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4",
+                f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3",
             ],
             "author": "https://orcid.org/0000-0002-1501-1082",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),

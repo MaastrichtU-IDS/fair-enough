@@ -48,16 +48,16 @@ curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/te
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/i1-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/i2-fair-vocabularies"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/r1-accessible-license"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/f4-searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL
 
-# Rare Disease metrics
-curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3"}' -H "Content-Type: application/json" $POST_TESTS_URL
-
-# Not implemented yet:
-# curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/f4-searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/a2-metadata-longevity"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/i3-check-sparl-endpoint"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/i3-data-management-plan"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/i3-use-references"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/r2-detailed-provenance"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/r3-meets-community-standards"}' -H "Content-Type: application/json" $POST_TESTS_URL
+
+
+# Rare Disease metrics
+curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3"}' -H "Content-Type: application/json" $POST_TESTS_URL
