@@ -343,7 +343,7 @@ export default function Evaluation() {
               <CloseIcon />
             </IconButton>
           }
-          title="ℹ️ New Release"
+          title="🍾 New Release"
           // subheader='Endpoints are tested to make sure they are active. They are extracted from queries metadata and the LOD. We automatically import all SPARQL queries in YASGUI for the endpoint you select'
           style={{paddingBottom: '0px'}}
         />
@@ -354,6 +354,9 @@ export default function Evaluation() {
           </Typography>
           <Typography>
             As a consequence, the database has been reset, and some of the assessments previously available are in the progress of being migrated  🏗️
+          </Typography>
+          <Typography>
+            Thanks a lot everyone for your contributions to making research more FAIR, and feel free to create issues, or contact vincent.emonet@maastrichtuniversity.nl for remarks 💌
           </Typography>
         </CardContent>
       </Card>
