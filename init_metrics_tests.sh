@@ -3,6 +3,9 @@
 # Collections are initialized auto when starting the API
 # But Metrics Tests needs to be registered once the API started
 
+## In prod:
+# ./init_metrics_tests.sh https://api.fair-enough.semanticscience.org
+
 if [ -z "$1" ]
 then
     API_URL=http://localhost

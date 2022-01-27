@@ -284,6 +284,11 @@ export default function Evaluation() {
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
+          { params.value == 100 &&
+            <>
+              &nbsp;🔥
+            </>
+          }
         </>)
     },
     // {
