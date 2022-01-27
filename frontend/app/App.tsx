@@ -14,7 +14,7 @@ import Evaluation from "./src/pages/Evaluation";
 import Collection from "./src/pages/Collection";
 import CreateCollection from "./src/pages/CreateCollection";
 import Collections from "./src/pages/Collections";
-import Assessments from "./src/pages/Assessments";
+import MetricTests from "./src/pages/MetricTests";
 import About from "./src/pages/About";
 import UserContext from "./src/UserContext";
 import { AuthProvider, useAuth } from 'oidc-react';
@@ -56,7 +56,7 @@ const theme = createTheme({
     "fontWeightLight": 300,
     "fontWeightRegular": 400,
     "fontWeightMedium": 500,
-    "fontSize": 11
+    "fontSize": 11,
   },
   // spacing: 2
   // overrides: {
@@ -100,7 +100,7 @@ const App = () => {
           <Route exact path="/collection/:id" component={Collection} />
           <Route path="/about" component={About} />
           <Route path="/collections" component={Collections} />
-          <Route path="/assessments" component={Assessments} />
+          <Route path="/tests" component={MetricTests} />
           <Route path="/collection/create" component={CreateCollection} />
           <Route exact path="/" component={RunEvaluations} />
           <Footer />

@@ -88,6 +88,12 @@ Start the stack for development locally with Docker Compose from the root folder
 docker-compose up -d
 ```
 
+If the database is empty you'll need to register the initial Metrics Tests with the init script:
+
+```bash
+./init_metrics_tests.sh
+```
+
 Now you can open your browser and interact with these URLs:
 
 * Automatic OpenAPI documentation with Swagger UI: http://localhost/docs
@@ -257,6 +263,12 @@ Deploy the app with production config:
 
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+If the database is empty you'll need to register the initial Metrics Tests with the init script:
+
+```bash
+./init_metrics_tests.sh https://api.fair-enough.semanticscience.org
 ```
 
 ## ➕ Docker Compose files and env vars

@@ -84,7 +84,7 @@ export default function About() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText>
-            <b>Evaluations</b> can be created by anyone without authentication. An evaluation takes the URI of the resource to evaluate, and a collection of assessments to run against this resource. 
+            <b>Evaluations</b> can be created by anyone without authentication. An evaluation takes the URI of the resource to evaluate, and a collection of Metrics Tests to run against this resource. 
           </ListItemText>
         </ListItem>
         <ListItem>
@@ -94,7 +94,7 @@ export default function About() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText>
-            <b>Collections</b> can be created through the API after authenticating with ORCID. A collection is a sorted list of assessments
+            <b>Collections</b> can be created through the API after authenticating with ORCID. A collection is an unsorted list of Metrics Tests
           </ListItemText>
         </ListItem>
         <ListItem>
@@ -104,11 +104,7 @@ export default function About() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText> 
-            <b>Assessments</b> are tests written in Python that can be part of a collection. 
-            Each assessment run some tests against the resource to evaluate, 
-            record the results, and pass the results to the next assessment in the collection. 
-            To create a test you will need to add a python file in the folder <a href="https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments" className={classes.link} target="_blank" rel="noopener noreferrer">backend/app/assessments</a> and
-            send us a pull request
+            <b>Metrics Tests</b> are tests of a subject URL that returns a score between 0 and 1 exposed as an API.
           </ListItemText>
         </ListItem>
       </List>

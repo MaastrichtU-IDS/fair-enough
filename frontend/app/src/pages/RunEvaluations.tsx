@@ -2,7 +2,9 @@ import React, { useContext } from 'react';
 import { useLocation, useHistory, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
-import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
+import { Typography, Container, Button, Paper, Box, Snackbar, Tooltip, TextField, CircularProgress, Card, CardContent, CardHeader, IconButton, MenuItem } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+// import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 // import EvaluationIcon from '@mui/icons-material/Send';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
@@ -70,9 +72,10 @@ export default function Evaluation() {
     evaluationRunning: false,
     evaluationsList: [],
     collectionsList: [],
-    collectionSelected: 'fair-metrics',
+    collectionSelected: 'fair-metrics-maturity-indicators',
     metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
     use_datacite: true,
+    showReleaseMsg: true,
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -82,18 +85,18 @@ export default function Evaluation() {
   }, [setState]);
 
   // Settings for Popper
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl]: any = React.useState(null);
-  const handleClick = (event: any) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    // setAnchorEl(anchorEl ? null : document.body);
-    setOpen((prev) => !prev);
-  };
-  const handleClickAway = () => {
-    setOpen(false);
-    setAnchorEl(anchorEl ? null : anchorEl);
-  };
-  const id = open ? 'simple-popper' : undefined;
+  // const [open, setOpen] = React.useState(false);
+  // const [anchorEl, setAnchorEl]: any = React.useState(null);
+  // const handleClick = (event: any) => {
+  //   setAnchorEl(anchorEl ? null : event.currentTarget);
+  //   // setAnchorEl(anchorEl ? null : document.body);
+  //   setOpen((prev) => !prev);
+  // };
+  // const handleClickAway = () => {
+  //   setOpen(false);
+  //   setAnchorEl(anchorEl ? null : anchorEl);
+  // };
+  // const id = open ? 'simple-popper' : undefined;
   
 
   // Run on page init
@@ -129,8 +132,14 @@ export default function Evaluation() {
           let evaluationsList: any = []
           res.data.map((evaluation: any, key: number) => {
             evaluation['id'] = evaluation['_id']
-            evaluation['score_percent'] = evaluation['score']['percent']
-            evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
+            evaluation['score_percent'] = evaluation['summary']['score_percent']
+            evaluation['score'] = evaluation['summary']['score'] + '/' + evaluation['summary']['score_max']
+            evaluation['subject'] = evaluation['summary']['subject']
+            evaluation['collection'] = evaluation['summary']['collection']
+            evaluation['created'] = evaluation['summary']['created_at']
+            evaluation['author'] = evaluation['summary']['http://purl.org/dc/terms/creator']
+            // evaluation['bonus_percent'] = evaluation['summary']['bonus']
+            evaluation['bonus_percent'] = 0
             evaluationsList.push(evaluation)
           })
           updateState({ evaluationsList: evaluationsList })
@@ -197,7 +206,7 @@ export default function Evaluation() {
 
         const evalId = res.data['_id']
         // Retry every 3 seconds until the evaluation is available
-        axios.get(settings.restUrl + '/evaluations/' + evalId)
+        axios.get(settings.restUrl + '/evaluation/' + evalId)
           .then((res: any) => {
             // Redirect to the page of the created evaluation
             history.push("/evaluation/" + evalId);
@@ -207,8 +216,6 @@ export default function Evaluation() {
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Set the TextField input to the state variable corresponding to the field id  
-    console.log('user from context')
-    console.log(user)
     updateState({[event.target.id]: event.target.value})
   }
   const handleSubmit  = (event: React.FormEvent) => {
@@ -237,27 +244,27 @@ export default function Evaluation() {
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
     { 
-      field: 'id', headerName: 'Access evaluation', flex: 0.5,
+      field: 'id', headerName: 'Access evaluation', flex: 0.4,
       renderCell: (params: GridRenderCellParams) => (
         <Link to={'/evaluation/' + params.value as string}>
           <Button variant="contained" 
               className={classes.submitButton} 
               startIcon={<EvaluationIcon />}
-              color="primary">
-            Evaluation
+              color="primary" style={{textTransform: 'none'}}>
+            Results
           </Button>
         </Link>)
     },
     // { field: 'title', headerName: 'Title', flex: 1 },
     {
-      field: 'resource_uri', headerName: 'Resource URI', flex: 1,
+      field: 'subject', headerName: 'Resource URI', flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {getUrlHtml(params.value as string)}
         </>)
     },
     {
-      field: 'collection', headerName: 'Collection', flex: 0.4,
+      field: 'collection', headerName: 'Collection', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         <>
           <Link to={'/collection/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.main}}>
@@ -266,19 +273,26 @@ export default function Evaluation() {
         </>)
     },
     {
-      field: 'score_percent', headerName: 'FAIR score', flex: 0.3,
+      field: 'score', headerName: 'Score', flex: 0.3,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          {params.value as string}%
+          {params.value as string}
         </>)
     },
     {
-      field: 'bonus_percent', headerName: 'Bonus score', flex: 0.3,
+      field: 'score_percent', headerName: 'Completion', flex: 0.3,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
         </>)
     },
+    // {
+    //   field: 'bonus_percent', headerName: 'Bonus score', flex: 0.3,
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <>
+    //       {params.value as string}%
+    //     </>)
+    // },
     {
       field: 'created', headerName: 'Date created', flex: 0.3,
       renderCell: (params: GridRenderCellParams) => (
@@ -304,7 +318,47 @@ export default function Evaluation() {
 
   return(
     <Container className='mainContainer'>
-      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
+      {/* <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center' }} 
+          open={state.showReleaseMsg ? true : false} 
+          onClose={() => {updateState({showReleaseMsg: false})}} 
+        >
+        <MuiAlert elevation={6} severity="success">
+          <Typography>
+            <b>ℹ️ New FAIR enough release</b>: it has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>. 
+            This means you can run the exact same suite of metrics tests as with the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>, or easily register new metrics tests deployed in external APIs.
+          </Typography>
+          <Typography>
+            As a consequence, the database has been reset and some of the assessments previously available are in the progress of being migrated 🏗️
+          </Typography>
+        </MuiAlert>
+      </Snackbar> */}
+
+      <Card style={{
+        display: state.showReleaseMsg ? 'flow' : 'none', textAlign: 'center',
+        backgroundColor: '#e8f5e9'
+      }}>
+        <CardHeader
+          action={
+            <IconButton aria-label="settings" onClick={() => {updateState({showReleaseMsg: false})}}>
+              <CloseIcon />
+            </IconButton>
+          }
+          title="ℹ️ New Release"
+          // subheader='Endpoints are tested to make sure they are active. They are extracted from queries metadata and the LOD. We automatically import all SPARQL queries in YASGUI for the endpoint you select'
+          style={{paddingBottom: '0px'}}
+        />
+        <CardContent style={{paddingTop: theme.spacing(1), paddingBottom: theme.spacing(2)}}>
+          <Typography>
+            The service has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>. 
+            This means you can run the exact same suite of metrics tests as with the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>, or easily register new metrics tests deployed in external APIs.
+          </Typography>
+          <Typography>
+            As a consequence, the database has been reset, and some of the assessments previously available are in the progress of being migrated  🏗️
+          </Typography>
+        </CardContent>
+      </Card>
+
+      <Typography variant="h4" style={{textAlign: 'center', margin: theme.spacing(4, 0)}}>
         ⚖️ Evaluate how FAIR is a resource 🔗
       </Typography>
 
@@ -349,12 +403,9 @@ export default function Evaluation() {
               <SettingsIcon />
             </Button>
           </Tooltip> */}
-          <Popper open={open} anchorEl={anchorEl}>
+          {/* <Popper open={open} anchorEl={anchorEl}>
             <ClickAwayListener onClickAway={handleClickAway}>
               <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'center'}}>
-                {/* <Typography variant="h6" style={{textAlign: 'center'}}>
-                  Evaluator settings
-                </Typography> */}
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <Tooltip title='By default, the FAIR Enough evaluator uses content negociation based on the DOI URL to retrieve DataCite JSON metadata. If you uncheck this option F-UJI will try to use the landing page URL instead.'>
@@ -394,13 +445,13 @@ export default function Evaluation() {
                 </Grid>
               </Paper>
             </ClickAwayListener>
-          </Popper>
+          </Popper> */}
         </Box>
 
         <Button type="submit" 
           variant="contained" 
           // className={classes.submitButton} 
-          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(2)}}
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(2), textTransform: 'none'}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
             Start the evaluation

@@ -157,22 +157,28 @@ export default function Evaluation() {
 
     //   })
 
-    // Get the list of assessments from API
+    // Get the list of collections from API
     if (state.assessmentsList.length < 1) {
-      axios.get(settings.restUrl + '/assessments', {
+      axios.get(settings.restUrl + '/metric-tests', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
-          // let assessmentsList: any = []
-          // res.data.map((evaluation: any, key: number) => {
-          //   evaluation['id'] = evaluation['_id']
-          //   evaluation['score_percent'] = evaluation['score']['percent']
-          //   evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
-          //   evaluationsList.push(evaluation)
-          // })
-          console.log('got assesments')
           console.log(res.data)
-          updateState({ assessmentsList: res.data })
+          let assessmentsList: any = []
+          res.data.map((collec: any, key: number) => {
+            // collec['id'] = collec['file_url']
+            collec['id'] = collec['_id']
+            // collec['fair_metric'] = collec['fair_type'].toUpperCase() + collec['metric_id'] + ' (' + collec['role'] + ')'
+            collec['fair_metric'] = collec['info']['x-applies_to_principle']
+            collec['fairType'] = collec['info']['x-applies_to_principle']
+            collec['title'] = collec['info']['title']
+            collec['description'] = collec['info']['description']
+            collec['author'] = collec['info']['contact']['x-id']
+            // collec['bonus_percent'] = evaluation['score']['bonus_percent']
+            assessmentsList.push(collec)
+          })
+          console.log(assessmentsList)
+          updateState({ assessmentsList: assessmentsList })
 
         })
     }
@@ -391,8 +397,8 @@ export default function Evaluation() {
                         <Typography>
                           {item.title}
                         </Typography>
-                        {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
-                        {getBadgeRole(item.role)}&nbsp;
+                        {/* {getBadgeFair(item.fair_type, item.metric_id)}&nbsp; */}
+                        {/* {getBadgeRole(item.role)}&nbsp; */}
                         {/* </Box> */}
                         {/* <Typography variant='body2'>
                           <a href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
@@ -468,8 +474,8 @@ export default function Evaluation() {
                               <AddIcon />
                             </IconButton>
                           </Tooltip>
-                          {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
-                          {getBadgeRole(item.role)}&nbsp;
+                          {/* {getBadgeFair(item.fair_type, item.metric_id)}&nbsp;
+                          {getBadgeRole(item.role)}&nbsp; */}
                           <Typography variant='h6'>
                             {item.title}
                           </Typography>
@@ -478,7 +484,7 @@ export default function Evaluation() {
                           <a onClick={(event) => {} } href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
                         </Typography>
                         <Typography variant='body2'>{item.description}</Typography>
-                        <Typography variant='body2'>Max score: {item.max_score} | Max bonus: {item.max_bonus}</Typography>
+                        {/* <Typography variant='body2'>Max score: {item.max_score} | Max bonus: {item.max_bonus}</Typography> */}
                     </Paper>
                   {/* </div> */}
                 </Grid>

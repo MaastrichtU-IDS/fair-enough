@@ -172,14 +172,14 @@ export default function Collections() {
   const columns: GridColumns = [
     // { field: 'id', headerName: 'ID', hide: false },
     { 
-      field: 'id', headerName: 'Access collection', flex: 0.7,
+      field: 'id', headerName: 'Access collection', flex: 0.9,
       renderCell: (params: GridRenderCellParams) => (
         // <Button href={'/#/evaluation/' + params.value as string}
         <Link to={'/collection/' + params.value as string}>
           <Button variant="contained" 
               className={classes.submitButton} 
               // startIcon={<CollectionIcon />}
-              color="primary">
+              color="primary" style={{textTransform: 'none'}}>
             {params.value as string}
           </Button>
         </Link>)
@@ -233,13 +233,13 @@ export default function Collections() {
   return(
     <Container className='mainContainer'>
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-        Collections of assessments
+        Collections of Metrics Tests
       </Typography>
 
       <Link to="/collection/create">
         <Button variant="contained" 
           // className={classes.submitButton} 
-          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(3)}}
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(3), textTransform: 'none'}}
           startIcon={<CreateCollectionIcon />}
           color="secondary" >
             Create a new collection

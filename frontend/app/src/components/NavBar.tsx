@@ -10,7 +10,7 @@ import ApiIcon from '@mui/icons-material/Http';
 import GraphqlIcon from '@mui/icons-material/Code';
 import LoginIcon from '@mui/icons-material/Login';
 import CollectionsIcon from '@mui/icons-material/CollectionsBookmark';
-import AssessmentsIcon from '@mui/icons-material/CollectionsBookmark';
+import AssessmentsIcon from '@mui/icons-material/AssignmentTurnedIn';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 import axios from 'axios';
 
@@ -190,22 +190,22 @@ export default function NavBar() {
         </Link>
         <Link to="/" className={classes.linkButton}>
           <Tooltip title='Browse existing evaluations or submit a new one'>
-            <Button style={{color: '#fff'}}>
+            <Button style={{color: '#fff', textTransform: 'none'}}>
               <EvaluationIcon />&nbsp;Evaluations
             </Button>
           </Tooltip>
         </Link>
         <Link to="/collections" className={classes.linkButton}>
           <Tooltip title='Browse existing Collections of assessments'>
-            <Button style={{color: '#fff'}}>
+            <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
               <CollectionsIcon />&nbsp;Collections
             </Button>
           </Tooltip>
         </Link>
-        <Link to="/assessments" className={classes.linkButton}>
-          <Tooltip title='Browse existing Assessments of assessments'>
-            <Button style={{color: '#fff'}}>
-              <AssessmentsIcon />&nbsp;Assessments
+        <Link to="/tests" className={classes.linkButton}>
+          <Tooltip title='Browse existing Metrics Tests'>
+            <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
+              <AssessmentsIcon />&nbsp;Metrics Tests
             </Button>
           </Tooltip>
         </Link>
@@ -219,7 +219,7 @@ export default function NavBar() {
           </Button>
         </Tooltip>
         <Tooltip title='Access the GraphQL API'>
-          <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
+          <Button style={{color: '#fff', textTransform: 'none'}} target="_blank" rel="noopener noreferrer"
           href={settings.graphqlUrl}>
             {/* + '?query=query%20%7B%0A%20%20evaluations%20%7B%0A%20%20%20%20title%0A%20%20%20%20resourceUri%0A%20%20%20%20collection%0A%20%20%20%20score%20%7B%0A%20%20%20%20%20%20totalScore%0A%20%20%20%20%20%20totalScoreMax%0A%20%20%20%20%20%20percent%0A%20%20%20%20%20%20totalBonus%0A%20%20%20%20%20%20totalBonusMax%0A%20%20%20%20%20%20bonusPercent%0A%20%20%20%20%7D%0A%20%20%20%20results%20%7B%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20fairType%0A%20%20%20%20%20%20metricId%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20maxScore%0A%20%20%20%20%20%20bonusScore%0A%20%20%20%20%20%20maxBonus%0A%20%20%20%20%20%20logs%0A%20%20%20%20%7D%0A%20%20%20%20data%0A%20%20%7D%0A%7D' */}
             <GraphqlIcon style={{ marginRight: theme.spacing(1)}} />
@@ -260,7 +260,7 @@ export default function NavBar() {
             style={{textTransform: 'none', textDecoration: 'none'}}
             onSuccess={onSuccess}
             onFailure={onFailure}>
-              <Button variant='contained' color='primary' size='small' component="span">
+              <Button variant='contained' color='primary' size='small' component="span" style={{textTransform: 'none'}}>
                 Login with ORCID
               </Button>
           </OAuth2Login>

@@ -34,7 +34,7 @@ reusable_oauth2 = OpenIdConnect(
 def get_current_user(
     token: str = Depends(reusable_oauth2)
 ) -> models.User:
-    # curl -i -L -H "Accept: application/json" -H "Authorization: Bearer aa4629f3-b0a2-4edd-b77a-398d7afe3c90" 'https://sandbox.orcid.org/oauth/userinfo'
+    # curl -i -L -H "Accept: application/json" -H "Authorization: Bearer 0000000-00000" 'https://sandbox.orcid.org/oauth/userinfo'
     if token:
         orcid_user = requests.get('https://orcid.org/oauth/userinfo',
                             headers={'Accept': 'application/json',

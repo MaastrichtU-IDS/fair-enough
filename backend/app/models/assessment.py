@@ -13,9 +13,10 @@ from app import models
 from app.models.evaluation import EvaluationModel
 from app.config import settings
 # import logging
-
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
+
+## TODO: NOT USED, to remove
 
 class AssessmentModel(BaseModel):
     id: Optional[str]
@@ -112,7 +113,7 @@ class AssessmentModel(BaseModel):
     def log(self, log_msg: str, prefix: str = None):
         # TODO: add time .replace(microsecond=0)
         # log_msg = str(datetime.datetime.now().replace(microsecond=0)) + ' ' + log_msg
-        log_msg = '[' + str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")) + '] ' + log_msg 
+        log_msg = '[' + str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")) + '] ' + log_msg 
         if prefix:
             log_msg = prefix + ' ' + log_msg
         self.logs.append(log_msg)

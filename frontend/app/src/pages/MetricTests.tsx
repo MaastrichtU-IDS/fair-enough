@@ -3,38 +3,21 @@ import { useLocation, useHistory, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, List, ListItem, ListItemAvatar, Avatar, ListItemText, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
-import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
-// import CreateCollectionIcon from '@mui/icons-material/Send';
-// import CreateCollectionIcon from '@mui/icons-material/PlaylistAddCheck';
-import CreateCollectionIcon from '@mui/icons-material/LibraryAdd';
-import CollectionIcon from '@mui/icons-material/CollectionsBookmark';
-import EvaluationIcon from '@mui/icons-material/NetworkCheck';
-import CopyIcon from '@mui/icons-material/FileCopy';
-import NewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import EditIcon from '@mui/icons-material/Edit';
-import CodeIcon from '@mui/icons-material/Code';
-import AssessmentIcon from '@mui/icons-material/CheckCircle';
-import RdfIcon from '@mui/icons-material/Assignment';
+import RegistrationIcon from '@mui/icons-material/AddLocationAlt';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
 
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
-// import { Doughnut } from 'react-chartjs-2';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
+// import axiosRetry from 'axios-retry';
 import { settings } from '../settings'
-// import { useAuth } from 'oidc-react';
 
 import hljs from 'highlight.js/lib/core';
-// // import hljs from 'highlight.js'; // Too heavy, loading only required languages
 import 'highlight.js/styles/github-dark-dimmed.css';
 import python from 'highlight.js/lib/languages/python';
-// import turtle from 'highlightjs-turtle';
-// var hljsDefineTurtle = require('highlightjs-turtle');
 hljs.registerLanguage('python', python);
 
-export default function Assessments() {
+export default function MetricTests() {
   const theme = useTheme();
   const history = useHistory();
   // const auth = useAuth();
@@ -77,6 +60,12 @@ export default function Assessments() {
   let fairDoughnutConfig: any = null;
   const [state, setState] = React.useState({
     assessmentsList: [],
+    urlToRegister: '',
+    testRegistered: '',
+    loading: false,
+    openSuccess: 'none',
+    openError: 'none',
+    errorMessage: '',
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -86,18 +75,18 @@ export default function Assessments() {
   }, [setState]);
 
   // Settings for Popper
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl]: any = React.useState(null);
-  const handleClick = (event: any) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    // setAnchorEl(anchorEl ? null : document.body);
-    setOpen((prev) => !prev);
-  };
-  const handleClickAway = () => {
-    setOpen(false);
-    setAnchorEl(anchorEl ? null : anchorEl);
-  };
-  const id = open ? 'simple-popper' : undefined;
+  // const [open, setOpen] = React.useState(false);
+  // const [anchorEl, setAnchorEl]: any = React.useState(null);
+  // const handleClick = (event: any) => {
+  //   setAnchorEl(anchorEl ? null : event.currentTarget);
+  //   // setAnchorEl(anchorEl ? null : document.body);
+  //   setOpen((prev) => !prev);
+  // };
+  // const handleClickAway = () => {
+  //   setOpen(false);
+  //   setAnchorEl(anchorEl ? null : anchorEl);
+  // };
+  // const id = open ? 'simple-popper' : undefined;
   
 
   // Run on page init
@@ -113,7 +102,7 @@ export default function Assessments() {
 
     // Get the list of collections from API
     if (state.assessmentsList.length < 1) {
-      axios.get(settings.restUrl + '/assessments', {
+      axios.get(settings.restUrl + '/metric-tests', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
@@ -121,10 +110,12 @@ export default function Assessments() {
           let assessmentsList: any = []
           res.data.map((collec: any, key: number) => {
             // collec['id'] = collec['file_url']
-            // collec['id'] = collec['filename']
-            collec['fair_metric'] = collec['fair_type'].toUpperCase() + collec['metric_id'] + ' (' + collec['role'] + ')'
-            // evaluation['score_percent'] = evaluation['score']['percent']
-            // evaluation['bonus_percent'] = evaluation['score']['bonus_percent']
+            collec['id'] = collec['_id']
+            // collec['fair_metric'] = collec['fair_type'].toUpperCase() + collec['metric_id'] + ' (' + collec['role'] + ')'
+            collec['fair_metric'] = collec['info']['x-applies_to_principle']
+            collec['title'] = collec['info']['title']
+            collec['author'] = collec['info']['contact']['x-id']
+            // collec['bonus_percent'] = evaluation['score']['bonus_percent']
             assessmentsList.push(collec)
           })
           console.log(assessmentsList)
@@ -157,64 +148,95 @@ export default function Assessments() {
     }
   }
 
-  // const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   // Set the TextField input to the state variable corresponding to the field id  
-  //   updateState({[event.target.id]: event.target.value})
-  // }
-  // const handleSubmit  = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   doEvaluateUrl(state.urlToEvaluate)
-  // }
-
-  // const BorderLinearProgress = withStyles({
-  //   root: {
-  //     height: 20,
-  //     width: "100%",
-  //     // backgroundColor: hex ? lighten(internalColor, 0.5) : undefined,
-  //     borderRadius: "10px"
-  //   },
-  //   bar: {
-  //     borderRadius: 20,
-  //     // backgroundColor: hex ? internalColor : undefined
-  //   }
-  // })(LinearProgress);
-
+  const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Set the TextField input to the state variable corresponding to the field id  
+    updateState({[event.target.id]: event.target.value})
+  }
+  const handleSubmit  = (event: React.FormEvent) => {
+    event.preventDefault();
+    updateState({
+      loading: true,
+      openError: 'none',
+      openSuccess: 'none',
+      errorMessage: ''
+    })
+    // doEvaluateUrl(state.urlToRegister)
+    axios.post(settings.restUrl + '/metric-test', 
+      {'url': state.urlToRegister}, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': 'Bearer ' + user['access_token']
+        },
+      }
+    )
+      .then((res: any) => {
+        console.log('New metric test ' + state.urlToRegister + ' successfully registered.')
+        if (res.data.errorMessage) {
+          updateState({
+            loading: false,
+            openError: 'inline', 
+            openSuccess: 'none',
+            errorMessage: res.data.errorMessage})
+        } else {
+          updateState({openSuccess: 'inline', openError: 'none', loading: false})
+          // setTimeout(function(){
+          //   history.push("/dsri-documentation/docs/");
+          // }, 6000);
+        }
+      })
+      .catch(function (error) {
+        updateState({
+          openSuccess: 'none', 
+          openError: 'inline', 
+          loading: false,
+          errorMessage: 'Error when registering the metric test, please retry.'
+        })
+        if (error.response) {
+          // Request made and server responded
+          // {"detail":[{"loc":["body","homepage"],"msg":"invalid or missing URL scheme","type":"value_error.url.scheme"}]}
+          if (error.response.data["detail"]) {
+            updateState({ errorMessage: 'Error: ' + JSON.stringify(error.response.data["detail"])})
+          } else {
+            updateState({ errorMessage: JSON.stringify(error.response.data) })
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log('request err');
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+          updateState({ errorMessage: error.message })
+        }
+      })
+  }
 
   const columns: GridColumns = [
     // { field: 'id', headerName: 'ID', hide: false },
+    // { 
+    //   field: '_id', headerName: 'Access test', flex: 0.5,
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <Button variant="contained" target="_blank" rel="noopener noreferrer"
+    //         href={params.value as string}
+    //         className={classes.submitButton} 
+    //         // startIcon={<CollectionIcon />}
+    //         style={{textTransform: 'none'}}
+    //         color="primary">
+    //       {params.value as string}.py
+    //     </Button>
+    //     )
+    // },
+    { field: 'fair_metric', headerName: 'FAIR metric', flex: 0.3 },
     { 
-      field: 'id', headerName: 'Access assessment', flex: 0.5,
+      field: '_id', headerName: 'Test URL', flex: 1,
       renderCell: (params: GridRenderCellParams) => (
-        // <Button href={'/#/evaluation/' + params.value as string}
-        // <Link to={'/assessment/' + params.value as string}>
-        <Button variant="contained" target="_blank" rel="noopener noreferrer"
-            href={'https://github.com/MaastrichtU-IDS/fair-enough/blob/main/backend/app/assessments/' + params.value as string + '.py'}
-            className={classes.submitButton} 
-            // startIcon={<CollectionIcon />}
-            style={{textTransform: 'none'}}
-            color="primary">
-          {params.value as string}.py
-        </Button>
+          <a href={params.value as string} className={classes.link} target="_blank" rel="noopener noreferrer">
+            {params.value as string}
+          </a>
         )
     },
-    { field: 'fair_metric', headerName: 'FAIR metric', flex: 0.25 },
     { field: 'title', headerName: 'Title', flex: 0.9 },
-    { field: 'max_score', headerName: 'Score', flex: 0.15 },
-    { field: 'max_bonus', headerName: 'Bonus', flex: 0.15 },
-    // {
-    //   field: 'homepage', headerName: 'Homepage', flex: 1,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <>
-    //       {getUrlHtml(params.value as string)}
-    //     </>)
-    // },
-    // {
-    //   field: 'created', headerName: 'Date created', flex: 0.4,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <>
-    //       {params.value as string}
-    //     </>)
-    // },
     {
       field: 'author', headerName: 'Author', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
@@ -222,21 +244,6 @@ export default function Assessments() {
           {getUrlHtml(params.value as string)}
         </>)
     },
-    // TODO: calculate max_score and max_bonus for each collection
-    // {
-    //   field: 'max_score', headerName: 'FAIR compliant', flex: 0.5,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <>
-    //       {params.value as string}%
-    //     </>)
-    // },
-    // {
-    //   field: 'max_bonus', headerName: 'FAIR Role Model', flex: 0.5,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <>
-    //       {params.value as string}%
-    //     </>)
-    // }
   ]
   
   const [sortModel, setSortModel] = React.useState<GridSortModel>([
@@ -247,14 +254,67 @@ export default function Assessments() {
   ]);
 
   return(
-    <Container className='mainContainer' style={{textAlign: 'left'}}>
+    <Container className='mainContainer' style={{textAlign: 'center'}}>
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-        Assessments
+        Metrics Tests
       </Typography>
 
-      <Typography variant="body1" style={{textAlign: 'left', marginBottom: theme.spacing(3), marginTop: theme.spacing(2)}}>
-        You can find all assessments as python scripts in the fair-enough GitHub repository: <a href='https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments' target="_blank" rel="noopener noreferrer">backend/app/assessments</a>
-      </Typography>
+      {/* <Typography variant="body1" style={{textAlign: 'left', marginBottom: theme.spacing(3), marginTop: theme.spacing(2)}}>
+        You can find an example of API exposing metrics tests in the fair-enough GitHub repository: <a href='https://github.com/MaastrichtU-IDS/fair-enough/tree/main/backend/app/assessments' target="_blank" rel="noopener noreferrer">backend/app/assessments</a>
+      </Typography> */}
+
+
+      <form onSubmit={handleSubmit}>
+        {/* <Typography variant="h4" style={{textAlign: 'center', margin: theme.spacing(4, 0)}}>
+          Register a new Metric Test
+        </Typography> */}
+        <Typography variant="body1" style={{textAlign: 'left', margin: theme.spacing(0, 0)}}>
+          You can register a Metric Test API URL that follows the standard described by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>, this will allow FAIR enough users to add this test to collections, and use it in evaluations:
+        </Typography>
+        <Box display="flex" style={{margin: theme.spacing(2, 0)}}>
+          <TextField
+            id='urlToRegister'
+            label='URL of the Metric Test to register'
+            placeholder='URL of the Metric Test to register'
+            value={state.urlToRegister}
+            className={classes.fullWidth}
+            variant="outlined"
+            onChange={handleTextFieldChange}
+            // size='small'
+            InputProps={{
+              className: classes.formInput
+            }}
+          />
+          
+          <Button type="submit" 
+            variant="contained" 
+            // className={classes.submitButton} 
+            style={{marginLeft: theme.spacing(2), textTransform: 'none'}}
+            startIcon={<RegistrationIcon />}
+            color="secondary" >
+              Register a new Metric Test
+          </Button>
+
+        </Box>
+
+      </form>
+
+      <Box style={{margin: theme.spacing(4, 0)}}>
+        {state.loading && 
+          <CircularProgress style={{marginTop: '20px'}} />
+        }
+        <Paper elevation={4} style={{backgroundColor: "#81c784", padding: '15px'}} sx={{ display: state.openSuccess }}>
+          {/* <Typography> */}
+            ✔️&nbsp;&nbsp;Metric test {state.urlToRegister} registered successfully.
+          {/* </Typography> */}
+        </Paper>
+        <Paper elevation={4} style={{background: "#e57373", padding: '15px'}} sx={{ display: state.openError }}>
+          {/* <Typography> */}
+            ⚠️&nbsp;&nbsp;{state.errorMessage}
+          {/* </Typography> */}
+        </Paper>
+      </Box>
+
 
       {/* Display the Data table listing the Assessments */}
       {state.assessmentsList.length > 0 && 
@@ -274,7 +334,8 @@ export default function Assessments() {
         </div>
       }
 
-      <Typography variant="h4" style={{textAlign: 'center', margin: theme.spacing(4, 0)}}>
+
+      {/* <Typography variant="h4" style={{textAlign: 'center', margin: theme.spacing(4, 0)}}>
         Add new assessments
       </Typography>
 
@@ -325,14 +386,6 @@ export default function Assessments() {
           </ListItemText>
         </ListItem>
         <ListItem>
-          {/* <ListItemAvatar>
-            <Avatar>
-              <CollectionIcon />
-            </Avatar>
-          </ListItemAvatar> */}
-          {/* <ListItemText> 
-            Add the code in the <code>evaluate()</code> function, 2 variables are passed to the assessment, plus you can access the assessment object itself to log what the test is trying to do, and why it success or fail:
-          </ListItemText> */}
           <List>
             <ListItem>
               <ListItemAvatar>
@@ -387,7 +440,7 @@ g = self.parseRDF(rdf_data, 'text/turtle', msg='content negotiation RDF')`}
         Start the stack with docker-compose following the instructions in the <a href='https://github.com/MaastrichtU-IDS/fair-enough#readme' target="_blank" rel="noopener noreferrer">README</a>. 
         You can directly test your assessment on a given resource URI with the <a href={settings.docsUrl + '#/assessments/run_assessment_rest_assessments_post'} target="_blank" rel="noopener noreferrer">POST /assessments</a> operation in the API, 
         or you can also create a new collection, if you want to try it as part of a collection.
-      </Typography>
+      </Typography> */}
 
       {/* <Link to="/collection/create">
         <Button variant="contained" 

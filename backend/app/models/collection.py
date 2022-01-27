@@ -1,10 +1,13 @@
 from pydantic import BaseModel, Field, AnyUrl
 from typing import Optional, List
 from bson import ObjectId
-import strawberry
+from datetime import datetime
+# import strawberry
 
 from app.config import settings
 # from app.models import AssessmentModel
+
+# FAIR evaluator API: http://smart-api.info/ui/4831dbbe28707c16b8c2b513b3523402
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -33,7 +36,7 @@ class CollectionModel(BaseModel):
     assessments: List[str] = []
     # assessments: List[AssessmentModel] = []
     author: str = Field(...)
-    created: str = ''
+    created: str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+01:00")
     uri: str = Field(..., alias="@id")
     context: str = Field(..., alias="@context")
 
@@ -72,17 +75,11 @@ class CreateCollectionModel(BaseModel):
         schema_extra = {
             "example": {
                 "id": "fair-metrics",
-                "title": "FAIR Metrics for dataset",
+                "title": "FAIR Metrics for datasets",
                 "description": "A collection to evaluate a dataset FAIRness",
                 "homepage": "https://github.com/FAIRMetrics/Metrics",
                 "assessments": [
-                    "f1_unique_persistent_identifier",
-                    "f2_machine_readable_metadata",
-                    "f3_identifier_in_metadata",
-                    "f4_searchable",
-                    "a1_access_protocol",
-                    "i1_knowledge_representation",
-                    "r1_accessible_license"
+                    f"{settings.TESTS_API_URL}/tests/RD-F4",
                 ],
             }
         }
@@ -99,7 +96,7 @@ class UpdateCollectionModel(BaseModel):
         schema_extra = {
             "example": {
                 # "id": "fair-metrics",
-                "title": "FAIR Metrics for dataset",
+                "title": "FAIR Metrics for datasets",
                 "description": "A collection to evaluate a dataset FAIRness",
                 "homepage": "https://github.com/FAIRMetrics/Metrics",
                 "assessments": ["f1_unique_persistent_identifier"]

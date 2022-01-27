@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from bson import ObjectId
-import strawberry
+# import strawberry
 
 # @strawberry.type
 class PyObjectId(ObjectId):
@@ -102,8 +102,8 @@ class CreateEvaluationModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
-                "collection": "fair-metrics"
+                "resource_uri": "https://w3id.org/ejp-rd/fairdatapoints/wp13/dataset/c5414323-eab1-483f-a883-77951f246972",
+                "collection": "fair-metrics-maturity-indicators"
             }
         }
 

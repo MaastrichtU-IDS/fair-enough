@@ -70,7 +70,7 @@ def run_evaluation(evaluation: CreateEvaluationModel,
         eval.score.percent = 0
         eval.score.bonus_percent = 0
 
-    eval.created = str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S"))
+    eval.created = str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
     print('AFTER SCORE')
 
     print(eval.dict(by_alias=True))

@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - FRONTEND_URL=https://fair-enough.semanticscience.org
+      - API_URL=https://api.fair-enough.semanticscience.org/rest
       - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
       - VIRTUAL_HOST=api.fair-enough.semanticscience.org
       - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org

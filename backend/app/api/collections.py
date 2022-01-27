@@ -6,7 +6,7 @@ import datetime
 from pymongo.errors import DuplicateKeyError
 
 from app import models
-from app.api import login, assessments
+from app.api import login
 from app.db import get_db
 from app.config import settings
 from app.models.collection import CollectionModel, CreateCollectionModel, UpdateCollectionModel
@@ -14,7 +14,7 @@ import re
 
 router = APIRouter()
 
-@router.post("/", response_description="Add a new collection", response_model=CollectionModel)
+@router.post("/collections", response_description="Add a new collection", response_model=CollectionModel)
 async def create_collection(
         collection: CreateCollectionModel = Body(...),
         current_user: models.User = Depends(login.get_current_user)):
@@ -31,14 +31,14 @@ async def create_collection(
     if len(collection['description']) < 1:
         raise HTTPException(status_code=403, detail=f"Provide a description for the collection")
 
-    # Check if given assessments exist
+    # Check if given tests URLs are valid (check the YAML)
     # all_assessments = await 
-    all_assessments = await assessments.list_assessments()
-    all_assess_names = []
-    for assess in all_assessments:
-        all_assess_names.append(assess['id'])
-    if not all(item in all_assess_names for item in collection['assessments']):
-        raise HTTPException(status_code=404, detail=f"Assessment {', '.join(collection['assessments'])} not found")
+    # all_assessments = await assessments.list_assessments()
+    # all_assess_names = []
+    # for assess in all_assessments:
+    #     all_assess_names.append(assess['id'])
+    # if not all(item in all_assess_names for item in collection['assessments']):
+    #     raise HTTPException(status_code=404, detail=f"Assessment {', '.join(collection['assessments'])} not found")
 
     if 'id' not in current_user.keys():
         raise HTTPException(status_code=403, detail=f"You need to login to create a new collection")
@@ -50,7 +50,7 @@ async def create_collection(
         'homepage': collection['homepage'],
         'assessments': collection['assessments'],
         'author': current_user['id'],
-        'created': str(datetime.datetime.now().strftime("%Y-%m-%d@%H:%M:%S")),
+        'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
         '@id': f'{settings.BASE_URI}/collection/{collection["_id"]}',
         '@context': settings.CONTEXT
     }
@@ -67,7 +67,7 @@ async def create_collection(
 
 
 @router.get(
-    "/", 
+    "/collections", 
     response_description="List all collections", 
     response_model=List[CollectionModel],
     responses={
@@ -82,8 +82,9 @@ async def list_collections() -> List[CollectionModel]:
     return JSONResponse(content=await db["collections"].find().to_list(1000))
 
 
-@router.get(
-    "/{id}", response_description="Get a single collection", response_model=CollectionModel
+@router.get("/collections/{id}", 
+    response_description="Get a single collection", 
+    response_model=CollectionModel
 )
 async def show_collection(id: str = 'fair-metrics') -> CollectionModel:
     db = get_db()
@@ -94,7 +95,10 @@ async def show_collection(id: str = 'fair-metrics') -> CollectionModel:
     raise HTTPException(status_code=404, detail=f"Collection {id} not found")
 
 
-@router.put("/{id}", response_description="Update a collection", response_model=CollectionModel)
+@router.put("/collections/{id}", 
+    response_description="Update a collection", 
+    response_model=CollectionModel
+)
 async def update_collection(
         id: str, 
         collection: UpdateCollectionModel = Body(...),
@@ -121,7 +125,7 @@ async def update_collection(
     raise HTTPException(status_code=404, detail=f"Collection {id} not found")
 
 
-@router.delete("/{id}", response_description="Delete a collection")
+@router.delete("/collections/{id}", response_description="Delete a collection")
 async def delete_collection(id: str, current_user: models.User = Depends(login.get_current_user)):
     db = get_db()
     delete_result = await db["collections"].delete_one({"_id": id})
