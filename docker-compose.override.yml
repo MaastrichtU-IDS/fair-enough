@@ -6,6 +6,11 @@ services:
       - mongodb-data:/data/db
 
   backend:
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-true}
     ports:
       - "80:80"
     command: /start-reload.sh
@@ -16,12 +21,6 @@ services:
       - DEV_MODE=true
       # - JUPYTER=jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888
       # - SERVER_HOST=http://${DOMAIN?Variable not set}
-    build:
-      context: ./backend
-      dockerfile: backend.dockerfile
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-true}
-        INSTALL_JUPYTER: ${INSTALL_JUPYTER-false}
 
 
 volumes:

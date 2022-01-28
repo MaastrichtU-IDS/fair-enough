@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${SECRET_KEY-oursecretkey}
+      MONGO_INITDB_DATABASE: evaluations
+
+  backend:
+    # image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-true}
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
+    volumes:
+      - ./backend:/app
+    entrypoint: ["/app/tests-start.sh", "-s"]
+    # entrypoint: ["tail", "-f", "/dev/null"]

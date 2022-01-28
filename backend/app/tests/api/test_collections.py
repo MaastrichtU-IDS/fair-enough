@@ -18,5 +18,5 @@ def test_collections(test_client) -> None:
     r = test_client.get(f"{settings.API_PATH}/collections")
     results = r.json()
     print(results)
-    assert len(results[0]['assessments']) > 2
+    assert len(results[0]['assessments']) > 0
     assert r.status_code == 200
