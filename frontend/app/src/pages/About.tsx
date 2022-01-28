@@ -52,11 +52,11 @@ export default function About() {
         About
       </Typography>
 
-      <Typography variant="body1" className={classes.mainText}>
+      <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
         FAIR Enough is a web service to evaluate how much online resources follow to the <a href="https://www.go-fair.org/fair-principles" className={classes.link} target="_blank" rel="noopener noreferrer">FAIR principles ♻️</a> (Findable, Accessible, Interoperable, Reusable).
       </Typography>
 
-      <Typography variant="body1" className={classes.mainText}>
+      <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
         Developed and hosted by the <a href="https://www.maastrichtuniversity.nl/research/institute-data-science" className={classes.link} target="_blank" rel="noopener noreferrer">Institute of Data Science</a> at Maastricht University.
       </Typography>
 
@@ -109,6 +109,11 @@ export default function About() {
         </ListItem>
       </List>
 
+      <div style={{textAlign: 'left', marginTop: theme.spacing(2)}}>
+        <a href='https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml' target="_blank">
+          <img src='https://github.com/MaastrichtU-IDS/fair-enough/actions/workflows/test-backend.yml/badge.svg' alt='Tests results' />
+        </a>
+      </div>
 
     </Container>
   )
