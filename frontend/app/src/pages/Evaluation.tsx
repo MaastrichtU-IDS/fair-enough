@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 // import { useParams } from 'react-router';
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
@@ -322,6 +323,11 @@ export default function Evaluation() {
       {state.evaluationResults && state.metricsTestsMap &&
         // Display results from the JSON from the API
         <>
+          <Helmet>
+            <script className='structured-data-list' type="application/ld+json">
+              {state.evaluationResults.toString()}
+            </script>
+          </Helmet> 
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
             {getUrlHtml(state.evaluationResults.summary['subject'])}
           </Typography>
@@ -368,7 +374,10 @@ export default function Evaluation() {
                 value={state.logLevel} 
                 label={"Log level"} 
                 id="logLevel" 
-                style={{backgroundColor: 'white', marginRight: theme.spacing(2)}}
+                style={{backgroundColor: 'white', 
+                  marginRight: theme.spacing(2),
+                  marginBottom: theme.spacing(1)
+                }}
                 onChange={handleLogLevelChange} 
                 variant="outlined"> 
               <MenuItem key='success' value={'success'}>Only success and failures</MenuItem>
