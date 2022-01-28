@@ -16,12 +16,11 @@ def test_register_metrics(test_client) -> None:
         data=json.dumps(data),
         # headers={"Accept": "application/json"}
     )
-    results = r.json()
     assert r.status_code == 201
-    # assert len(results['results']) > 2
+    results = r.json()
+    assert 'info' in results.keys()
 
     r = test_client.get(f"{settings.API_PATH}/metric-tests")
-    print(r)
     results = r.json()
     # print(results)
     assert len(results) > 0
