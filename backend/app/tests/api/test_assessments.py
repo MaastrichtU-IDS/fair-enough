@@ -8,7 +8,7 @@ from app.config import settings
 from app.tests.conftest import client
 
 
-def test_assessments(test_client) -> None:
+def test_register_metrics(test_client) -> None:
     data = {
         "url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_identifier_persistence"
     }
@@ -17,14 +17,13 @@ def test_assessments(test_client) -> None:
         # headers={"Accept": "application/json"}
     )
     results = r.json()
-    print(results)
     assert r.status_code == 201
-    assert len(results['results']) > 2
+    # assert len(results['results']) > 2
 
     r = test_client.get(f"{settings.API_PATH}/metric-tests")
     print(r)
     results = r.json()
     # print(results)
-    # assert len(results) > 0
+    assert len(results) > 0
     assert r.status_code == 200
 
