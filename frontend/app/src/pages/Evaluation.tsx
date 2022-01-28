@@ -324,8 +324,8 @@ export default function Evaluation() {
         // Display results from the JSON from the API
         <>
           <Helmet>
-            <script className='structured-data-list' type="application/ld+json">
-              {state.evaluationResults.toString()}
+            <script type="application/ld+json">
+              {JSON.stringify(state.evaluationResults)}
             </script>
           </Helmet> 
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
