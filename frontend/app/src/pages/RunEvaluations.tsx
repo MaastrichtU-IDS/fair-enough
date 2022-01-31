@@ -122,7 +122,10 @@ export default function Evaluation() {
             collec['id'] = collec['_id']
             collectionsList.push(collec)
           })
-          updateState({ collectionsList: collectionsList })
+          updateState({ 
+            collectionsList: collectionsList,
+            evaluationRunning: false
+          })
         })
     }
 

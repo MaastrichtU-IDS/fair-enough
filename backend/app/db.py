@@ -81,6 +81,7 @@ def init_db() -> None:
         }
         new_collection = db["collections"].insert_one(collec_obj)
 
+        # TODO: replace with https://w3id.org/fair-enough/metrics
         collec_id = "fair-enough-metrics"
         collec_obj = {
             "_id": collec_id,

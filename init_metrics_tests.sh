@@ -18,6 +18,7 @@ POST_TESTS_URL=$API_URL/rest/metrics
 
 
 # FAIR enough metrics
+# TODO: replace with https://w3id.org/fair-enough/metrics
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/a1-access-protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/f1-unique-persistent-id"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/f2-machine-readable-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
