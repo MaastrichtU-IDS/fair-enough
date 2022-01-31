@@ -124,7 +124,6 @@ export default function Evaluation() {
           })
           updateState({ 
             collectionsList: collectionsList,
-            evaluationRunning: false
           })
         })
     }

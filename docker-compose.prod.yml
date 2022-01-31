@@ -29,7 +29,7 @@ services:
     # ports:
     #   - 5000:4000
     environment:
-      API_URL: https://api.fair-enough.semanticscience.org
+      EXPO_API_URL: https://api.fair-enough.semanticscience.org
       VIRTUAL_HOST: fair-enough.semanticscience.org
       LETSENCRYPT_HOST: fair-enough.semanticscience.org
       VIRTUAL_PORT: 4000

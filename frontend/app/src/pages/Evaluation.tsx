@@ -87,6 +87,7 @@ export default function Evaluation() {
     adviceLogs: [],
     logLevel: 'warning',
     resourceMetadata: resourceMetadata,
+    loading: true,
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
@@ -141,7 +142,7 @@ export default function Evaluation() {
         })
         updateState({ 
           evaluationResults: evalResults, 
-          evalArray: evalArray 
+          evalArray: evalArray,
         })
 
         axios.get(settings.restUrl + '/metrics')
@@ -152,7 +153,10 @@ export default function Evaluation() {
               metricsTestsMap[test['_id']] = test
               metricsTestsArray.push(test)
             })
-            updateState({ metricsTestsMap: metricsTestsMap, metricsTestsArray: metricsTestsArray })
+            updateState({ 
+              metricsTestsMap: metricsTestsMap, metricsTestsArray: metricsTestsArray,
+              loading: false
+            })
           })
 
         setTimeout(function(){
@@ -319,6 +323,10 @@ export default function Evaluation() {
 
   return(
     <Container className='mainContainer'>
+
+      {state.loading && 
+        <CircularProgress style={{marginTop: theme.spacing(10)}} />
+      }
 
       {state.evaluationResults && state.metricsTestsMap &&
         // Display results from the JSON from the API

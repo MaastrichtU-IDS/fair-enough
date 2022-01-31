@@ -4,10 +4,11 @@
   "scripts": {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "dev": "API_URL=http://localhost expo web",
+    "dev": "rm -rf .expo && EXPO_API_URL=http://localhost expo web",
+    "dev-prod": "rm -rf .expo && EXPO_API_URL=https://api.fair-enough.semanticscience.org expo web",
     "eject": "expo eject",
     "build": "expo build:web",
-    "build-prod": "API_URL=https://api.fair-enough.semanticscience.org expo build:web",
+    "build-prod": "EXPO_API_URL=https://api.fair-enough.semanticscience.org expo build:web",
     "serve": "serve -s web-build",
     "start": "npm run build && npm run serve",
     "predeploy": "npm run build",
