@@ -266,7 +266,7 @@ export default function NavBar() {
             </Button>
           </Tooltip>
         </Link>
-        <Link to="/tests" className={classes.linkButton}>
+        <Link to="/metrics" className={classes.linkButton}>
           <Tooltip title='Browse existing Metrics Tests'>
             <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
               <AssessmentsIcon />&nbsp;Metrics Tests

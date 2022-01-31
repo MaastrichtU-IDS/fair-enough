@@ -210,10 +210,10 @@ export default function Evaluation() {
 
         const evalId = res.data['_id']
         // Retry every 3 seconds until the evaluation is available
-        axios.get(settings.restUrl + '/evaluation/' + evalId)
+        axios.get(settings.restUrl + '/evaluations/' + evalId)
           .then((res: any) => {
             // Redirect to the page of the created evaluation
-            history.push("/evaluation/" + evalId);
+            history.push("/evaluations/" + evalId);
           })
       })
       .catch(function (error) {
@@ -274,7 +274,7 @@ export default function Evaluation() {
     { 
       field: 'id', headerName: 'Access evaluation', flex: 0.4,
       renderCell: (params: GridRenderCellParams) => (
-        <Link to={'/evaluation/' + params.value as string}>
+        <Link to={'/evaluations/' + params.value as string}>
           <Button variant="contained" 
               className={classes.submitButton} 
               startIcon={<EvaluationIcon />}
@@ -295,7 +295,7 @@ export default function Evaluation() {
       field: 'collection', headerName: 'Collection', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <Link to={'/collection/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.main}}>
+          <Link to={'/collections/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.main}}>
             {params.value as string}
           </Link>
         </>)

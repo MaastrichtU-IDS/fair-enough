@@ -80,7 +80,7 @@ export default function MetricTests() {
 
     // Get the list of collections from API
     if (state.assessmentsList.length < 1) {
-      axios.get(settings.restUrl + '/metric-tests', {
+      axios.get(settings.restUrl + '/metrics', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
@@ -125,7 +125,7 @@ export default function MetricTests() {
       errorMessage: ''
     })
     // doEvaluateUrl(state.urlToRegister)
-    axios.post(settings.restUrl + '/metric-test', 
+    axios.post(settings.restUrl + '/metrics', 
       {'url': state.urlToRegister}, 
       {
         headers: {

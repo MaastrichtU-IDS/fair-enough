@@ -26,7 +26,7 @@ def run_evaluation(evaluation: CreateEvaluationModel,
         'data': {
             'alternative_uris': [evaluation['resource_uri']]
         },
-        '@id': f'{settings.BASE_URI}/evaluation/{evaluation["_id"]}',
+        '@id': f'{settings.BASE_URI}/evaluations/{evaluation["_id"]}',
         '@context': settings.CONTEXT
     }
     if current_user:

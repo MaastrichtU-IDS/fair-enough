@@ -99,7 +99,7 @@ export default function Evaluation() {
   // Run on page init
   React.useEffect(() => {
     // get evaluations
-    axios.get(settings.restUrl + '/evaluation/' + evalParams.id, {
+    axios.get(settings.restUrl + '/evaluations/' + evalParams.id, {
       headers: {'Content-Type': 'application/json'},
     })
       .then((res: any) => {
@@ -144,7 +144,7 @@ export default function Evaluation() {
           evalArray: evalArray 
         })
 
-        axios.get(settings.restUrl + '/metric-tests')
+        axios.get(settings.restUrl + '/metrics')
           .then((res: any) => {
             const metricsTestsMap: any = {};
             const metricsTestsArray: any = []
@@ -327,13 +327,13 @@ export default function Evaluation() {
             <script type="application/ld+json">
               {JSON.stringify(state.evaluationResults)}
             </script>
-          </Helmet> 
+          </Helmet>
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
             {getUrlHtml(state.evaluationResults.summary['subject'])}
           </Typography>
           {state.evaluationResults.summary['created_at'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Evaluated with the <Link to={'/collection/' + state.evaluationResults.summary.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.summary.collection}</Link> collection on the {state.evaluationResults.summary['created_at']}
+              Evaluated with the <Link to={'/collections/' + state.evaluationResults.summary.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.summary.collection}</Link> collection on the {state.evaluationResults.summary['created_at']}
             </Typography>
           }
           {state.evaluationResults.summary['http://purl.org/dc/terms/creator'] &&

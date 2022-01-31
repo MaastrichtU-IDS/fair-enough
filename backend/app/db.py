@@ -76,7 +76,7 @@ def init_db() -> None:
             ],  
             "author": "https://orcid.org/0000-0001-6960-357X",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
-            '@id': f'{settings.BASE_URI}/collection/{collec_id}',
+            '@id': f'{settings.BASE_URI}/collections/{collec_id}',
             '@context': settings.CONTEXT
         }
         new_collection = db["collections"].insert_one(collec_obj)
@@ -106,7 +106,7 @@ def init_db() -> None:
             ],
             "author": "https://orcid.org/0000-0002-1501-1082",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
-            '@id': f'{settings.BASE_URI}/collection/{collec_id}',
+            '@id': f'{settings.BASE_URI}/collections/{collec_id}',
             '@context': settings.CONTEXT
         }
         new_collection = db["collections"].insert_one(collec_obj)
@@ -123,7 +123,7 @@ def init_db() -> None:
             ],
             "author": "https://orcid.org/0000-0002-1501-1082",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
-            '@id': f'{settings.BASE_URI}/collection/{collec_id}',
+            '@id': f'{settings.BASE_URI}/collections/{collec_id}',
             '@context': settings.CONTEXT
         }
         new_collection = db["collections"].insert_one(collec_obj)

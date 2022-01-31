@@ -95,7 +95,7 @@ export default function Collection() {
     
     // Get the list of assessments from API
     if (Object.keys(state.assessmentsDict).length < 1) {
-      axios.get(settings.restUrl + '/metric-tests', {
+      axios.get(settings.restUrl + '/metrics', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {

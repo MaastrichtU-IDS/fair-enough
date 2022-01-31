@@ -57,7 +57,6 @@ async def create_evaluation(
     ):
     evaluation = jsonable_encoder(evaluation)
     db = get_db()
-    print('Start evaluation!')
 
     if len(evaluation['resource_uri']) < 2:
         print('FAIL for resource_uri')
@@ -103,9 +102,9 @@ async def create_evaluation(
     # Generate sha1 hash based on subject URL + time of evaluation
     eval_id = f'{evaluation["resource_uri"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")}'
     eval_results['_id'] = hashlib.sha1(eval_id.encode('utf-8')).hexdigest()
-    # sha1 : http://localhost/rest/evaluation/22248f30cf44e74ae134b221894820b182c433a2
-    # md5  : http://localhost/rest/evaluation/45af39b178f961d56131f1cb68d4d3df
-    eval_results['@id'] = f'{settings.BASE_URI}/evaluation/{eval_results["_id"]}'
+    # sha1 : http://localhost/rest/evaluations/22248f30cf44e74ae134b221894820b182c433a2
+    # md5  : http://localhost/rest/evaluations/45af39b178f961d56131f1cb68d4d3df
+    eval_results['@id'] = f'{settings.BASE_URI}/evaluations/{eval_results["_id"]}'
 
 
     # Add to MongoDB
@@ -141,13 +140,12 @@ async def list_evaluations():
 
 
 @router.get(
-    "/evaluation/{id}", 
+    "/evaluations/{id}", 
     response_description="Get a single evaluation", 
     response_model=dict # response_model=EvaluationModel
 )
 async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict:
     # id: PyObjectId
-    print('id!!!', id)
     db = get_db()
 
     evaluation = await db["evaluations"].find_one({"_id": id})
@@ -156,7 +154,7 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
     
     if not evaluation is None:
         # if accept.startswith('text/html'):
-        #     return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluation/{str(id)}')
+        #     return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
         # for result in evaluation:
         #     return result
         return evaluation

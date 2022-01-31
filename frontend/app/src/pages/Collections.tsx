@@ -174,8 +174,8 @@ export default function Collections() {
     { 
       field: 'id', headerName: 'Access collection', flex: 0.9,
       renderCell: (params: GridRenderCellParams) => (
-        // <Button href={'/#/evaluation/' + params.value as string}
-        <Link to={'/collection/' + params.value as string}>
+        // <Button href={'/#/evaluations/' + params.value as string}
+        <Link to={'/collections/' + params.value as string}>
           <Button variant="contained" 
               className={classes.submitButton} 
               // startIcon={<CollectionIcon />}
@@ -236,7 +236,7 @@ export default function Collections() {
         Collections of Metrics Tests
       </Typography>
 
-      <Link to="/collection/create">
+      <Link to="/collections/create">
         <Button variant="contained" 
           // className={classes.submitButton} 
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(3), textTransform: 'none'}}

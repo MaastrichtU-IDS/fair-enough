@@ -20,7 +20,7 @@ from app.config import settings
 
 
 async def register_test(test, db):
-    existing_test = await db["metrics_tests"].find_one({"_id": test['url']})
+    existing_test = await db["metrics"].find_one({"_id": test['url']})
     if not existing_test is None:
         raise HTTPException(status_code=422, detail=f"Provided metrics test URL {test['url']} has already been registered")
 
@@ -34,7 +34,7 @@ async def register_test(test, db):
             raise HTTPException(status_code=422, detail='Missing the field info.x-applies_to_principle in the YAML')
         testInfo['_id'] = test['url']
         print(testInfo)
-        new_entry = await db["metrics_tests"].insert_one(testInfo)
+        new_entry = await db["metrics"].insert_one(testInfo)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=testInfo)
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))

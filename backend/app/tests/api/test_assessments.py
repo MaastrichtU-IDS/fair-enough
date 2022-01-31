@@ -12,7 +12,7 @@ def test_register_metrics(test_client) -> None:
     data = {
         "url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_identifier_persistence"
     }
-    r = test_client.post(f"{settings.API_PATH}/metric-test",
+    r = test_client.post(f"{settings.API_PATH}/metrics",
         data=json.dumps(data),
         # headers={"Accept": "application/json"}
     )
@@ -20,7 +20,7 @@ def test_register_metrics(test_client) -> None:
     results = r.json()
     assert 'info' in results.keys()
 
-    r = test_client.get(f"{settings.API_PATH}/metric-tests")
+    r = test_client.get(f"{settings.API_PATH}/metrics")
     results = r.json()
     # print(results)
     assert len(results) > 0

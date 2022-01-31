@@ -96,12 +96,12 @@ const App = () => {
         <View style={{height: '100%', backgroundColor: '#eceff1'}}>
           <NavBar />
 
-          <Route exact path="/evaluation/:id" component={Evaluation} />
-          <Route exact path="/collection/:id" component={Collection} />
-          <Route path="/about" component={About} />
-          <Route path="/collections" component={Collections} />
-          <Route path="/tests" component={MetricTests} />
-          <Route path="/collection/create" component={CreateCollection} />
+          <Route exact path="/evaluations/:id" component={Evaluation} />
+          <Route exact path="/collections/:id" component={Collection} />
+          <Route exact path="/about" component={About} />
+          <Route exact path="/collections" component={Collections} />
+          <Route exact path="/metrics" component={MetricTests} />
+          <Route exact path="/collections/create" component={CreateCollection} />
           <Route exact path="/" component={RunEvaluations} />
           <Footer />
         </View>

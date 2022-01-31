@@ -14,31 +14,8 @@ else
     API_URL=$1
 fi
 
-POST_TESTS_URL=$API_URL/rest/metric-test
+POST_TESTS_URL=$API_URL/rest/metrics
 
-# FAIR Evaluator metrics
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_unique_identifier"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_identifier_persistence"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_identifier_persistence"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_structured_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_grounded_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_authorization"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_identifier_in_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_kr_language_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_kr_language_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_authorization"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_contains_outward_links"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_identifier_in_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_includes_license_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_includes_license_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_kr_language_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_kr_language_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_persistence"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_uses_fair_vocabularies_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_uses_fair_vocabularies_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL
 
 # FAIR enough metrics
 curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/tests/a1-access-protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
@@ -61,3 +38,28 @@ curl -X POST -d '{"url": "https://metrics.api.fair-enough.semanticscience.org/te
 # Rare Disease metrics
 curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3"}' -H "Content-Type: application/json" $POST_TESTS_URL
+
+
+echo "######### FAIR Evaluator metrics #########"
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_unique_identifier"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_identifier_persistence"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_identifier_persistence"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_structured_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_grounded_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_authorization"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_identifier_in_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_kr_language_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_kr_language_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_data_protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_authorization"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_contains_outward_links"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_identifier_in_metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_includes_license_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_includes_license_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_kr_language_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_kr_language_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_persistence"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_uses_fair_vocabularies_strong"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_metadata_uses_fair_vocabularies_weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/FAIR_Tests/tests/gen2_searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL

@@ -16,19 +16,19 @@ from app.models.metric_test import register_test
 router = APIRouter()
 
 @router.get(
-    "/metric-tests", 
-    response_description="List all metric-tests", 
+    "/metrics", 
+    response_description="List all metrics tests", 
     # response_model=List[dict]
 )
 async def list_tests() -> List[dict]:
     db = get_db()
-    tests = await db["metrics_tests"].find().to_list(10000)
+    tests = await db["metrics"].find().to_list(10000)
     return tests
 
 
 @router.post(
-    "/metric-test", 
-    response_description="Register a metric test by providing its URL", 
+    "/metrics", 
+    response_description="Register a metrics test by providing its URL", 
     # response_model=List[AssessmentModel]
 )
 async def register_tests(
@@ -42,13 +42,13 @@ async def register_tests(
 
 
 # @router.get(
-#     "/metric-test/{id}", 
+#     "/metrics/{id}", 
 #     response_description="Get a specific metrics test", 
 #     # response_model=dict
 # )
 # async def get_test(id: str) -> dict:
 #     db = get_db()
-#     existing_test = await db["metrics_tests"].find_one({"_id": id})
+#     existing_test = await db["metrics"].find_one({"_id": id})
 #     if existing_test is None:
 #         raise HTTPException(status_code=404, detail=f"Test {id} not found")
 

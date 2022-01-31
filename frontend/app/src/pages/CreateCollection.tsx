@@ -159,7 +159,7 @@ export default function Evaluation() {
 
     // Get the list of collections from API
     if (state.assessmentsList.length < 1) {
-      axios.get(settings.restUrl + '/metric-tests', {
+      axios.get(settings.restUrl + '/metrics', {
         headers: {'Content-Type': 'application/json'},
       })
         .then((res: any) => {
