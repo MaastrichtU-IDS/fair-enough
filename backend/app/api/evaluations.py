@@ -98,6 +98,16 @@ async def create_evaluation(
         print(current_user)
         summary['http://purl.org/dc/terms/creator'] = current_user['id']
 
+    summary['@type'] = 'http://semanticscience.org/resource/ProcessStatus'
+    summary['@context'] = settings.CONTEXT
+
+    full_eval = {
+        '@id': '',
+        '@context': '',
+        'http://semanticscience.org/resource/isDescribedBy': eval_results
+
+    }
+
     eval_results['summary'] = summary
     # Generate sha1 hash based on subject URL + time of evaluation
     eval_id = f'{evaluation["resource_uri"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")}'
@@ -149,17 +159,12 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
     db = get_db()
 
     evaluation = await db["evaluations"].find_one({"_id": id})
-    # print(evaluation)
-    # text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
     
     if not evaluation is None:
-        # if accept.startswith('text/html'):
-        #     return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
-        # for result in evaluation:
-        #     return result
+        if accept.startswith('text/html'):
+            return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
         return evaluation
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
-    # return await db["evaluations"].find_one({"_id": id})
 
 
 
@@ -221,7 +226,7 @@ def async_requests(urls, post_data=None, content_type=None, accept=None):
 #         'data': {
 #             'alternative_uris': [evaluation['resource_uri']]
 #         },
-#         '@id': f'{settings.BASE_URI}/evaluation/{evaluation["_id"]}',
+#         '@id': f'{settings.BASE_URI}/evaluations/{evaluation["_id"]}',
 #         '@context': settings.CONTEXT
 #     }
 #     if current_user:

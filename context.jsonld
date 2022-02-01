@@ -1,17 +1,25 @@
 {
     "eval": "http://w3id.org/FAIR_Evaluator/schema#",
-	"prov": "https://www.w3.org/ns/prov#",
-	"dct": "http://purl.org/dc/terms/",
-	"schema": "http://schema.org/",
-	"xsd": "http://www.w3.org/2001/XMLSchema#",
-	"sio": "http://semanticscience.org/resource/",
+    "prov": "https://www.w3.org/ns/prov#",
+    "dct": "http://purl.org/dc/terms/",
+    "schema": "http://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "sio": "http://semanticscience.org/resource/",
     "foaf": "http://xmlns.com/foaf/0.1/",
-	"skos": "http://www.w3.org/2004/02/skos/core#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
 
     "title": "http://purl.org/dc/terms/title",
     "description": "http://rdfs.org/ns/void#description",
     "homepage": "http://www.w3.org/ns/dcat#publisher",
     "author": "http://purl.org/dc/elements/1.1/authoredBy",
     "created": "http://purl.org/pav/version",
-    "assessments": "http://www.w3.org/ns/ldp#contains"
+    "assessments": "http://www.w3.org/ns/ldp#contains",
+
+    "summary": "http://semanticscience.org/resource/isDescribedBy",
+    "subject": "http://semanticscience.org/resource/SIO_000332",
+    "collection": "http://www.w3.org/ns/ldp#contains",
+    "created_at": "http://purl.obolibrary.org/obo/date",
+    "score": "http://semanticscience.org/resource/SIO_000300",
+    "score_max": "http://semanticscience.org/resource/hasCapability",
+    "score_percent": "http://semanticscience.org/resource/hasConcretization"
 }

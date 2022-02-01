@@ -29,8 +29,33 @@ class Settings(BaseSettings):
 
     MONGODB_URL: str = f'mongodb://root:oursecretkey@mongodb:27017/'
 
-    CONTEXT = 'https://raw.githubusercontent.com/MaastrichtU-IDS/fair-enough/main/context.jsonld'
-    
+    # CONTEXT = 'https://raw.githubusercontent.com/MaastrichtU-IDS/fair-enough/main/context.jsonld'
+    CONTEXT = {
+        "eval": "http://w3id.org/FAIR_Evaluator/schema#",
+        "prov": "https://www.w3.org/ns/prov#",
+        "dct": "http://purl.org/dc/terms/",
+        "schema": "http://schema.org/",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "sio": "http://semanticscience.org/resource/",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+
+        "_id": "http://purl.org/dc/terms/identifier",
+        "title": "http://purl.org/dc/terms/title",
+        "description": "http://rdfs.org/ns/void#description",
+        "homepage": "http://www.w3.org/ns/dcat#publisher",
+        "author": "http://purl.org/dc/elements/1.1/authoredBy",
+        "created": "http://purl.org/pav/version",
+        "assessments": "http://www.w3.org/ns/ldp#contains",
+
+        "summary": "http://semanticscience.org/resource/isDescribedBy",
+        "subject": "http://semanticscience.org/resource/SIO_000332",
+        "collection": "http://www.w3.org/ns/ldp#contains",
+        "created_at": "http://purl.obolibrary.org/obo/date",
+        "score": "http://semanticscience.org/resource/SIO_000300",
+        "score_max": "http://semanticscience.org/resource/hasCapability",
+        "score_percent": "http://semanticscience.org/resource/hasConcretization"
+    }
 
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \

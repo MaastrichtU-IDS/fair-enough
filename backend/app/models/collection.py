@@ -1,5 +1,6 @@
+from email.policy import default
 from pydantic import BaseModel, Field, AnyUrl
-from typing import Optional, List
+from typing import Optional, List, Dict
 from bson import ObjectId
 from datetime import datetime
 # import strawberry
@@ -38,7 +39,8 @@ class CollectionModel(BaseModel):
     author: str = Field(...)
     created: str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+01:00")
     uri: str = Field(..., alias="@id")
-    context: str = Field(..., alias="@context")
+    context: Dict[str, str] = Field(alias="@context", default_factory=settings.CONTEXT)
+    # context: str = Field(..., alias="@context")
 
     # def __init__(self):
         # super().__init__()

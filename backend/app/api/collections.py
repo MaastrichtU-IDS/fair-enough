@@ -52,7 +52,7 @@ async def create_collection(
         'author': current_user['id'],
         'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
         '@id': f'{settings.BASE_URI}/collections/{collection["_id"]}',
-        '@context': settings.CONTEXT
+        # '@context': settings.CONTEXT
     }
     # if 'homepage' in collection.keys() and collection['homepage']:
     #     collec_obj['homepage'] = collection['homepage']
