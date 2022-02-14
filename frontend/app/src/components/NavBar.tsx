@@ -349,7 +349,7 @@ export default function NavBar() {
         {/* </Tooltip> */}
 
         {/* <Tooltip title='Login with ORCID'>
-          <Button href="http://localhost/rest/login" style={{color: '#fff'}} >
+          <Button href="http://localhost/login" style={{color: '#fff'}} >
             <LoginIcon />
           </Button>
         </Tooltip> */}

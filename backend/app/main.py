@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import strawberry
@@ -52,6 +53,10 @@ You can also query FAIR enough using the experimental GraphQL endpoint at [/grap
     },
 )
 
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+# app.mount('/my-spa/', SPAStaticFiles(directory='folder', html=True), name='whatever')
+# app.mount('/ui', StaticFiles(directory='static', html=True), name='static')
+
 app.add_route("/graphql", graphql_app)
 app.add_websocket_route("/graphql", graphql_app)
 
@@ -73,8 +78,8 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-
 @app.get("/", include_in_schema=False)
 def redirect_root_to_docs():
     """Redirect the route / to /docs"""
-    return RedirectResponse(url='/docs')
+    return RedirectResponse(url=settings.FRONTEND_URL)
+    # return RedirectResponse(url='/docs')

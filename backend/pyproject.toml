@@ -28,6 +28,7 @@ strawberry-graphql = {extras = ["asgi"], version = "^0.83.4"}
 PyShEx = "^0.8.0"
 rdflib-shim = "^1.0.3"
 PyYAML = "^6.0"
+aiofiles = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.770"

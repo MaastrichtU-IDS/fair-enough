@@ -5,7 +5,7 @@ from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, v
 
 
 class Settings(BaseSettings):
-    API_PATH: str = "/rest"
+    API_PATH: str = ""
     TESTS_API_URL: str = f"http://tests-api:80"
     BASE_URI: str = f"http://localhost{API_PATH}"
     # BASE_URI: str = "https://w3id.org/fair-enough"

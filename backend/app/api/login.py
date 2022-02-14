@@ -84,7 +84,7 @@ async def auth(request: Request):
     # return JSONResponse({"access_token": token['access_token'], "token_type": 'bearer'}, 
     #     headers={"Authorization": 'Bearer ' + str(token['access_token'])})
 
-# curl 'http://localhost/rest/current-user' -H 'Authorization: Bearer 21807418-ee11-4097-bdc5-dc9aaf0b9296'
+# curl 'http://localhost/current-user' -H 'Authorization: Bearer 21807418-ee11-4097-bdc5-dc9aaf0b9296'
 
 @router.get('/logout')
 async def logout(request: Request):

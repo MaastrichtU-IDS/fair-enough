@@ -9,11 +9,11 @@ services:
   backend:
     restart: unless-stopped
     environment:
-      - FRONTEND_URL=https://fair-enough.semanticscience.org
-      - API_URL=https://api.fair-enough.semanticscience.org/rest
+      - FRONTEND_URL=https://browse.fair-enough.semanticscience.org
+      - API_URL=https://fair-enough.semanticscience.org
       - MONGODB_URL=mongodb://root:${SECRET_KEY-oursecretkey}@mongodb:27017/
-      - VIRTUAL_HOST=api.fair-enough.semanticscience.org
-      - LETSENCRYPT_HOST=api.fair-enough.semanticscience.org
+      - VIRTUAL_HOST=fair-enough.semanticscience.org
+      - LETSENCRYPT_HOST=fair-enough.semanticscience.org
       - VIRTUAL_PORT=80
 
 
@@ -29,7 +29,7 @@ services:
     # ports:
     #   - 5000:4000
     environment:
-      EXPO_API_URL: https://api.fair-enough.semanticscience.org
-      VIRTUAL_HOST: fair-enough.semanticscience.org
-      LETSENCRYPT_HOST: fair-enough.semanticscience.org
+      EXPO_API_URL: https://fair-enough.semanticscience.org
+      VIRTUAL_HOST: browse.fair-enough.semanticscience.org
+      LETSENCRYPT_HOST: browse.fair-enough.semanticscience.org
       VIRTUAL_PORT: 4000

@@ -30,7 +30,7 @@ import { AuthProvider, useAuth } from 'oidc-react';
 //   },
 //   authority: 'https://orcid.org',
 //   clientId: process.env.ORCID_CLIENT_ID,
-//   // redirectUri: 'http://localhost/rest/auth',
+//   // redirectUri: 'http://localhost/auth',
 //   redirectUri: 'http://localhost:19006/',
 //   autoSignIn: false
 //   // redirectUri="http://localhost:3000/oauth-callback"

@@ -1,10 +1,11 @@
 # from urllib import request
 from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.encoders import jsonable_encoder
 # from typing import Collection, List, Optional
 from typing import List, Optional
 from starlette.responses import RedirectResponse
+from starlette.templating import Jinja2Templates
 # from app.db import get_db, db
 from app.db import get_db
 from rdflib import ConjunctiveGraph
@@ -162,6 +163,14 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
     
     if not evaluation is None:
         if accept.startswith('text/html'):
+            # Test using Jinja template: https://stackoverflow.com/questions/62928450/how-to-put-backend-and-frontend-together-returning-react-frontend-from-fastapi
+            # return templates.TemplateResponse('index.html', {'request': request})
+            # return FileResponse('/index.html', media_type='text/html')
+            
+            # https://github.com/tiangolo/fastapi/issues/130
+            # return HTMLResponse(pkg_resources.resource_string(__name__, 'static/index.html'))
+            # return HTMLResponse('static/index.html')
+            
             return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
         return evaluation
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")

@@ -199,9 +199,9 @@ export default function Evaluation() {
     )
       .then(res => {
         axiosRetry(axios, {
-          retries: 30, // number of retries
+          retries: 120, // number of retries
           retryDelay: (retryCount) => {
-            console.log(`Waiting for evaluation to finish: ${retryCount}`);
+            console.log(`Waiting for evaluation to finish: ${retryCount}/${retries}`);
             return retryCount * 3000; // time interval between retries
           },
           retryCondition: (error: any) => {
