@@ -111,7 +111,7 @@ async def create_evaluation(
 
     eval_results['summary'] = summary
     # Generate sha1 hash based on subject URL + time of evaluation
-    eval_id = f'{evaluation["resource_uri"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")}'
+    eval_id = f'{evaluation["resource_uri"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+01:00")}'
     eval_results['_id'] = hashlib.sha1(eval_id.encode('utf-8')).hexdigest()
     # sha1 : http://localhost/rest/evaluations/22248f30cf44e74ae134b221894820b182c433a2
     # md5  : http://localhost/rest/evaluations/45af39b178f961d56131f1cb68d4d3df

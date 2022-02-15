@@ -50,7 +50,7 @@ class MetricResult(BaseModel):
     score: int = 0
     bonus: int = 0
     softwareVersion: str = '0.1'
-    date: str = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    date: str = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S+01:00")
     id: Optional[str]
     metric_test: Optional[str]
 
