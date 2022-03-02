@@ -177,6 +177,7 @@ def query_url(url, timeout=100, data=None, content_type=None):
     else:
         return requests.get(url, timeout=timeout, headers=headers)
 
+
 def async_requests(urls, post_data=None, content_type=None, accept=None):
     responses = {}
     resp_ok = 0
