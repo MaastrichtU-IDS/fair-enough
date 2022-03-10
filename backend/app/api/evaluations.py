@@ -77,7 +77,6 @@ async def create_evaluation(
         accept='application/json'
     )
 
-    # TODO: improve the evaluation object
     summary = {
         'subject': evaluation['resource_uri'],
         'collection': evaluation['collection'],
@@ -224,14 +223,15 @@ def async_requests(urls, post_data=None, content_type=None, accept=None):
     responses = {}
     resp_ok = 0
     resp_err = 0
-    print('URLLLLSS', urls)
+    print('URLs in async_requests', urls)
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         future_to_url = {executor.submit(query_url, url, 100, post_data, content_type): url for url in urls}
         for future in concurrent.futures.as_completed(future_to_url):
             url = future_to_url[future]
-            print('url', url) 
+            print('url in concurrent.futures.ThreadPoolExecutor', url) 
             try:
                 data = future.result()
+                print(f'Result of test: {data.text}')
                 if accept == 'application/json':
                     responses[url] = json.loads(data.text)
                 elif accept == 'text/x-yaml' or accept == 'yaml':
