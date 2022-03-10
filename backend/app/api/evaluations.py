@@ -70,9 +70,10 @@ async def create_evaluation(
     print(collection['assessments'])
     # Send asynchronous requests to get each test result
     # https://stackoverflow.com/questions/9110593/asynchronous-requests-with-python-requests
+    print(f"before post data {evaluation['resource_uri']}")
     eval_results = async_requests(
         urls=collection['assessments'], 
-        post_data={'subject': evaluation['resource_uri']},
+        post_data={'subject': str(evaluation['resource_uri'])},
         content_type='application/json',
         accept='application/json'
     )
@@ -209,23 +210,26 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
 
 
 
-def query_url(url, timeout=100, data=None, content_type=None):
+def query_url(url, data, timeout=100, content_type=None):
     headers = {}
     if content_type:
         headers['Content-Type'] = content_type
-    if data:
-        return requests.post(url, json=data, timeout=timeout, headers=headers)
-    else:
-        return requests.get(url, timeout=timeout, headers=headers)
+    return requests.post(url, json=data, timeout=timeout, headers=headers)
+    # if data:
+    #     return requests.post(url, json=data, timeout=timeout, headers=headers)
+    # else:
+    #     return requests.get(url, timeout=timeout, headers=headers)
 
 
-def async_requests(urls, post_data=None, content_type=None, accept=None):
+def async_requests(urls, post_data, content_type=None, accept=None):
     responses = {}
     resp_ok = 0
     resp_err = 0
+    timeout = 100
     print('URLs in async_requests', urls)
+    print('post_data in async_requests', post_data)
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-        future_to_url = {executor.submit(query_url, url, 100, post_data, content_type): url for url in urls}
+        future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type): url for url in urls}
         for future in concurrent.futures.as_completed(future_to_url):
             url = future_to_url[future]
             print('url in concurrent.futures.ThreadPoolExecutor', url) 
