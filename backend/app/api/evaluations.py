@@ -102,25 +102,27 @@ async def create_evaluation(
     summary['@type'] = 'http://semanticscience.org/resource/ProcessStatus'
     summary['@context'] = settings.CONTEXT
 
+    summary['contains'] = eval_results
+
     # full_eval = {
     #     '@id': '',
     #     '@context': '',
     #     'http://semanticscience.org/resource/isDescribedBy': eval_results
     # }
 
-    eval_results['summary'] = summary
+    # eval_results['summary'] = summary
     # Generate sha1 hash based on subject URL + time of evaluation
     eval_id = f'{evaluation["resource_uri"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")}'
-    eval_results['_id'] = hashlib.sha1(eval_id.encode('utf-8')).hexdigest()
+    summary['_id'] = hashlib.sha1(eval_id.encode('utf-8')).hexdigest()
     # sha1 : http://localhost/rest/evaluations/22248f30cf44e74ae134b221894820b182c433a2
     # md5  : http://localhost/rest/evaluations/45af39b178f961d56131f1cb68d4d3df
-    eval_results['@id'] = f'{settings.BASE_URI}/evaluations/{eval_results["_id"]}'
+    summary['@id'] = f'{settings.BASE_URI}/evaluations/{summary["_id"]}'
 
 
     # Add to MongoDB
-    new_evaluation = await db["evaluations"].insert_one(eval_results)
+    new_evaluation = await db["evaluations"].insert_one(summary)
     # print('NEW EVAL INSERTED: ', new_evaluation.inserted_id)
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=eval_results)
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content=summary)
     # return eval_results
 
 

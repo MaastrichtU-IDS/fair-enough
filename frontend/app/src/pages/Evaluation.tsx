@@ -104,36 +104,38 @@ export default function Evaluation() {
       headers: {'Content-Type': 'application/json'},
     })
       .then((res: any) => {
-        const evalResults = res.data;
-        console.log('evalResults', evalResults);
+        const evalResults = res.data
+        console.log(evalResults);
+        const metricsResults = evalResults['contains'];
+        // console.log('metricsResults', metricsResults);
         const evalArray: any = []
-        Object.keys(evalResults).map((metricTest: any) => {
+        Object.keys(metricsResults).map((metricTest: any) => {
           if (metricTest !== 'summary' && metricTest !== '_id' && metricTest !== '@id') {
-            // const metricWithUrl: any = {'results': evalResults[metricTest]}
+            // const metricWithUrl: any = {'results': metricsResults[metricTest]}
             const metricRes: any = {'metrics_test_url': metricTest}
 
             try {
-              metricRes['score'] = evalResults[metricTest][0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']
+              metricRes['score'] = metricsResults[metricTest][0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']
             } catch (e) {
               metricRes['score'] = 0
             }
             try {
-              metricRes['subject'] = evalResults[metricTest][0]['http://semanticscience.org/resource/SIO_000332'][0]['@id']
+              metricRes['subject'] = metricsResults[metricTest][0]['http://semanticscience.org/resource/SIO_000332'][0]['@id']
             } catch (e) {
               metricRes['subject'] = 'Not provided'
             }
             try {
-              metricRes['version'] = evalResults[metricTest][0]['http://schema.org/softwareVersion'][0]['@value']
+              metricRes['version'] = metricsResults[metricTest][0]['http://schema.org/softwareVersion'][0]['@value']
             } catch (e) {
               metricRes['version'] = 'not provided'
             }
             try {
-              metricRes['test_url'] = evalResults[metricTest][0]['@id']
+              metricRes['test_url'] = metricsResults[metricTest][0]['@id']
             } catch (e) {
               metricRes['test_url'] = 'not provided'
             }
             try {
-              metricRes['comment'] = evalResults[metricTest][0]['http://schema.org/comment'][0]['@value']
+              metricRes['comment'] = metricsResults[metricTest][0]['http://schema.org/comment'][0]['@value']
             } catch (e) {
               metricRes['comment'] = 'FAILURE: The metric test endpoint did not returned anything'
             }
@@ -337,19 +339,19 @@ export default function Evaluation() {
             </script>
           </Helmet>
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-            {getUrlHtml(state.evaluationResults.summary['subject'])}
+            {getUrlHtml(state.evaluationResults['subject'])}
           </Typography>
           {state.evaluationResults['@id'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
               Identifier of this evaluation: {getUrlHtml(state.evaluationResults['@id'])}
             </Typography>
           }
-          {state.evaluationResults.summary['created_at'] &&
+          {state.evaluationResults['created_at'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Evaluated with the <Link to={'/collections/' + state.evaluationResults.summary.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.summary.collection}</Link> collection on the {state.evaluationResults.summary['created_at']}
+              Evaluated with the <Link to={'/collections/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection on the {state.evaluationResults['created_at'].substring(0, state.evaluationResults['created_at'].indexOf('T'))}
             </Typography>
           }
-          {state.evaluationResults.summary['http://purl.org/dc/terms/creator'] &&
+          {state.evaluationResults['http://purl.org/dc/terms/creator'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
               By {getUrlHtml(state.evaluationResults['author'])}
             </Typography>
@@ -359,10 +361,10 @@ export default function Evaluation() {
             <Grid item xs={3} md={3}></Grid>
             <Grid item xs={6} md={6}>
               <Typography variant="h5" style={{margin: theme.spacing(2, 0)}}>
-                🎓️ Evaluation score: {state.evaluationResults['summary']['score']}/{state.evaluationResults['summary']['score_max']}
+                🎓️ Evaluation score: {state.evaluationResults['score']}/{state.evaluationResults['score_max']}
               </Typography>
               <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                <CircularProgress variant="determinate" value={state.evaluationResults['summary']['score_percent']}/>
+                <CircularProgress variant="determinate" value={state.evaluationResults['score_percent']}/>
                 {/* <CircularProgress variant="determinate" value={60} size='50%'/> */}
                 <Box
                   sx={{
@@ -374,7 +376,7 @@ export default function Evaluation() {
                   }}
                 >
                   <Typography variant="caption" component="div">
-                    {`${state.evaluationResults['summary']['score_percent']}%`}<br/>
+                    {`${state.evaluationResults['score_percent']}%`}<br/>
                   </Typography>
                 </Box>
               </Box>

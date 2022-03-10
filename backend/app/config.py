@@ -49,6 +49,7 @@ class Settings(BaseSettings):
         "author": "http://purl.org/dc/elements/1.1/authoredBy",
         "created": "http://purl.org/pav/version",
         "assessments": "http://www.w3.org/ns/ldp#contains",
+        "contains": "http://www.w3.org/ns/ldp#contains",
 
         "summary": "http://semanticscience.org/resource/isDescribedBy",
         "subject": "http://semanticscience.org/resource/SIO_000332",
