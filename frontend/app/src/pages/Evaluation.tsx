@@ -351,7 +351,7 @@ export default function Evaluation() {
               Evaluated with the <Link to={'/collections/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection on the {state.evaluationResults['created_at'].substring(0, state.evaluationResults['created_at'].indexOf('T'))}
             </Typography>
           }
-          {state.evaluationResults['http://purl.org/dc/terms/creator'] &&
+          {state.evaluationResults['author'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
               By {getUrlHtml(state.evaluationResults['author'])}
             </Typography>

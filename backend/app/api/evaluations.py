@@ -97,7 +97,7 @@ async def create_evaluation(
 
     if current_user:
         print(current_user)
-        summary['http://purl.org/dc/terms/creator'] = current_user['id']
+        summary['author'] = current_user['id']
 
     summary['@type'] = 'http://semanticscience.org/resource/ProcessStatus'
     summary['@context'] = settings.CONTEXT
@@ -118,12 +118,10 @@ async def create_evaluation(
     # md5  : http://localhost/rest/evaluations/45af39b178f961d56131f1cb68d4d3df
     summary['@id'] = f'{settings.BASE_URI}/evaluations/{summary["_id"]}'
 
-
     # Add to MongoDB
     new_evaluation = await db["evaluations"].insert_one(summary)
     # print('NEW EVAL INSERTED: ', new_evaluation.inserted_id)
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=summary)
-    # return eval_results
 
 
 @router.get(

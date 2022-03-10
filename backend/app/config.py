@@ -47,6 +47,7 @@ class Settings(BaseSettings):
         "description": "http://rdfs.org/ns/void#description",
         "homepage": "http://www.w3.org/ns/dcat#publisher",
         "author": "http://purl.org/dc/elements/1.1/authoredBy",
+        "creator": "http://purl.org/dc/terms/creator",
         "created": "http://purl.org/pav/version",
         "assessments": "http://www.w3.org/ns/ldp#contains",
         "contains": "http://www.w3.org/ns/ldp#contains",

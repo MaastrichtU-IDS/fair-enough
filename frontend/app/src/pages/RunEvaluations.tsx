@@ -137,13 +137,13 @@ export default function Evaluation() {
           let evaluationsList: any = []
           res.data.map((evaluation: any, key: number) => {
             evaluation['id'] = evaluation['_id']
-            evaluation['score_percent'] = evaluation['summary']['score_percent']
-            evaluation['score'] = evaluation['summary']['score'] + '/' + evaluation['summary']['score_max']
-            evaluation['subject'] = evaluation['summary']['subject']
-            evaluation['collection'] = evaluation['summary']['collection']
-            evaluation['created'] = evaluation['summary']['created_at']
-            evaluation['author'] = evaluation['summary']['http://purl.org/dc/terms/creator']
-            // evaluation['bonus_percent'] = evaluation['summary']['bonus']
+            evaluation['score_percent'] = evaluation['score_percent']
+            evaluation['score'] = evaluation['score'] + '/' + evaluation['score_max']
+            evaluation['subject'] = evaluation['subject']
+            evaluation['collection'] = evaluation['collection']
+            evaluation['created'] = evaluation['created_at']
+            evaluation['author'] = evaluation['author']
+            // evaluation['bonus_percent'] = evaluation['bonus']
             evaluation['bonus_percent'] = 0
             evaluationsList.push(evaluation)
           })
