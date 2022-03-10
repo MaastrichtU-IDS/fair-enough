@@ -339,6 +339,11 @@ export default function Evaluation() {
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
             {getUrlHtml(state.evaluationResults.summary['subject'])}
           </Typography>
+          {state.evaluationResults['@id'] &&
+            <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+              Identifier of the evaluation: {getUrlHtml(state.evaluationResults['@id'])}
+            </Typography>
+          }
           {state.evaluationResults.summary['created_at'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
               Evaluated with the <Link to={'/collections/' + state.evaluationResults.summary.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.summary.collection}</Link> collection on the {state.evaluationResults.summary['created_at']}

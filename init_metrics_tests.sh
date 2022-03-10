@@ -14,7 +14,7 @@ else
     API_URL=$1
 fi
 
-POST_TESTS_URL=$API_URL/rest/metrics
+POST_TESTS_URL=$API_URL/metrics
 
 
 # FAIR enough metrics
