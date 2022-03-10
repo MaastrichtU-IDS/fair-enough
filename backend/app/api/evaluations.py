@@ -214,7 +214,7 @@ def query_url(url, data, timeout=100, content_type=None):
     headers = {}
     if content_type:
         headers['Content-Type'] = content_type
-    return requests.post(url, json=data, timeout=timeout, headers=headers)
+    return requests.post(url, json=data, timeout=timeout, headers=headers, allow_redirects=True)
     # if data:
     #     return requests.post(url, json=data, timeout=timeout, headers=headers)
     # else:
