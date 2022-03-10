@@ -341,7 +341,7 @@ export default function Evaluation() {
           </Typography>
           {state.evaluationResults['@id'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Identifier of the evaluation: {getUrlHtml(state.evaluationResults['@id'])}
+              Identifier of this evaluation: {getUrlHtml(state.evaluationResults['@id'])}
             </Typography>
           }
           {state.evaluationResults.summary['created_at'] &&

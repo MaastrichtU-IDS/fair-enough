@@ -1,13 +1,13 @@
 # from urllib import request
 from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.encoders import jsonable_encoder
 # from typing import Collection, List, Optional
 from typing import List, Optional
 from starlette.responses import RedirectResponse
 # from app.db import get_db, db
 from app.db import get_db
-from rdflib import ConjunctiveGraph
+from rdflib import ConjunctiveGraph, Graph
 # from celery.result import AsyncResult
 import asyncio
 # import grequests
@@ -77,6 +77,7 @@ async def create_evaluation(
         accept='application/json'
     )
 
+    # TODO: improve the evaluation object
     summary = {
         'subject': evaluation['resource_uri'],
         'collection': evaluation['collection'],
@@ -101,12 +102,11 @@ async def create_evaluation(
     summary['@type'] = 'http://semanticscience.org/resource/ProcessStatus'
     summary['@context'] = settings.CONTEXT
 
-    full_eval = {
-        '@id': '',
-        '@context': '',
-        'http://semanticscience.org/resource/isDescribedBy': eval_results
-
-    }
+    # full_eval = {
+    #     '@id': '',
+    #     '@context': '',
+    #     'http://semanticscience.org/resource/isDescribedBy': eval_results
+    # }
 
     eval_results['summary'] = summary
     # Generate sha1 hash based on subject URL + time of evaluation
@@ -149,10 +149,41 @@ async def list_evaluations():
     return evals
 
 
+api_responses={
+    200: {
+        "description": "SPARQL query results",
+        "content": {
+            "application/ld+json": {
+                "results": {"bindings": []}, 'head': {'vars': []}
+            },
+            "text/turtle": {
+                "example": "<http://subject> <http://predicate> <http://object> ."
+            },
+            # "application/xml": {
+            #     "example": "<RDF></RDF>"
+            # },
+            "application/rdf+xml": {
+                "example": '<?xml version="1.0" encoding="UTF-8"?> <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>'
+            },
+        },
+    },
+    400:{
+        "description": "Bad Request",
+    },
+    403:{
+        "description": "Forbidden",
+    }, 
+    422:{
+        "description": "Unprocessable Entity",
+    },
+}
+
+
 @router.get(
     "/evaluations/{id}", 
     response_description="Get a single evaluation", 
-    response_model=dict # response_model=EvaluationModel
+    response_model=dict, # response_model=EvaluationModel
+    responses=api_responses
 )
 async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict:
     # id: PyObjectId
@@ -163,6 +194,17 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
     if not evaluation is None:
         if accept.startswith('text/html'):
             return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
+        
+        if accept.startswith('text/turtle'):
+            g = Graph()
+            g.parse(data=json.dumps(evaluation), format="json-ld")
+            # curl -L -H "Accept: text/turtle" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
+            return PlainTextResponse(g.serialize(format='turtle'))
+        if accept.startswith('application/rdf+xml') or accept.startswith('text/xhtml+xml'):
+            g = Graph()
+            g.parse(data=json.dumps(evaluation), format="json-ld")
+            # curl -L -H "Accept: application/rdf+xml" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
+            return PlainTextResponse(g.serialize(format='application/rdf+xml'))
         return evaluation
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
 

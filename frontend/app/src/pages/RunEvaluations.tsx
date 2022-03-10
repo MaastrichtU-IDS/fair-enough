@@ -391,7 +391,8 @@ export default function Evaluation() {
             As a consequence, the database has been reset, and some of the assessments previously available are in the progress of being migrated  🏗️
           </Typography>
           <Typography>
-            Thanks a lot everyone for your contributions to making research more FAIR, and feel free to create issues, or contact vincent.emonet@maastrichtuniversity.nl for remarks or requests 💌
+            Thanks a lot everyone for your contributions to making research more FAIR, and feel free to <a href='https://github.com/MaastrichtU-IDS/fair-enough/issues' target="_blank" rel="noopener noreferrer" className={classes.link}>create issues</a>, 
+            or contact vincent.emonet@maastrichtuniversity.nl for remarks or requests 💌
           </Typography>
         </CardContent>
       </Card>

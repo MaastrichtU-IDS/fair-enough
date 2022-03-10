@@ -211,7 +211,7 @@ Then open your browser at http://localhost:19006
 
 Create a `.env` file with your production settings:
 
-```
+```bash
 ORCID_CLIENT_ID=APP-XXX
 ORCID_CLIENT_SECRET=XXXX
 FRONTEND_URL=https://fair-enough.semanticscience.org
@@ -220,13 +220,19 @@ FRONTEND_URL=https://fair-enough.semanticscience.org
 Deploy the app with production config: 
 
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
 If the database is empty you'll need to register the initial Metrics Tests with the init script:
 
 ```bash
 ./init_metrics_tests.sh https://api.fair-enough.semanticscience.org
+```
+
+To stop the stack in production:
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
 ```
 
 ## ➕ Docker Compose files and env vars
