@@ -8,7 +8,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
 // import ApiIcon from '@mui/icons-material/Http';
 // import GraphqlIcon from '@mui/icons-material/Code';
-import LoginIcon from '@mui/icons-material/Login';
+// import LoginIcon from '@mui/icons-material/Login';
 import CollectionsIcon from '@mui/icons-material/CollectionsBookmark';
 import AssessmentsIcon from '@mui/icons-material/AssignmentTurnedIn';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
@@ -20,6 +20,8 @@ import iconImage from '../../assets/icon.png';
 import GraphqlIcon from '../../assets/graphql_logo.svg';
 // @ts-ignore
 import ApiIcon from '../../assets/openapi_logo.svg';
+// @ts-ignore
+import OrcidIcon from '../../assets/orcid_logo.svg';
 
 import { getUrlHtml, settings } from '../settings';
 // import { useAuth } from 'oidc-react';
@@ -66,6 +68,11 @@ export default function NavBar() {
       // height: '48px',
       alignItems: 'center',
       display: 'flex',
+    },
+    loginButton: {
+      padding: '0px',
+      border: '0',
+      backgroundColor: 'inherit',
     },
   }))
   const classes = useStyles();
@@ -324,18 +331,22 @@ export default function NavBar() {
         }
         { !user.username && 
           <OAuth2Login
-            className="MuiButton‑root MuiButton‑contained"
+            className={classes.loginButton}
             authorizationUrl="https://orcid.org/oauth/authorize"
             responseType="token"
             clientId={process.env.ORCID_CLIENT_ID}
             clientSecret={process.env.ORCID_CLIENT_SECRET}
             redirectUri={settings.OauthRedirectUri}
             // redirectUri=""
-            style={{textTransform: 'none', textDecoration: 'none'}}
+            style={{textTransform: 'none', textDecoration: 'none', padding: '0px'}}
             onSuccess={onSuccess}
             onFailure={onFailure}>
-              <Button variant='contained' color='secondary' size='small' component="span" style={{textTransform: 'none'}}>
+              <Button variant='contained' color='secondary' size='small' component="span" 
+                  style={{textTransform: 'none'}}>
                 Login with ORCID
+                <Icon style={{display: 'flex', marginLeft: theme.spacing(1)}}>
+                  <img src={OrcidIcon} />
+                </Icon>
               </Button>
           </OAuth2Login>
           }

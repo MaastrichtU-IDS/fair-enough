@@ -40,10 +40,10 @@ jobs:
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
-    - name: Start RabbitMQ
-      uses: nijel/rabbitmq-action@v1.0.0
-      with:
-        rabbitmq version: '3'
+    # - name: Start RabbitMQ
+    #   uses: nijel/rabbitmq-action@v1.0.0
+    #   with:
+    #     rabbitmq version: '3'
 
     - name: Install dependencies
       run: |
@@ -51,10 +51,10 @@ jobs:
         pip install poetry
         poetry install
 
-    - name: Start Celery worker
-      run: |
-        cd backend
-        poetry run celery worker -A app.worker -l info -Q main-queue --detach
+    # - name: Start Celery worker
+    #   run: |
+    #     cd backend
+    #     poetry run celery worker -A app.worker -l info -Q main-queue --detach
 
     - name: Run tests
       env:

@@ -17,7 +17,7 @@ import Collections from "./src/pages/Collections";
 import MetricTests from "./src/pages/MetricTests";
 import About from "./src/pages/About";
 import UserContext from "./src/UserContext";
-import { AuthProvider, useAuth } from 'oidc-react';
+// import { AuthProvider, useAuth } from 'oidc-react';
 
 // const UserContext = createContext(null);
 
@@ -39,8 +39,9 @@ import { AuthProvider, useAuth } from 'oidc-react';
 // Change theme color and typography here
 const theme = createTheme({
   palette: {
-    primary: { light: '#63a4ff', main: blue[700], dark: '#004ba0' }, // blue
-    secondary: { light: '#4caf50', main: '#087f23', dark: '#00600f' }, // green
+    primary: { light: '#6ab7ff', main: blue[600], dark: '#005cb2' }, // blue
+    // primary: { light: '#c7a4ff', main: '#9575cd', dark: '#65499c' }, // purple
+    secondary: { light: '#6abf69', main: '#388e3c', dark: '#00600f' }, // green
     // primary: { light: blue[50], main: blue[600], dark: blue[900] },
     // secondary: { light: '#ffcc80', main: '#ffa726', dark: '#c88719' }, // Orange
     // secondary: { light: '#ff7043', main: '#ff5722', dark: '#087f23' }, // Orange
