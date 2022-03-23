@@ -91,6 +91,7 @@ class Query:
     async def evaluations(self, info: Info,
             # id: Optional[str] = None,
             subject: Optional[str] = None,
+            collection: Optional[str] = None,
             maxScore: Optional[int] = None,
             minScore: Optional[int] = None,
             # maxBonus: Optional[int] = None,
@@ -106,6 +107,8 @@ class Query:
             # if id and id != eval['_id']:
             #     continue
             if subject and subject != eval['subject']:
+                continue
+            if collection and collection != eval['collection']:
                 continue
             if maxScore and maxScore < eval['score']:
                 continue
