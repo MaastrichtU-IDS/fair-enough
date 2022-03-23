@@ -21,11 +21,11 @@ export default function MetricTests() {
 
   const useStyles = makeStyles(() => ({
     link: {
-      color: theme.palette.primary.main,
+      color: theme.palette.primary.dark,
       textDecoration: 'none',
       // color: 'inherit',
       '&:hover': {
-        color: theme.palette.primary.light,
+        color: theme.palette.primary.main,
         textDecoration: 'none',
       },
     },

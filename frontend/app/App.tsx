@@ -39,7 +39,7 @@ import UserContext from "./src/UserContext";
 // Change theme color and typography here
 const theme = createTheme({
   palette: {
-    primary: { light: '#6ab7ff', main: blue[600], dark: '#005cb2' }, // blue
+    primary: { light: '#6ec6ff', main: blue[500], dark: '#0069c0' }, // blue
     // primary: { light: '#c7a4ff', main: '#9575cd', dark: '#65499c' }, // purple
     secondary: { light: '#6abf69', main: '#388e3c', dark: '#00600f' }, // green
     // primary: { light: blue[50], main: blue[600], dark: blue[900] },

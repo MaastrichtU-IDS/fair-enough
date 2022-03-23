@@ -69,7 +69,7 @@ export default function Footer() {
       <footer style={{padding: theme.spacing(2),
           marginTop: 'auto',
           color: 'white',
-          backgroundColor: theme.palette.primary.main }}>
+          backgroundColor: theme.palette.primary.dark }}>
         <Container maxWidth="md" style={{textAlign: 'center'}}>
           <Typography variant="body2" >
             This website is licensed under the&nbsp;
