@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Button, Tooltip, IconButton, Box, ButtonBase } from '@mui/material';
+import { AppBar, Toolbar, Button, Tooltip, Icon, IconButton, Box, ButtonBase } from '@mui/material';
 import { Popper, ClickAwayListener, Typography, Paper, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoIcon from '@mui/icons-material/Info';
-import ApiIcon from '@mui/icons-material/Http';
-import GraphqlIcon from '@mui/icons-material/Code';
+// import ApiIcon from '@mui/icons-material/Http';
+// import GraphqlIcon from '@mui/icons-material/Code';
 import LoginIcon from '@mui/icons-material/Login';
 import CollectionsIcon from '@mui/icons-material/CollectionsBookmark';
 import AssessmentsIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -16,9 +16,14 @@ import axios from 'axios';
 
 // @ts-ignore
 import iconImage from '../../assets/icon.png';
+// @ts-ignore
+import GraphqlIcon from '../../assets/graphql_logo.svg';
+// @ts-ignore
+import ApiIcon from '../../assets/openapi_logo.svg';
 
 import { getUrlHtml, settings } from '../settings';
-import { useAuth } from 'oidc-react';
+// import { useAuth } from 'oidc-react';
+// @ts-ignore
 import OAuth2Login from 'react-simple-oauth2-login';
 import UserContext from '../UserContext'
 
@@ -278,16 +283,20 @@ export default function NavBar() {
         <Tooltip title='Access the OpenAPI documentation of the API used by this website'>
           <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
           href={settings.docsUrl}>
-            <ApiIcon style={{ marginRight: theme.spacing(1)}} />
-            API
+            {/* <ApiIcon style={{ marginRight: theme.spacing(1)}} /> */}
+            <Icon style={{display: 'flex', marginRight: theme.spacing(1)}}>
+              <img src={ApiIcon}/>
+            </Icon> RESTful API
           </Button>
         </Tooltip>
         <Tooltip title='Access the GraphQL API'>
           <Button style={{color: '#fff', textTransform: 'none'}} target="_blank" rel="noopener noreferrer"
           href={settings.graphqlUrl}>
             {/* + '?query=query%20%7B%0A%20%20evaluations%20%7B%0A%20%20%20%20title%0A%20%20%20%20resourceUri%0A%20%20%20%20collection%0A%20%20%20%20score%20%7B%0A%20%20%20%20%20%20totalScore%0A%20%20%20%20%20%20totalScoreMax%0A%20%20%20%20%20%20percent%0A%20%20%20%20%20%20totalBonus%0A%20%20%20%20%20%20totalBonusMax%0A%20%20%20%20%20%20bonusPercent%0A%20%20%20%20%7D%0A%20%20%20%20results%20%7B%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20fairType%0A%20%20%20%20%20%20metricId%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20maxScore%0A%20%20%20%20%20%20bonusScore%0A%20%20%20%20%20%20maxBonus%0A%20%20%20%20%20%20logs%0A%20%20%20%20%7D%0A%20%20%20%20data%0A%20%20%7D%0A%7D' */}
-            <GraphqlIcon style={{ marginRight: theme.spacing(1)}} />
-            GraphQL
+            {/* <GraphqlIcon style={{ marginRight: theme.spacing(1)}} /> */}
+            <Icon style={{display: 'flex', marginRight: theme.spacing(1)}}>
+              <img src={GraphqlIcon} />
+            </Icon> GraphQL
           </Button>
         </Tooltip>
         <Link to="/about" className={classes.linkButton}>
@@ -325,7 +334,7 @@ export default function NavBar() {
             style={{textTransform: 'none', textDecoration: 'none'}}
             onSuccess={onSuccess}
             onFailure={onFailure}>
-              <Button variant='contained' color='primary' size='small' component="span" style={{textTransform: 'none'}}>
+              <Button variant='contained' color='secondary' size='small' component="span" style={{textTransform: 'none'}}>
                 Login with ORCID
               </Button>
           </OAuth2Login>
