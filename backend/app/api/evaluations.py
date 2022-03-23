@@ -2,32 +2,21 @@
 from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header
 from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.encoders import jsonable_encoder
-# from typing import Collection, List, Optional
 from typing import List, Optional
 from starlette.responses import RedirectResponse
-# from app.db import get_db, db
-from app.db import get_db
-from rdflib import ConjunctiveGraph, Graph
-# from celery.result import AsyncResult
-import asyncio
-# import grequests
+from rdflib import Graph
 import requests
 import concurrent.futures
 import json
 import yaml
 from datetime import datetime
 import hashlib
-import urllib.parse
-
-# from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
 from app.models import CreateEvaluationModel, User
-from app.api.login import get_current_user, reusable_oauth2
+from app.api.login import get_current_user
+from app.db import get_db
 from app.config import settings
-# from app.celery_app import celery_app
-# from app.worker import run_evaluation
 
 router = APIRouter()
-# db = get_db()
 
 
 @router.post("/evaluations", 
@@ -59,28 +48,23 @@ async def create_evaluation(
     evaluation = jsonable_encoder(evaluation)
     db = get_db()
 
-    if len(evaluation['resource_uri']) < 2:
-        print('FAIL for resource_uri')
-        raise HTTPException(status_code=422, detail=f"No URL has been provided as resource_uri to evaluate")
+    if len(evaluation['subject']) < 2:
+        raise HTTPException(status_code=422, detail=f"No URL has been provided as subject to evaluate")
 
     collection = await db["collections"].find_one({"_id": evaluation['collection']})
     if collection is None:
-        print('FAIL for collec')
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
 
-    print(collection['assessments'])
     # Send asynchronous requests to get each test result
-    # https://stackoverflow.com/questions/9110593/asynchronous-requests-with-python-requests
-    print(f"before post data {evaluation['resource_uri']}")
     eval_results = async_requests(
         urls=collection['assessments'], 
-        post_data={'subject': str(evaluation['resource_uri'])},
+        post_data={'subject': str(evaluation['subject'])},
         content_type='application/json',
         accept='application/json'
     )
 
-    summary = {
-        'subject': evaluation['resource_uri'],
+    eval = {
+        'subject': evaluation['subject'],
         'collection': evaluation['collection'],
         'created_at': str(datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
     }
@@ -90,39 +74,31 @@ async def create_evaluation(
             if int(test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']) >= 1:
                 eval_score += 1
         except Exception as e:
-            print(f'Could not get score for {test_url}')
-            print(test_res)
-    summary['score'] = eval_score
-    summary['score_max'] = len(eval_results.keys())
-    summary['score_percent'] = round(eval_score * 100 / len(eval_results.keys()), 2)
+            print(f'Could not get score for {test_url}', test_res)
+    eval['score'] = eval_score
+    eval['score_max'] = len(eval_results.keys())
+    eval['score_percent'] = round(eval_score * 100 / len(eval_results.keys()), 2)
 
     if current_user:
-        print(current_user)
-        summary['author'] = current_user['id']
+        eval['author'] = current_user['id']
 
-    summary['@type'] = 'http://semanticscience.org/resource/ProcessStatus'
-    summary['@context'] = settings.CONTEXT
+    eval['@type'] = 'http://semanticscience.org/resource/ProcessStatus'
+    eval['@context'] = settings.CONTEXT
 
-    summary['contains'] = eval_results
-
-    # full_eval = {
-    #     '@id': '',
-    #     '@context': '',
-    #     'http://semanticscience.org/resource/isDescribedBy': eval_results
-    # }
+    eval['contains'] = eval_results
 
     # eval_results['summary'] = summary
     # Generate sha1 hash based on subject URL + time of evaluation
-    eval_id = f'{evaluation["resource_uri"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")}'
-    summary['_id'] = hashlib.sha1(eval_id.encode('utf-8')).hexdigest()
+    eval_id = f'{evaluation["subject"]}/{datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00")}'
+    eval['_id'] = hashlib.sha1(eval_id.encode('utf-8')).hexdigest()
     # sha1 : http://localhost/rest/evaluations/22248f30cf44e74ae134b221894820b182c433a2
     # md5  : http://localhost/rest/evaluations/45af39b178f961d56131f1cb68d4d3df
-    summary['@id'] = f'{settings.BASE_URI}/evaluations/{summary["_id"]}'
+    eval['@id'] = f'{settings.BASE_URI}/evaluations/{eval["_id"]}'
 
     # Add to MongoDB
-    new_evaluation = await db["evaluations"].insert_one(summary)
+    new_evaluation = await db["evaluations"].insert_one(eval)
     # print('NEW EVAL INSERTED: ', new_evaluation.inserted_id)
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=summary)
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content=eval)
 
 
 @router.get(
@@ -140,7 +116,7 @@ async def list_evaluations():
     # for eval in evals:
     #     partial_evals.append({
     #         '_id': str(eval['_id']),
-    #         'resource_uri': eval['resource_uri'],
+    #         'subject': eval['subject'],
     #         'collection': eval['collection'],
     #         'score': eval['score'],
     #         'created': eval['created'],
@@ -256,59 +232,3 @@ def async_requests(urls, post_data, content_type=None, accept=None):
 #     while True:
 #         data = await websocket.receive_text()
 #         await websocket.send_text(f"Message text was: {data}")
-
-# async def run_evaluation(
-#         evaluation: CreateEvaluationModel,
-#         collection,
-#         current_user: Optional[User]) -> EvaluationModel:
-#     assessment_list = collection['assessments']
-#     init_eval = {
-#         '_id': evaluation['_id'],
-#         'resource_uri': evaluation['resource_uri'],
-#         'title': evaluation['title'],
-#         'collection': evaluation['collection'],
-#         'data': {
-#             'alternative_uris': [evaluation['resource_uri']]
-#         },
-#         '@id': f'{settings.BASE_URI}/evaluations/{evaluation["_id"]}',
-#         '@context': settings.CONTEXT
-#     }
-#     if current_user:
-#         print('USER!!!')
-#         print(str(current_user))
-#         init_eval['author'] = current_user['id']
-#     else:
-#         init_eval['author'] = None
-#     eval = EvaluationModel(**init_eval)
-#     g = ConjunctiveGraph()
-
-#     # Import each assessment listed in the collection
-#     for assess_name in assessment_list:
-#         assess_module = assess_name.replace('/', '.')
-#         print('Import ' + assess_module)
-#         import importlib
-#         Assessment = getattr(importlib.import_module('app.assessments.' + assess_module), "Assessment")
-#         # module = __import__('app.assessments.' + assess_name, fromlist=['Assessment'])
-#         # Assessment = getattr(module, 'Assessment')
-#         assess = Assessment(assess_name)
-#         try: 
-#             eval, g = assess.runEvaluate(eval, g)
-#         except Exception as e:
-#             print('❌ Error running the assessment ' + assess_name)
-#             print(e)
-
-#     # Calculate the total score
-#     # for fair_type in ['f', 'a', 'i', 'r']:
-#     for result in eval.results:
-#         eval.score.total_score += result['score']
-#         eval.score.total_score_max += result['max_score']
-#         # if 'bonus_score' in result.keys() and 'max_bonus' in result.keys():
-#         eval.score.total_bonus += result['bonus_score']
-#         eval.score.total_bonus_max += result['max_bonus']
-#     if eval.score.total_score_max > 0:
-#         eval.score.percent = int(eval.score.total_score * 100 / eval.score.total_score_max)
-#         eval.score.bonus_percent = int(eval.score.total_bonus * 100 / eval.score.total_bonus_max)
-#     else:
-#         eval.score.percent = 0
-#         eval.score.bonus_percent = 0
-#     return eval

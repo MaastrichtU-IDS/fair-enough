@@ -22,7 +22,7 @@ def test_evaluation_get(test_client) -> None:
 ## Celery seems to not work in GitHub Actions workflow
 # def test_evaluation_create(test_client) -> None:
 #     eval_data = {
-#         "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
+#         "subject": "https://doi.org/10.1594/PANGAEA.908011",
 #         "collection": "fair-metrics"
 #     }
 

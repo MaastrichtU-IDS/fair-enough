@@ -62,7 +62,7 @@ class PyObjectId(ObjectId):
 #     # id: str = Field(default_factory=PyObjectId, alias="_id")
 #     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
 #     # id: str = Field(..., alias="_id")
-#     resource_uri: str = Field(...)
+#     subject: str = Field(...)
 #     collection: str = Field(...)
 #     # title: Optional[str] = Field(...)
 #     author: Optional[str] = None
@@ -81,7 +81,7 @@ class PyObjectId(ObjectId):
 #         json_encoders = {ObjectId: str}
 #         schema_extra = {
 #             "example": {
-#                 "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
+#                 "subject": "https://doi.org/10.1594/PANGAEA.908011",
 #                 # "title": "FAIR metrics dataset evaluation",
 #                 "collection": "fair-metrics",
 #                 'results':[],
@@ -94,7 +94,7 @@ class PyObjectId(ObjectId):
 class CreateEvaluationModel(BaseModel):
     # id: str = Field(default_factory=PyObjectId, alias="_id")
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    resource_uri: str = Field(...)
+    subject: str = Field(...)
     collection: str = Field(...)
     class Config:
         allow_population_by_field_name = True
@@ -102,21 +102,21 @@ class CreateEvaluationModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "resource_uri": "https://w3id.org/ejp-rd/fairdatapoints/wp13/dataset/c5414323-eab1-483f-a883-77951f246972",
+                "subject": "https://w3id.org/ejp-rd/fairdatapoints/wp13/dataset/c5414323-eab1-483f-a883-77951f246972",
                 "collection": "fair-metrics-maturity-indicators"
             }
         }
 
 
 class UpdateEvaluationModel(BaseModel):
-    resource_uri: Optional[str]
+    subject: Optional[str]
     collection: Optional[str]
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "resource_uri": "https://doi.org/10.1594/PANGAEA.908011",
+                "subject": "https://doi.org/10.1594/PANGAEA.908011",
                 "collection": "fair-metrics"
             }
         }

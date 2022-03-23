@@ -184,7 +184,7 @@ export default function Evaluation() {
     })
     console.log('Starting evaluation of ' + evaluateUrl + ' with API ' + settings.docsUrl)
     const postJson: any = {
-      "resource_uri": evaluateUrl,
+      "subject": evaluateUrl,
       // "title": "FAIR metrics dataset evaluation",
       "collection": state.collectionSelected
     };
