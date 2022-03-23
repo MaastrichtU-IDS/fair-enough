@@ -393,6 +393,7 @@ export default function Evaluation() {
                   marginRight: theme.spacing(2),
                   marginBottom: theme.spacing(1)
                 }}
+                SelectProps={{ MenuProps: { disableScrollLock: true } }}
                 onChange={handleLogLevelChange} 
                 variant="outlined"> 
               <MenuItem key='success' value={'success'}>Only success and failures</MenuItem>

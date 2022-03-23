@@ -48,6 +48,7 @@
     "@types/material-ui": "^0.21.8",
     "@types/react": "^16.9.51",
     "@types/react-dom": "^16.9.8",
+    "@types/react-helmet": "^6.1.5",
     "@types/react-native": "^0.63.25",
     "@types/react-router-dom": "^5.1.6",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
