@@ -260,26 +260,26 @@ export default function NavBar() {
     <AppBar title="" position='static'>
       <Toolbar variant='dense'>
         <Link to="/" className={classes.linkLogo}>
-          <Tooltip title='☑️ FAIR Enough'>
+          <Tooltip title='⚖️ FAIR Enough'>
             <img src={iconImage} style={{height: '2em', width: '2em', marginRight: '10px'}} alt="Logo" />
           </Tooltip>
         </Link>
         <Link to="/" className={classes.linkButton}>
-          <Tooltip title='Browse existing evaluations or submit a new one'>
+          <Tooltip title='Browse existing evaluations, or submit a new one'>
             <Button style={{color: '#fff', textTransform: 'none'}}>
               <EvaluationIcon />&nbsp;Evaluations
             </Button>
           </Tooltip>
         </Link>
         <Link to="/collections" className={classes.linkButton}>
-          <Tooltip title='Browse existing Collections of assessments'>
+          <Tooltip title='Browse existing Collections of assessments, or create a new one'>
             <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
               <CollectionsIcon />&nbsp;Collections
             </Button>
           </Tooltip>
         </Link>
         <Link to="/metrics" className={classes.linkButton}>
-          <Tooltip title='Browse existing Metrics Tests'>
+          <Tooltip title='Browse existing Metrics Tests, or register a new one'>
             <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
               <AssessmentsIcon />&nbsp;Metrics Tests
             </Button>
@@ -296,7 +296,7 @@ export default function NavBar() {
             </Icon> RESTful API
           </Button>
         </Tooltip>
-        <Tooltip title='Access the GraphQL API'>
+        <Tooltip title='Access the experimental GraphQL API'>
           <Button style={{color: '#fff', textTransform: 'none'}} target="_blank" rel="noopener noreferrer"
           href={settings.graphqlUrl}>
             {/* + '?query=query%20%7B%0A%20%20evaluations%20%7B%0A%20%20%20%20title%0A%20%20%20%20resourceUri%0A%20%20%20%20collection%0A%20%20%20%20score%20%7B%0A%20%20%20%20%20%20totalScore%0A%20%20%20%20%20%20totalScoreMax%0A%20%20%20%20%20%20percent%0A%20%20%20%20%20%20totalBonus%0A%20%20%20%20%20%20totalBonusMax%0A%20%20%20%20%20%20bonusPercent%0A%20%20%20%20%7D%0A%20%20%20%20results%20%7B%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20fairType%0A%20%20%20%20%20%20metricId%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20maxScore%0A%20%20%20%20%20%20bonusScore%0A%20%20%20%20%20%20maxBonus%0A%20%20%20%20%20%20logs%0A%20%20%20%20%7D%0A%20%20%20%20data%0A%20%20%7D%0A%7D' */}
