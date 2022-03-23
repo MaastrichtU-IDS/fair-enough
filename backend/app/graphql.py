@@ -34,48 +34,25 @@ class CollectionModel:
     description: Optional[str]
     homepage: Optional[str]
     assessments: List[str]
-    author: str
-    created: str
+    author: Optional[str]
+    created: Optional[str]
     # uri: str = Field(alias="@id")
     # context: str = Field(alias="@context")
 
 
 @strawberry.type
-class EvaluationResults:
-    id: str
-    title: str
-    description: str
-    file_url: str
-    fair_type: str
-    metric_id: str
-    role: str
-    logs: List[str]
-    score: int = 0
-    max_score: int = 1
-    bonus_score: int = 0
-    max_bonus: int = 1
-    author: Optional[str] = None
-
-@strawberry.type
-class EvaluationScore:
-    total_score: int = 0
-    total_score_max: int = 0
-    total_bonus: int = 0
-    total_bonus_max: int = 0
-    percent: Optional[int] = 0
-    bonus_percent: Optional[int] = 0
-
-@strawberry.type
 class EvaluationModel:
     # id: str = Field(default_factory=PyObjectId, alias="_id")
     id: str
-    resource_uri: str
+    subject: str
     collection: str
+    score: int
+    score_max: int
+    score_percent: float
+    created_at: Optional[str]
     author: Optional[str]
-    score: Optional[EvaluationScore]
-    results: Optional[List[EvaluationResults]]
-    data: str
-    created: str
+    # results: Optional[List[EvaluationResults]]
+    # contains: str
     # data: Optional[EvaluationData] = EvaluationData()
     # uri: str = Field(..., alias="@id")
     # context: str = Field(..., alias="@context")
@@ -112,11 +89,12 @@ class Query:
 
     @strawberry.field
     async def evaluations(self, info: Info,
-            id: Optional[str] = None,
+            # id: Optional[str] = None,
+            subject: Optional[str] = None,
             maxScore: Optional[int] = None,
             minScore: Optional[int] = None,
-            maxBonus: Optional[int] = None,
-            minBonus: Optional[int] = None,
+            # maxBonus: Optional[int] = None,
+            # minBonus: Optional[int] = None,
             maxPercent: Optional[int] = None,
             minPercent: Optional[int] = None,
             
@@ -125,35 +103,39 @@ class Query:
         evaluations = await db["evaluations"].find().to_list(1000)
         eval_list = []
         for eval in evaluations:
-            if id and id != eval['_id']:
+            # if id and id != eval['_id']:
+            #     continue
+            if subject and subject != eval['subject']:
                 continue
-            if maxScore and maxScore > eval['score']['total_score']:
+            if maxScore and maxScore < eval['score']:
                 continue
-            if minScore and minScore < eval['score']['total_score']:
+            if minScore and minScore > eval['score']:
                 continue
-            if maxBonus and maxBonus > eval['score']['total_bonus']:
+            # if maxBonus and maxBonus > eval['score_percent']:
+            #     continue
+            # if minBonus and minBonus < eval['score']['total_bonus']:
+            #     continue
+            if maxPercent and maxPercent < eval['score_percent']:
                 continue
-            if minBonus and minBonus < eval['score']['total_bonus']:
+            if minPercent and minPercent > eval['score_percent']:
                 continue
-            if maxPercent and maxPercent > eval['score']['percent']:
-                continue
-            if minPercent and minPercent < eval['score']['percent']:
-                continue
-            result_list = []
-            for result in eval['results']:
-                # Convert the results list to objects
-                del result['@id']
-                del result['@context']
-                result_list.append(EvaluationResults(**result))
+            # result_list = []
+            # for result in eval['results']:
+            #     # Convert the results list to objects
+            #     del result['@id']
+            #     del result['@context']
+            #     result_list.append(EvaluationResults(**result))
 
             # Convert the evaluations to objects
-            eval['results'] = result_list
-            eval['score'] = EvaluationScore(**eval['score'])
+            # eval['results'] = result_list
+            # eval['score'] = EvaluationScore(**eval['score'])
             eval['id'] = eval['_id']
             del eval['_id']
             del eval['@id']
             del eval['@context']
-            eval['data'] = json.dumps(eval['data'], indent=2)
+            del eval['@type']
+            del eval['contains']
+            # eval['contains'] = json.dumps(eval['contains'], indent=2)
             if 'author' not in eval.keys():
                 eval['author'] = "noone"
             print(eval)

@@ -330,10 +330,12 @@ export default function Evaluation() {
     // },
     {
       field: 'created', headerName: 'Date created', flex: 0.3,
-      renderCell: (params: GridRenderCellParams) => (
+      renderCell: (params: GridRenderCellParams) => {
+        const dateCreated = params.value as string
+        return (
         <>
-          {params.value as string}
-        </>)
+          {dateCreated.substring(0, dateCreated.indexOf('T'))}
+        </>)}
     },
     {
       field: 'author', headerName: 'Author', flex: 0.6,

@@ -2,7 +2,7 @@ from app.config import settings
 # import motor.motor_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 import datetime
-from app.models.metric_test import register_test
+# from app.models.metric_test import register_test
 
 # https://github.com/michaldev/fastapi-async-mongodb
 # https://art049.github.io/odmantic/usage_fastapi/

@@ -19,11 +19,12 @@ from datetime import datetime
 import hashlib
 import urllib.parse
 
-from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
+# from app.models import PyObjectId, CreateEvaluationModel, EvaluationModel, User, EvaluationResults, EvaluationScore, UpdateEvaluationModel
+from app.models import CreateEvaluationModel, User
 from app.api.login import get_current_user, reusable_oauth2
 from app.config import settings
-from app.celery_app import celery_app
-from app.worker import run_evaluation
+# from app.celery_app import celery_app
+# from app.worker import run_evaluation
 
 router = APIRouter()
 # db = get_db()
@@ -210,15 +211,16 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
 
 
 
-def query_url(url, data, timeout=100, content_type=None):
+def query_url(url, data, timeout=100, content_type=None, accept=None):
     headers = {}
     if content_type:
         headers['Content-Type'] = content_type
-    return requests.post(url, json=data, timeout=timeout, headers=headers, allow_redirects=True)
-    # if data:
-    #     return requests.post(url, json=data, timeout=timeout, headers=headers)
-    # else:
-    #     return requests.get(url, timeout=timeout, headers=headers)
+    if accept:
+        headers['Accept'] = accept
+    if data:
+        return requests.post(url, json=data, timeout=timeout, headers=headers, allow_redirects=True)
+    else:
+        return requests.get(url, timeout=timeout, headers=headers, allow_redirects=True)
 
 
 def async_requests(urls, post_data, content_type=None, accept=None):
@@ -226,16 +228,12 @@ def async_requests(urls, post_data, content_type=None, accept=None):
     resp_ok = 0
     resp_err = 0
     timeout = 100
-    print('URLs in async_requests', urls)
-    print('post_data in async_requests', post_data)
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-        future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type): url for url in urls}
+        future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type, accept): url for url in urls}
         for future in concurrent.futures.as_completed(future_to_url):
             url = future_to_url[future]
-            print('url in concurrent.futures.ThreadPoolExecutor', url) 
             try:
                 data = future.result()
-                print(f'Result of test: {data.text}')
                 if accept == 'application/json':
                     responses[url] = json.loads(data.text)
                 elif accept == 'text/x-yaml' or accept == 'yaml':
@@ -247,8 +245,7 @@ def async_requests(urls, post_data, content_type=None, accept=None):
                 responses[url] = f'Error: {str(exc)}'
             else:
                 resp_ok = resp_ok + 1
-        print('Async requests OK/Errors', resp_ok, ' / ', resp_err)
-        print(responses)
+        # print('Async requests OK/Errors', resp_ok, ' / ', resp_err)
         return responses
 
 
