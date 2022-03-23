@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Box, Snackbar, Tooltip, TextField, CircularProgress, Card, CardContent, CardHeader, IconButton, MenuItem } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import HelpIcon from '@mui/icons-material/HelpOutlined';
 // import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 // import EvaluationIcon from '@mui/icons-material/Send';
@@ -297,7 +298,7 @@ export default function Evaluation() {
       field: 'collection', headerName: 'Collection', flex: 0.5,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <Link to={'/collections/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.main}}>
+          <Link to={'/collections/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.dark}}>
             {params.value as string}
           </Link>
         </>)
@@ -400,7 +401,26 @@ export default function Evaluation() {
       </Card>
 
       <Typography variant="h4" style={{textAlign: 'center', margin: theme.spacing(4, 0)}}>
-        ⚖️ Evaluate how FAIR is a resource 🔗
+        {/* ⚖️ Evaluate how FAIR is a resource 🔗 */}
+        🎯 Evaluate how <Tooltip
+          title={<Typography>🔍️ Findable<br/>
+            📬️ Accessible<br/>
+            ⚙️ Interoperable<br/>
+            ♻️ Reusable</Typography>}
+        >
+          <span>
+            FAIR
+          </span>
+        </Tooltip> is a resource 
+
+        <Tooltip
+          title={<Typography>🔍️ Findable<br/>
+            📬️ Accessible<br/>
+            ⚙️ Interoperable<br/>
+            ♻️ Reusable</Typography>}
+        >
+          <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>
+        </Tooltip>
       </Typography>
 
       {/* {auth && auth.userData &&

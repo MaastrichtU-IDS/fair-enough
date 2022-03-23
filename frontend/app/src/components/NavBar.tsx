@@ -288,7 +288,7 @@ export default function NavBar() {
         <div className="flexGrow"></div>
 
         <Tooltip title='Access the OpenAPI documentation of the API used by this website'>
-          <Button style={{color: '#fff'}} target="_blank" rel="noopener noreferrer"
+          <Button style={{color: '#fff', textTransform: 'none'}} target="_blank" rel="noopener noreferrer"
           href={settings.docsUrl}>
             {/* <ApiIcon style={{ marginRight: theme.spacing(1)}} /> */}
             <Icon style={{display: 'flex', marginRight: theme.spacing(1)}}>

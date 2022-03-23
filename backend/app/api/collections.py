@@ -14,6 +14,7 @@ import re
 
 router = APIRouter()
 
+
 @router.post("/collections", response_description="Add a new collection", response_model=CollectionModel)
 async def create_collection(
         collection: CreateCollectionModel = Body(...),

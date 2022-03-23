@@ -3,10 +3,7 @@ from pydantic import BaseModel, Field, AnyUrl
 from typing import Optional, List, Dict
 from bson import ObjectId
 from datetime import datetime
-# import strawberry
-
 from app.config import settings
-# from app.models import AssessmentModel
 
 # FAIR evaluator API: http://smart-api.info/ui/4831dbbe28707c16b8c2b513b3523402
 
@@ -24,6 +21,7 @@ class PyObjectId(ObjectId):
     @classmethod
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
+
 
 # @strawberry.type
 class CollectionModel(BaseModel):
@@ -63,6 +61,7 @@ class CollectionModel(BaseModel):
             }
         }
 
+
 class CreateCollectionModel(BaseModel):
     # id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     id: str = Field(..., alias="_id")
@@ -85,6 +84,7 @@ class CreateCollectionModel(BaseModel):
                 ],
             }
         }
+
 
 class UpdateCollectionModel(BaseModel):
     title: Optional[str]

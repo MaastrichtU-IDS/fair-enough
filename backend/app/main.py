@@ -3,10 +3,8 @@ from fastapi.responses import RedirectResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import strawberry
-# from strawberry.asgi import GraphQL
-from app.graphql import EnoughGraphQL
-from typing import List, Optional
 
+from app.graphql import EnoughGraphQL
 from app.api.api import api_router
 from app.config import settings
 from app.graphql import Query
@@ -14,7 +12,6 @@ from app.db import connect_db, close_db
 
 
 schema = strawberry.Schema(query=Query)
-# graphql_app = GraphQL(schema)
 graphql_app = EnoughGraphQL(schema)
 
 

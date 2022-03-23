@@ -64,9 +64,6 @@ class Query:
     # collections: List[CollectionModel] = strawberry.field(resolver=collection_resolver)
     # collection: CollectionModel = strawberry.field(resolver=collection_resolver)
 
-    @strawberry.field
-    def user(self) -> User:
-        return User(name="Patrick", age=100)
 
     @strawberry.field
     async def collections(self, info: Info, id: Optional[str] = None) -> List[CollectionModel]:

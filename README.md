@@ -47,15 +47,7 @@ If the database is empty you'll need to register the initial Metrics Tests with 
 Now you can open your browser and interact with these URLs:
 
 * Automatic OpenAPI documentation with Swagger UI: http://localhost/docs
-
-* Alternative OpenAPI documentation with ReDoc: http://localhost/redoc
 * GraphQL endpoint with Strawberry: http://localhost/graphql
-
-* Backend, JSON based web API based on OpenAPI: http://localhost/api/
-
-* Traefik UI, to see how the routes are being handled by the proxy: http://localhost:8090
-
-* Frontend, built with Docker, with routes handled based on the path: http://localhost
 
 To check the logs of a specific service, run:
 
@@ -104,25 +96,11 @@ poetry add my-package
 
 **With docker:**
 
-If you don't have poetry installed locally or are facin issue with it, you can also add new packages with `docker-compose`, while the docker-compose is running run:
-
-> ```bash
->docker-compose exec backend poetry add my-package
-> ```
-
-If you install a new package you will need to stop the current docker-compose running, then restarting it to rebuild the docker image:
+If you don't have poetry installed locally or are facing issue with it, you can also add new packages in the running Docker container, while `docker-compose` is running use:
 
 ```bash
-docker-compose up --build --force-recreate
+docker-compose exec backend poetry add my-package
 ```
-
-You can start a shell session with the new environment with:
-
-```bash
-poetry shell
-```
-
-Next, open your editor at `./backend/` (instead of the project root: `./`), so that you see an `./app/` directory with your code inside. That way, your editor will be able to find all the imports, etc. Make sure your editor uses the environment you just created with Poetry.
 
 During development, you can change Docker Compose settings that will only affect the local development environment, in the file `docker-compose.override.yml`
 

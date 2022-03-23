@@ -8,7 +8,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: backend.dockerfile
+      dockerfile: Dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-true}
     ports:
