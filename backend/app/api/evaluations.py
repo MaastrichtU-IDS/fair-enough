@@ -176,13 +176,14 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
             g = Graph()
             g.parse(data=json.dumps(evaluation), format="json-ld")
             # curl -L -H "Accept: text/turtle" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
-            return PlainTextResponse(g.serialize(format='turtle'))
+            return PlainTextResponse(g.serialize(format='turtle'), media_type='text/turtle')
         if accept.startswith('application/rdf+xml') or accept.startswith('text/xhtml+xml'):
             g = Graph()
             g.parse(data=json.dumps(evaluation), format="json-ld")
             # curl -L -H "Accept: application/rdf+xml" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
-            return PlainTextResponse(g.serialize(format='application/rdf+xml'))
-        return evaluation
+            return PlainTextResponse(g.serialize(format='application/rdf+xml'), media_type='application/rdf+xml')
+        return JSONResponse(content=evaluation, media_type='application/ld+json')
+        # return evaluation
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
 
 
