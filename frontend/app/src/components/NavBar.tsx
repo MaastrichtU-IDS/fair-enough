@@ -74,6 +74,9 @@ export default function NavBar() {
       border: '0',
       backgroundColor: 'inherit',
     },
+    icon: {
+      paddingRight: theme.spacing(1),
+    }
   }))
   const classes = useStyles();
 
@@ -259,32 +262,33 @@ export default function NavBar() {
   return (
     <AppBar title="" position='static'>
       <Toolbar variant='dense'>
-        <Link to="/" className={classes.linkLogo}>
+        {/* <Link to="/" className={classes.linkLogo}>
           <Tooltip title='⚖️ FAIR Enough'>
             <img src={iconImage} style={{height: '2em', width: '2em', marginRight: '10px'}} alt="Logo" />
           </Tooltip>
-        </Link>
+        </Link> */}
         <Link to="/" className={classes.linkButton}>
           <Tooltip title='Browse existing evaluations, or submit a new one'>
             <Button style={{color: '#fff', textTransform: 'none'}}>
-              <EvaluationIcon />&nbsp;Evaluations
+              <EvaluationIcon className={classes.icon} />FAIR Evaluations
             </Button>
           </Tooltip>
         </Link>
         <Link to="/collections" className={classes.linkButton}>
           <Tooltip title='Browse existing Collections of assessments, or create a new one'>
             <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
-              <CollectionsIcon />&nbsp;Collections
+              <CollectionsIcon className={classes.icon}/>Collections
             </Button>
           </Tooltip>
         </Link>
         <Link to="/metrics" className={classes.linkButton}>
           <Tooltip title='Browse existing Metrics Tests, or register a new one'>
             <Button style={{color: '#fff', textTransform: 'none'}} className={classes.linkButton}>
-              <AssessmentsIcon />&nbsp;Metrics Tests
+              <AssessmentsIcon className={classes.icon}/>Metrics Tests
             </Button>
           </Tooltip>
         </Link>
+
         <div className="flexGrow"></div>
 
         <Tooltip title='Access the OpenAPI documentation of the API used by this website'>

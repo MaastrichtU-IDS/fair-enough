@@ -193,7 +193,7 @@ export default function Collection() {
           }
           {state.collectionResults['created'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Collection created on the {state.collectionResults['created']}
+              Collection created on the {state.collectionResults['created'].substring(0, state.collectionResults['created'].indexOf('T'))}
             </Typography>
           }
 
