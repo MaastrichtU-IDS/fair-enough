@@ -67,12 +67,43 @@ async def create_evaluation(
         'subject': evaluation['subject'],
         'collection': evaluation['collection'],
         'created_at': str(datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
+        'metadata': {}
     }
     eval_score = 0
     for test_url, test_res in eval_results.items():
         try:
-            if int(test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']) >= 1:
-                eval_score += 1
+            if isinstance(test_res, list) and len(test_res) > 0:
+                if int(test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']) >= 1:
+                    eval_score += 1
+                if test_res[0]['http://semanticscience.org/resource/metadata']:
+                    # TODO: handle this better with a function
+                    if 'title' in test_res[0]['http://semanticscience.org/resource/metadata'].keys():
+                        if not 'title' in eval['metadata'].keys():
+                            eval['metadata']['title'] = []
+                        if isinstance(test_res[0]['http://semanticscience.org/resource/metadata']['title'], str):
+                            test_res[0]['http://semanticscience.org/resource/metadata']['title'] = [test_res[0]['http://semanticscience.org/resource/metadata']['title']]
+                        eval['metadata']['title'] = list(set(eval['metadata']['title'] + test_res[0]['http://semanticscience.org/resource/metadata']['title']))
+
+                    if 'description' in test_res[0]['http://semanticscience.org/resource/metadata'].keys():
+                        if not 'description' in eval['metadata'].keys():
+                            eval['metadata']['description'] = []
+                        if isinstance(test_res[0]['http://semanticscience.org/resource/metadata']['description'], str):
+                            test_res[0]['http://semanticscience.org/resource/metadata']['description'] = [test_res[0]['http://semanticscience.org/resource/metadata']['description']]
+                        eval['metadata']['description'] = list(set(eval['metadata']['description'] + test_res[0]['http://semanticscience.org/resource/metadata']['description']))
+
+                    if 'license' in test_res[0]['http://semanticscience.org/resource/metadata'].keys():
+                        print('EVAL LICENSE', test_res[0]['http://semanticscience.org/resource/metadata']['license'])
+                        if not 'license' in eval['metadata'].keys():
+                            eval['metadata']['license'] = []
+                        # if isinstance(test_res[0]['http://semanticscience.org/resource/metadata']['license'], str):
+                        #     test_res[0]['http://semanticscience.org/resource/metadata']['license'] = [test_res[0]['http://semanticscience.org/resource/metadata']['license']]
+                        eval['metadata']['license'] = list(set(eval['metadata']['license'] + test_res[0]['http://semanticscience.org/resource/metadata']['license']))
+
+                    if 'created' in test_res[0]['http://semanticscience.org/resource/metadata'].keys():
+                        if not 'created' in eval['metadata'].keys():
+                            eval['metadata']['created'] = []
+                        eval['metadata']['created'] = list(set(eval['metadata']['created'] + test_res[0]['http://semanticscience.org/resource/metadata']['created']))
+
         except Exception as e:
             print(f'Could not get score for {test_url}', test_res)
     eval['score'] = eval_score

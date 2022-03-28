@@ -57,7 +57,9 @@ class Settings(BaseSettings):
         "created_at": "http://purl.obolibrary.org/obo/date",
         "score": "http://semanticscience.org/resource/SIO_000300",
         "score_max": "http://semanticscience.org/resource/hasCapability",
-        "score_percent": "http://semanticscience.org/resource/hasConcretization"
+        "score_percent": "http://semanticscience.org/resource/hasConcretization",
+        "metadata": "http://semanticscience.org/resource/metadata",
+        # "metadata": "http://semanticscience.org/resource/SIO_001330"
     }
 
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins

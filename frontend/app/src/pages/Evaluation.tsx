@@ -357,6 +357,31 @@ export default function Evaluation() {
             </Typography>
           }
 
+          {state.evaluationResults['metadata'] && Object.keys(state.evaluationResults['metadata']).length > 0 &&
+            <Paper className={classes.paperPadding}>
+              {state.evaluationResults['metadata']['title'] && state.evaluationResults['metadata']['title'][0] &&
+                <Typography style={{marginBottom: theme.spacing(1)}}>
+                  💬 Title: <b>{state.evaluationResults['metadata']['title'][0]}</b>
+                </Typography>
+              }
+              {state.evaluationResults['metadata']['description'] && state.evaluationResults['metadata']['description'][0] &&
+                <Typography style={{marginBottom: theme.spacing(1)}}>
+                  📋️ Description: {state.evaluationResults['metadata']['description'][0]}
+                </Typography>
+              }
+              {state.evaluationResults['metadata']['license'] && state.evaluationResults['metadata']['license'][0] &&
+                <Typography style={{marginBottom: theme.spacing(1)}}>
+                  ©️ License: {state.evaluationResults['metadata']['license'][0]}
+                </Typography>
+              }
+              {state.evaluationResults['metadata']['created'] && state.evaluationResults['metadata']['created'][0] &&
+                <Typography>
+                  📆 Date created: {state.evaluationResults['metadata']['created'][0]}
+                </Typography>
+              }
+            </Paper>
+          }
+
           <Grid container spacing={1}>
             <Grid item xs={3} md={3}></Grid>
             <Grid item xs={6} md={6}>
