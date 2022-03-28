@@ -359,6 +359,9 @@ export default function Evaluation() {
 
           {state.evaluationResults['metadata'] && Object.keys(state.evaluationResults['metadata']).length > 0 &&
             <Paper className={classes.paperPadding}>
+              <Typography variant='h5' style={{marginBottom: theme.spacing(1)}}>
+                Extracted metadata
+              </Typography>
               {state.evaluationResults['metadata']['title'] && state.evaluationResults['metadata']['title'][0] &&
                 <Typography style={{marginBottom: theme.spacing(1)}}>
                   💬 Title: <b>{state.evaluationResults['metadata']['title'][0]}</b>
@@ -371,7 +374,7 @@ export default function Evaluation() {
               }
               {state.evaluationResults['metadata']['license'] && state.evaluationResults['metadata']['license'][0] &&
                 <Typography style={{marginBottom: theme.spacing(1)}}>
-                  ©️ License: {state.evaluationResults['metadata']['license'][0]}
+                  ©️ License: {getUrlHtml(state.evaluationResults['metadata']['license'][0])}
                 </Typography>
               }
               {state.evaluationResults['metadata']['created'] && state.evaluationResults['metadata']['created'][0] &&
