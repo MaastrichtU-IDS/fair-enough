@@ -236,7 +236,8 @@ def async_requests(urls, post_data, content_type=None, accept=None):
     resp_ok = 0
     resp_err = 0
     timeout = 100
-    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+    max_workers=6
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type, accept): url for url in urls}
         for future in concurrent.futures.as_completed(future_to_url):
             url = future_to_url[future]
