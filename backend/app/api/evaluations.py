@@ -27,7 +27,7 @@ Examples of resources to evaluate:
 * Zenodo RDFLib library: https://doi.org/10.5281/zenodo.1486394
 * Wikidata DOI: https://doi.org/10.1016/J.JBI.2019.103292
 * Dataverse NL: https://doi.org/10.34894/DR3I2A
-* FAIR Data Point distribution: https://purl.org/fairdatapoint/app/distribution/54a43c3e-8a6f-4a75-95c0-a2cb1e8c74ab
+* FAIR Data Point dataset: https://w3id.org/ejp-rd/fairdatapoints/wp13/dataset/c5414323-eab1-483f-a883-77951f246972
 * FAIR sharing: https://doi.org/10.25504/FAIRsharing.jptb1m
 * Pangea data repository: https://doi.org/10.1594/PANGAEA.908011
 * Interoperability publication: https://doi.org/10.1045/november2015-vandesompel

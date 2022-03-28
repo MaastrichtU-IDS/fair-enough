@@ -135,6 +135,7 @@ class Query:
             del eval['@context']
             del eval['@type']
             del eval['contains']
+            del eval['metadata']
             # eval['contains'] = json.dumps(eval['contains'], indent=2)
             if 'author' not in eval.keys():
                 eval['author'] = "noone"
