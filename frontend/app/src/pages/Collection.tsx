@@ -198,7 +198,7 @@ export default function Collection() {
           }
 
           <Typography variant="h5" style={{textAlign: 'center', marginBottom: theme.spacing(2)}}>
-            Contains assessments:
+            Contains {state.collectionResults['assessments'].length} metrics tests:
           </Typography>
           <Grid container spacing={1}>
             { state.collectionResults['assessments']

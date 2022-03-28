@@ -309,7 +309,7 @@ export default function Evaluation() {
   return(
     <Container className='mainContainer'>
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-        Create a collection of assessments
+        Create a collection of Metrics Tests
       </Typography>
 
       { user['username'] &&
@@ -383,7 +383,7 @@ export default function Evaluation() {
           />
 
           <Typography variant="h5" style={{textAlign: 'center', margin: theme.spacing(3, 0)}}>
-            Assessments in your collection:
+            Metrics tests in your collection:
           </Typography>
           <Grid container spacing={1}>
             { state.addedAssessments
@@ -413,17 +413,17 @@ export default function Evaluation() {
             { state.addedAssessments.length < 1 &&
               <Grid item xs={12}>
                 <Typography style={{textAlign: 'center'}}>
-                  No assessments added, click on the assessments in the list below to add them to your collection.
+                  No Metrics Tests added, click on the Metrics Tests in the list below to add them to your collection.
                 </Typography>
               </Grid>
             }
           </Grid>
 
           <Typography variant="h5" style={{textAlign: 'center', margin: theme.spacing(3, 0)}}>
-            Add assessments to your collection:
+            Add Metrics Tests to your collection:
           </Typography>
           <Typography variant="body1" style={{textAlign: 'center', margin: theme.spacing(3, 0)}}>
-            ℹ️ The order of the assessments in your collection does not matter!
+            ℹ️ The order of the Metrics Tests in your collection does not matter!
           </Typography>
           <Grid container spacing={1}>
             { state.assessmentsList

@@ -73,7 +73,7 @@ export default function About() {
 
 
       <Typography variant="body1" className={classes.mainText}>
-        An <b>evaluation</b> runs a <b>collection</b> of <b>assessments</b> against the resource to evaluate.
+        An <b>evaluation</b> runs a <b>collection</b> of <b>metrics tests</b> against the resource to evaluate.
       </Typography>
 
       <List>
