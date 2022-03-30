@@ -529,10 +529,10 @@ export default function Evaluation() {
         {state.evaluationRunning && 
           <>
             <Typography>
-              An evaluation can take up to 1 minute depending on the URL evaluated. 
+              An evaluation can take up to 1 minute depending on the URL evaluated, and the collection used. 
             </Typography>
             <Typography>
-              If you leave this page the evaluation not stop, and you will be able to find it in the list below when it is done.
+              If you leave this page the evaluation will not stop, and you will be able to find it in the list below when it is done.
             </Typography>
             <CircularProgress style={{marginTop: '20px'}} />
           </>

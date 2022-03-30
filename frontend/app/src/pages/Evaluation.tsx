@@ -151,6 +151,28 @@ export default function Evaluation() {
           evalArray: evalArray,
         })
 
+        const graphqlQuery = `{
+          evaluations(subject: "` + evalResults['subject'] + `") {
+            score
+            scoreMax
+            createdAt
+            subject
+            collection
+            author
+            scorePercent
+            id
+          }
+        }`
+        axios.post(settings.graphqlUrl, { query: graphqlQuery })
+          .then((res: any) => {
+            console.log('HISTORY', res.data);
+            if (res.data.data && res.data.data.evaluations) {
+              updateState({ 
+                evalHistory: res.data.data.evaluations,
+              })
+            }
+          })
+
         axios.get(settings.restUrl + '/metrics')
           .then((res: any) => {
             const metricsTestsMap: any = {};
@@ -168,28 +190,6 @@ export default function Evaluation() {
         setTimeout(function(){
           hljs.highlightAll();
         }, 500);
-      })
-
-    const graphqlQuery = `{
-      evaluations(subject: "https://w3id.org/AmIFAIR") {
-        score
-        scoreMax
-        createdAt
-        subject
-        collection
-        author
-        scorePercent
-        id
-      }
-    }`
-    axios.post(settings.graphqlUrl, { query: graphqlQuery })
-      .then((res: any) => {
-        console.log('HISTORY', res.data);
-        if (res.data.data && res.data.data.evaluations) {
-          updateState({ 
-            evalHistory: res.data.data.evaluations,
-          })
-        }
       })
 
 
@@ -579,12 +579,12 @@ export default function Evaluation() {
               Download the evaluation results JSON file
           </Button>
 
-
-          <Typography variant="h5" style={{marginTop: theme.spacing(5), marginBottom: theme.spacing(3)}}>
-            Other evaluations for {getUrlHtml(state.evaluationResults['subject'])}: 
-          </Typography>
           {/* Display the Data table listing the Evaluations */}
-          {state.evalHistory.length > 0 && 
+          {state.evalHistory && state.evalHistory.length > 0 && 
+          <>
+            <Typography variant="h5" style={{marginTop: theme.spacing(5), marginBottom: theme.spacing(3)}}>
+              Other evaluations for {getUrlHtml(state.evaluationResults['subject'])}: 
+            </Typography>
             <div style={{ height: 600, width: '100%' }}>
               {/* {console.log(state.evaluationsList)} */}
               <DataGrid
@@ -599,7 +599,7 @@ export default function Evaluation() {
                 style={{backgroundColor: '#fff'}}
               />
             </div>
-          }
+          </>}
 
 
         </>
