@@ -55,7 +55,7 @@ async def create_evaluation(
     if collection is None:
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
 
-    max_workers=30
+    max_workers=20
     # Reduce number of workers for some URLs, otherwise they fail to respond under too many requests
     limit_for_urls = ['https://www.proteinatlas.org/']
     for limit_url in limit_for_urls:
