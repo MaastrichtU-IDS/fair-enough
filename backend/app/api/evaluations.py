@@ -117,6 +117,7 @@ async def create_evaluation(
     eval['@context'] = settings.CONTEXT
 
     eval['contains'] = eval_results
+    eval['license'] = {'@id': settings.EVALUATION_LICENSE}
 
     # eval_results['summary'] = summary
     # Generate sha1 hash based on subject URL + time of evaluation

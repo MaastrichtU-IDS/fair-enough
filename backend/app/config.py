@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     # Those defaults are used by GitHub Actions for testing
     # The settings used by Docker deployment are in the .env file
     PROJECT_NAME: str = 'FAIR enough API'
+    EVALUATION_LICENSE: str = 'http://creativecommons.org/licenses/by/4.0/'
     # SERVER_NAME: str = 'localhost'
     # SERVER_HOST: AnyHttpUrl = 'http://localhost'
 
@@ -50,6 +51,7 @@ class Settings(BaseSettings):
         "created": "http://purl.org/pav/version",
         "assessments": "http://www.w3.org/ns/ldp#contains",
         "contains": "http://www.w3.org/ns/ldp#contains",
+        "license": "http://purl.org/dc/terms/license",
 
         "summary": "http://semanticscience.org/resource/isDescribedBy",
         "subject": "http://semanticscience.org/resource/SIO_000332",
