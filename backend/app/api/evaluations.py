@@ -55,12 +55,20 @@ async def create_evaluation(
     if collection is None:
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")
 
+    max_workers=30
+    # Reduce number of workers for some URLs, otherwise they fail to respond under too many requests
+    limit_for_urls = ['https://www.proteinatlas.org/']
+    for limit_url in limit_for_urls:
+        if str(evaluation['subject']).startswith(limit_url):
+            max_workers=3
+
     # Send asynchronous requests to get each test result
     eval_results = async_requests(
         urls=collection['assessments'], 
         post_data={'subject': str(evaluation['subject'])},
         content_type='application/json',
-        accept='application/json'
+        accept='application/json',
+        max_workers=max_workers
     )
 
     eval = {
@@ -232,12 +240,11 @@ def query_url(url, data, timeout=100, content_type=None, accept=None):
         return requests.get(url, timeout=timeout, headers=headers, allow_redirects=True)
 
 
-def async_requests(urls, post_data, content_type=None, accept=None):
+def async_requests(urls, post_data, content_type=None, accept=None, max_workers=30):
     responses = {}
     resp_ok = 0
     resp_err = 0
     timeout = 100
-    max_workers=6
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type, accept): url for url in urls}
         for future in concurrent.futures.as_completed(future_to_url):
