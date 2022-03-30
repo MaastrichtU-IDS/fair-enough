@@ -225,11 +225,10 @@ export default function MetricTests() {
 
       <form onSubmit={handleSubmit}>
         <Typography variant="body1" style={{textAlign: 'left', margin: theme.spacing(0, 0)}}>
-          You can register a Metric Test API URL that follows the standard described by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>, this will allow FAIR enough users to add this test to collections, and use it in evaluations:
+          You can register a new Metric Test API URL that follows the standard described by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>, this will allow FAIR enough users to add this test to collections, and use it in evaluations.
         </Typography>
         <Typography variant="body1" style={{textAlign: 'left', marginBottom: theme.spacing(2), marginTop: theme.spacing(1)}}>
-          An example and instructions to quickly build and publish an API exposing metrics tests written with python is available 
-          in the <a href='https://github.com/MaastrichtU-IDS/fair-enough-metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>fair-enough-metrics GitHub repository</a>.
+          To define and publish new FAIR metrics tests we recommend to use the <a href='https://maastrichtu-ids.github.io/fair-test' target="_blank" rel="noopener noreferrer" className={classes.link}>fair-test python library</a>.
         </Typography>
 
         <Box display="flex" style={{margin: theme.spacing(2, 0)}}>

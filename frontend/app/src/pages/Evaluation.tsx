@@ -369,7 +369,17 @@ export default function Evaluation() {
           <Grid container spacing={1} style={{textAlign: 'left'}}>
           {
             // Iterate over the evaluation results to show the different metrics tests, output and debug log
-            filteredResults.map((item: any, key: number) => (
+            filteredResults
+              .sort((a: any, b: any) => {
+                if ( state.metricsTestsMap[a.metrics_test_url]['info']['x-applies_to_principle'] + state.metricsTestsMap[a.metrics_test_url]['info']['title'] > state.metricsTestsMap[b.metrics_test_url]['info']['x-applies_to_principle'] + state.metricsTestsMap[b.metrics_test_url]['info']['title'] ){
+                  return 1;
+                }
+                if ( state.metricsTestsMap[a.metrics_test_url]['info']['x-applies_to_principle'] + state.metricsTestsMap[a.metrics_test_url]['info']['title'] < state.metricsTestsMap[b.metrics_test_url]['info']['x-applies_to_principle'] + state.metricsTestsMap[b.metrics_test_url]['info']['title'] ){
+                  return -1;
+                }
+                return 0;
+              })
+              .map((item: any, key: number) => (
                 <Grid item xs={12} md={12} key={key}>
                   <Accordion defaultExpanded={item['score'] == 0 ? true : false}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
