@@ -168,6 +168,11 @@ async def list_evaluations():
             'created_at': eval['created_at'],
             '@id': eval['@id'],
         }
+        if 'title' in eval['metadata'].keys():
+            if isinstance(eval['metadata']['title'], list):
+                partial_eval['title'] = eval['metadata']['title'][0]
+            else:
+                partial_eval['title'] = eval['metadata']['title']
         if 'author' in eval.keys():
             partial_eval['author'] = eval['author']
         partial_evals.append(partial_eval)

@@ -264,15 +264,24 @@ export default function Evaluation() {
     { field: '@id', headerName: 'ID', hide: true },
     { 
       field: 'id', headerName: 'Access evaluation', flex: 0.4,
-      renderCell: (params: GridRenderCellParams) => (
-        <Link to={'/evaluations/' + params.value as string}>
+      renderCell: (params: GridRenderCellParams) => {
+        const evalId = params.value as string
+        let buttonColor: any = 'primary'
+        console.log(state.evaluationResults)
+        if (evalId == state.evaluationResults['_id']) {
+          buttonColor = 'secondary'
+        }
+        return <Link to={'/evaluations/' + evalId}>
           <Button variant="contained" 
               className={classes.submitButton} 
               startIcon={<EvaluationIcon />}
-              color="primary" style={{textTransform: 'none'}}>
+              onClick={() => window.location.reload()}
+              color={buttonColor}
+              style={{textTransform: 'none'}}>
             Results
           </Button>
-        </Link>)
+        </Link>
+      }
     },
     {
       field: 'collection', headerName: 'Collection', flex: 0.5,
@@ -582,8 +591,8 @@ export default function Evaluation() {
           {/* Display the Data table listing the Evaluations */}
           {state.evalHistory && state.evalHistory.length > 0 && 
           <>
-            <Typography variant="h5" style={{marginTop: theme.spacing(5), marginBottom: theme.spacing(3)}}>
-              Other evaluations for {getUrlHtml(state.evaluationResults['subject'])}: 
+            <Typography variant="h5" style={{marginTop: theme.spacing(6), marginBottom: theme.spacing(3)}}>
+              All evaluations for {getUrlHtml(state.evaluationResults['subject'])}
             </Typography>
             <div style={{ height: 600, width: '100%' }}>
               {/* {console.log(state.evaluationsList)} */}

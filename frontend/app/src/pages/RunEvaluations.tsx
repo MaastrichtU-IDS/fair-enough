@@ -288,10 +288,17 @@ export default function Evaluation() {
     },
     // { field: 'title', headerName: 'Title', flex: 1 },
     {
-      field: 'subject', headerName: 'Resource URI', flex: 1,
+      field: 'subject', headerName: 'Resource URI', flex: 0.9,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {getUrlHtml(params.value as string)}
+        </>)
+    },
+    {
+      field: 'title', headerName: 'Resource title', flex: 0.9,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}
         </>)
     },
     {
