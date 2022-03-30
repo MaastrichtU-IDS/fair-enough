@@ -45,6 +45,7 @@ async def create_evaluation(
         evaluation: CreateEvaluationModel = Body(...),
         current_user: Optional[User] = Depends(get_current_user)
     ):
+    start_time = datetime.now()
     evaluation = jsonable_encoder(evaluation)
     db = get_db()
 
@@ -134,6 +135,9 @@ async def create_evaluation(
     # sha1 : http://localhost/rest/evaluations/22248f30cf44e74ae134b221894820b182c433a2
     # md5  : http://localhost/rest/evaluations/45af39b178f961d56131f1cb68d4d3df
     eval['@id'] = f'{settings.BASE_URI}/evaluations/{eval["_id"]}'
+
+    run_time = datetime.now() - start_time
+    eval['duration'] = str(run_time.total_seconds())
 
     # Add to MongoDB
     new_evaluation = await db["evaluations"].insert_one(eval)

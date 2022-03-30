@@ -52,6 +52,7 @@ class Settings(BaseSettings):
         "assessments": "http://www.w3.org/ns/ldp#contains",
         "contains": "http://www.w3.org/ns/ldp#contains",
         "license": "http://purl.org/dc/terms/license",
+        "duration": "https://schema.org/duration",
 
         "summary": "http://semanticscience.org/resource/isDescribedBy",
         "subject": "http://semanticscience.org/resource/SIO_000332",

@@ -348,7 +348,11 @@ export default function Evaluation() {
           }
           {state.evaluationResults['created_at'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-              Evaluated with the <Link to={'/collections/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection on the {state.evaluationResults['created_at'].substring(0, state.evaluationResults['created_at'].indexOf('T'))}
+              Evaluated {state.evaluationResults['duration'] &&
+                <>
+                  in {parseInt(state.evaluationResults['duration'].substring(0, state.evaluationResults['duration'].lastIndexOf('.')))}s
+                </>
+              } with the <Link to={'/collections/' + state.evaluationResults.collection} style={{color: theme.palette.primary.main, textDecoration: 'none'}}>{state.evaluationResults.collection}</Link> collection on the {state.evaluationResults['created_at'].substring(0, state.evaluationResults['created_at'].indexOf('T'))}
             </Typography>
           }
           {state.evaluationResults['author'] &&
