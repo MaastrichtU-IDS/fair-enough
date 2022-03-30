@@ -151,6 +151,13 @@ export default function Evaluation() {
           updateState({ evaluationsList: evaluationsList })
           updateState({ evaluationRunning: false })
         })
+        .catch(function (error) {
+          updateState({
+            openError: 'inline', 
+            evaluationRunning: false,
+            errorMessage: 'Error when retrieving the evaluations, please retry. If it persists, it means the server is probably having some issues! 😱'
+          })
+        })
     }
   }, [])
 
