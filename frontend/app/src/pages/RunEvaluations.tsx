@@ -529,7 +529,7 @@ export default function Evaluation() {
         {state.evaluationRunning && 
           <>
             <Typography>
-              An evaluation can take up to 1 minute depending on the URL evaulated. 
+              An evaluation can take up to 1 minute depending on the URL evaluated. 
             </Typography>
             <Typography>
               If you leave this page the evaluation not stop, and you will be able to find it in the list below when it is done.

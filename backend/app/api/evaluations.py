@@ -158,15 +158,19 @@ async def list_evaluations():
     # Do not return large fields like data to make it faster for the frontend
     partial_evals = []
     for eval in evals:
-        partial_evals.append({
+        partial_eval = {
             '_id': str(eval['_id']),
             'subject': eval['subject'],
             'collection': eval['collection'],
             'score': eval['score'],
-            'created': eval['created'],
-            'author': eval['author'],
+            'score_max': eval['score_max'],
+            'score_percent': eval['score_percent'],
+            'created_at': eval['created_at'],
             '@id': eval['@id'],
-        })
+        }
+        if 'author' in eval.keys():
+            partial_eval['author'] = eval['author']
+        partial_evals.append(partial_eval)
     return partial_evals
 
 

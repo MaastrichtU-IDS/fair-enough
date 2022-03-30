@@ -51,6 +51,7 @@ class EvaluationModel:
     score_percent: float
     created_at: Optional[str]
     author: Optional[str]
+    # license: Optional[str]
     # results: Optional[List[EvaluationResults]]
     # contains: str
     # data: Optional[EvaluationData] = EvaluationData()
@@ -135,10 +136,15 @@ class Query:
             del eval['@context']
             del eval['@type']
             del eval['contains']
-            del eval['metadata']
+            if 'duration' in eval.keys():
+                del eval['duration']
+            if 'license' in eval.keys():
+                del eval['license']
+            if 'metadata' in eval.keys():
+                del eval['metadata']
             # eval['contains'] = json.dumps(eval['contains'], indent=2)
             if 'author' not in eval.keys():
-                eval['author'] = "noone"
+                eval['author'] = ""
             print(eval)
             eval_list.append(EvaluationModel(**eval))
         return eval_list

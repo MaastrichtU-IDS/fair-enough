@@ -11,6 +11,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DownloadJsonIcon from '@mui/icons-material/GetApp';
 import PassIcon from '@mui/icons-material/CheckCircle';
 import FailIcon from '@mui/icons-material/Error';
+import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
 import axios from 'axios';
 import {settings} from '../settings'
 
@@ -77,11 +79,13 @@ export default function Evaluation() {
   // useLocation hook to get URL params
   let location = useLocation();  
   let evaluationResults: any = null;
+  let evalHistory: any = null;
   let resourceMetadata: any = null;
   let metricsTestsMap: any = null;
   let evalArray: any = null;
   const [state, setState] = React.useState({
     evaluationResults: evaluationResults,
+    evalHistory: evalHistory,
     metricsTestsMap: metricsTestsMap,
     evalArray: evalArray,
     adviceLogs: [],
@@ -166,6 +170,28 @@ export default function Evaluation() {
         }, 500);
       })
 
+    const graphqlQuery = `{
+      evaluations(subject: "https://w3id.org/AmIFAIR") {
+        score
+        scoreMax
+        createdAt
+        subject
+        collection
+        author
+        scorePercent
+        id
+      }
+    }`
+    axios.post(settings.graphqlUrl, { query: graphqlQuery })
+      .then((res: any) => {
+        console.log('HISTORY', res.data);
+        if (res.data.data && res.data.data.evaluations) {
+          updateState({ 
+            evalHistory: res.data.data.evaluations,
+          })
+        }
+      })
+
 
   }, [])
 
@@ -233,6 +259,72 @@ export default function Evaluation() {
       return <FailIcon color='error' />
     }
   }
+
+  const columns: GridColumns = [
+    { field: '@id', headerName: 'ID', hide: true },
+    { 
+      field: 'id', headerName: 'Access evaluation', flex: 0.4,
+      renderCell: (params: GridRenderCellParams) => (
+        <Link to={'/evaluations/' + params.value as string}>
+          <Button variant="contained" 
+              className={classes.submitButton} 
+              startIcon={<EvaluationIcon />}
+              color="primary" style={{textTransform: 'none'}}>
+            Results
+          </Button>
+        </Link>)
+    },
+    {
+      field: 'collection', headerName: 'Collection', flex: 0.5,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          <Link to={'/collections/' + params.value as string} style={{textDecoration: 'none', color: theme.palette.primary.dark}}>
+            {params.value as string}
+          </Link>
+        </>)
+    },
+    {
+      field: 'score', headerName: 'Score', flex: 0.3,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}
+        </>)
+    },
+    {
+      field: 'scorePercent', headerName: 'Completion', flex: 0.3,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {params.value as string}%
+          { params.value == 100 &&
+            <>
+              &nbsp;🔥
+            </>
+          }
+        </>)
+    },
+    {
+      field: 'createdAt', headerName: 'Date created', flex: 0.3,
+      renderCell: (params: GridRenderCellParams) => {
+        const dateCreated = params.value as string
+        return (
+        <>
+          {dateCreated.substring(0, dateCreated.indexOf('T'))}
+        </>)}
+    },
+    {
+      field: 'author', headerName: 'Author', flex: 0.6,
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          {getUrlHtml(params.value as string)}
+        </>)
+    }
+  ]
+  const [sortModel, setSortModel] = React.useState<GridSortModel>([
+    {
+      field: 'createdAt',
+      sort: 'desc',
+    },
+  ]);
   
 
   const getResultsForCategory  = (category: string) => {
@@ -486,6 +578,28 @@ export default function Evaluation() {
             startIcon={<DownloadJsonIcon />}>
               Download the evaluation results JSON file
           </Button>
+
+
+          <Typography variant="h5" style={{marginTop: theme.spacing(5), marginBottom: theme.spacing(3)}}>
+            Other evaluations for {getUrlHtml(state.evaluationResults['subject'])}: 
+          </Typography>
+          {/* Display the Data table listing the Evaluations */}
+          {state.evalHistory.length > 0 && 
+            <div style={{ height: 600, width: '100%' }}>
+              {/* {console.log(state.evaluationsList)} */}
+              <DataGrid
+                columns={columns}
+                rows={state.evalHistory}
+                // {...state.evaluationsList}
+                components={{
+                  Toolbar: GridToolbar,
+                }}
+                sortModel={sortModel}
+                onSortModelChange={(model) => setSortModel(model)}
+                style={{backgroundColor: '#fff'}}
+              />
+            </div>
+          }
 
 
         </>
