@@ -297,9 +297,9 @@ export default function Evaluation() {
     {
       field: 'title', headerName: 'Resource title', flex: 0.9,
       renderCell: (params: GridRenderCellParams) => (
-        <>
-          {params.value as string}
-        </>)
+        <Tooltip title={params.value as string}>
+          <span>{params.value as string}</span>
+        </Tooltip>)
     },
     {
       field: 'collection', headerName: 'Collection', flex: 0.5,
@@ -380,7 +380,8 @@ export default function Evaluation() {
 
       <Card style={{
         display: state.showReleaseMsg ? 'flow' : 'none', textAlign: 'center',
-        backgroundColor: '#e8f5e9'
+        backgroundColor: '#e8f5e9',
+        marginBottom: theme.spacing(3)
       }}>
         <CardHeader
           action={
@@ -407,7 +408,7 @@ export default function Evaluation() {
         </CardContent>
       </Card>
 
-      <Typography variant="h4" style={{textAlign: 'center', margin: theme.spacing(4, 0)}}>
+      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
         {/* ⚖️ Evaluate how FAIR is a resource 🔗 */}
         🎯 Evaluate how <Tooltip
           title={<Typography>🔍️ Findable<br/>
@@ -520,7 +521,7 @@ export default function Evaluation() {
         <Button type="submit" 
           variant="contained" 
           // className={classes.submitButton} 
-          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(2), textTransform: 'none'}}
+          style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(1), textTransform: 'none'}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
             Start the evaluation
