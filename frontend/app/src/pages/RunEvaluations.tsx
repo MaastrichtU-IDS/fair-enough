@@ -527,7 +527,15 @@ export default function Evaluation() {
 
       <Box style={{margin: theme.spacing(4, 0)}}>
         {state.evaluationRunning && 
-          <CircularProgress style={{marginTop: '20px'}} />
+          <>
+            <Typography>
+              An evaluation can take up to 1 minute depending on the URL evaulated. 
+            </Typography>
+            <Typography>
+              If you leave this page the evaluation not stop, and you will be able to find it in the list below when it is done.
+            </Typography>
+            <CircularProgress style={{marginTop: '20px'}} />
+          </>
         }
         <Card elevation={4} 
             style={{background: "#e57373", padding: '15px', fontFamily: "Open Sans", fontSize: 12}} 

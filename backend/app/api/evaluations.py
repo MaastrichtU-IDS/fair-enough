@@ -156,18 +156,18 @@ async def list_evaluations():
     evals = await db["evaluations"].find().to_list(10000)
 
     # Do not return large fields like data to make it faster for the frontend
-    # partial_evals = []
-    # for eval in evals:
-    #     partial_evals.append({
-    #         '_id': str(eval['_id']),
-    #         'subject': eval['subject'],
-    #         'collection': eval['collection'],
-    #         'score': eval['score'],
-    #         'created': eval['created'],
-    #         'author': eval['author'],
-    #         '@id': eval['@id'],
-    #     })
-    return evals
+    partial_evals = []
+    for eval in evals:
+        partial_evals.append({
+            '_id': str(eval['_id']),
+            'subject': eval['subject'],
+            'collection': eval['collection'],
+            'score': eval['score'],
+            'created': eval['created'],
+            'author': eval['author'],
+            '@id': eval['@id'],
+        })
+    return partial_evals
 
 
 api_responses={
