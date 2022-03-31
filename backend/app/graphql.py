@@ -39,6 +39,23 @@ class CollectionModel:
     # uri: str = Field(alias="@id")
     # context: str = Field(alias="@context")
 
+# https://strawberry.rocks/docs/integrations/pydantic
+# @strawberry.experimental.pydantic.type(CollectionModel, all_fields=True)
+# class GraphqlCollection:
+#     pass
+
+# @strawberry.experimental.pydantic.type(EvaluationModel)
+# class GraphqlEvaluation:
+#     subject: strawberry.auto
+#     collection: strawberry.auto
+#     score: strawberry.auto
+#     score_max: strawberry.auto
+#     name: strawberry.auto = strawberry.field(
+#         deprecation_reason="Because",
+#         permission_classes=[MyPermission],
+#         directives=[MyDirective],
+#     )
+
 
 @strawberry.type
 class EvaluationModel:
@@ -130,6 +147,8 @@ class Query:
             # Convert the evaluations to objects
             # eval['results'] = result_list
             # eval['score'] = EvaluationScore(**eval['score'])
+            
+            # GraphqlEvaluation.from_pydantic(EvaluationModel(**eval))
             eval['id'] = eval['_id']
             del eval['_id']
             del eval['@id']

@@ -19,18 +19,40 @@ POST_TESTS_URL=$API_URL/metrics
 
 # FAIR enough metrics
 # TODO: replace with https://w3id.org/fair-enough/metrics
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a1-access-protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f1-unique-persistent-id"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f2-machine-readable-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f3-id-in-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/r1-accessible-license"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a1-data-authorization"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a1-data-protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a1-metadata-authorization"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a1-metadata-protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a2-metadata-persistent"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f1-data-identifier-persistent"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f1-metadata-identifier-persistent"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f1-metadata-identifier-unique"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f2-grounded-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f2-structured-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f3-data-identifier-in-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f3-metadata-identifier-in-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f4-searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i3-metadata-contains-outward-links"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/r1-includes-license"}' -H "Content-Type: application/json" $POST_TESTS_URL
 
+
+
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a1-access-protocol"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f1-unique-persistent-id"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f2-machine-readable-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f3-id-in-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/r1-accessible-license"}' -H "Content-Type: application/json" $POST_TESTS_URL
+# curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f4-searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/a2-metadata-longevity"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i3-check-sparl-endpoint"}' -H "Content-Type: application/json" $POST_TESTS_URL
 # curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i3-data-management-plan"}' -H "Content-Type: application/json" $POST_TESTS_URL

@@ -370,20 +370,6 @@ export default function Evaluation() {
 
   return(
     <Container className='mainContainer'>
-      {/* <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center' }} 
-          open={state.showReleaseMsg ? true : false} 
-          onClose={() => {updateState({showReleaseMsg: false})}} 
-        >
-        <MuiAlert elevation={6} severity="success">
-          <Typography>
-            <b>ℹ️ New FAIR enough release</b>: it has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>. 
-            This means you can run the exact same suite of metrics tests as with the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>, or easily register new metrics tests deployed in external APIs.
-          </Typography>
-          <Typography>
-            As a consequence, the database has been reset and some of the assessments previously available are in the progress of being migrated 🏗️
-          </Typography>
-        </MuiAlert>
-      </Snackbar> */}
 
       <Card style={{
         display: state.showReleaseMsg ? 'flow' : 'none', textAlign: 'center',
@@ -404,9 +390,6 @@ export default function Evaluation() {
           <Typography>
             The service has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>. 
             This means you can run the exact same suite of metrics tests as with the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>, or easily register new metrics tests deployed in external APIs.
-          </Typography>
-          <Typography>
-            As a consequence, the database has been reset, and some of the metrics tests previously available are in the progress of being migrated  🏗️
           </Typography>
           <Typography>
             Thanks a lot everyone for your contributions to making research more FAIR, and feel free to <a href='https://github.com/MaastrichtU-IDS/fair-enough/issues' target="_blank" rel="noopener noreferrer" className={classes.link}>create issues</a>, 

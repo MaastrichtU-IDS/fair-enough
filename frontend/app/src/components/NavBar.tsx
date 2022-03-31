@@ -307,7 +307,7 @@ export default function NavBar() {
             {/* <GraphqlIcon style={{ marginRight: theme.spacing(1)}} /> */}
             <Icon style={{display: 'flex', marginRight: theme.spacing(1)}}>
               <img src={GraphqlIcon} />
-            </Icon> GraphQL
+            </Icon> GraphQL API
           </Button>
         </Tooltip>
         <Link to="/about" className={classes.linkButton}>
