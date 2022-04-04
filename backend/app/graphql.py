@@ -168,6 +168,8 @@ class Query:
                 del eval['license']
             if 'metadata' in eval.keys():
                 del eval['metadata']
+            if 'name' in eval.keys():
+                del eval['name']
             # eval['contains'] = json.dumps(eval['contains'], indent=2)
             if 'author' not in eval.keys():
                 eval['author'] = ""

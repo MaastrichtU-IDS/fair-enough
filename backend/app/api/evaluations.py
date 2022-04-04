@@ -78,6 +78,7 @@ async def create_evaluation(
         'subject': evaluation['subject'],
         'collection': evaluation['collection'],
         'created_at': str(datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
+        'name': f"FAIR evaluation of {evaluation['subject']}",
         'metadata': {}
     }
     eval_score = 0
@@ -94,6 +95,14 @@ async def create_evaluation(
                         if isinstance(test_res[0]['http://semanticscience.org/resource/metadata']['title'], str):
                             test_res[0]['http://semanticscience.org/resource/metadata']['title'] = [test_res[0]['http://semanticscience.org/resource/metadata']['title']]
                         eval['metadata']['title'] = list(set(eval['metadata']['title'] + test_res[0]['http://semanticscience.org/resource/metadata']['title']))
+                        if len(eval['metadata']['title']) > 0:
+                            eval['name'] = f"{eval['name']} - {eval['metadata']['title'][0]}"
+
+                        # if 'title' in eval['metadata'].keys():
+                        #     if isinstance(eval['metadata']['title'], list) and len(eval['metadata']['title']) > 0:
+                        #         partial_eval['title'] = eval['metadata']['title'][0]
+                        #     elif isinstance(eval['metadata']['title'], str):
+                        #         partial_eval['title'] = eval['metadata']['title']
 
                     if 'description' in test_res[0]['http://semanticscience.org/resource/metadata'].keys():
                         if not 'description' in eval['metadata'].keys():

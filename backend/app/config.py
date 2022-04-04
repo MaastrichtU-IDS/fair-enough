@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # Those defaults are used by GitHub Actions for testing
     # The settings used by Docker deployment are in the .env file
     PROJECT_NAME: str = 'FAIR enough API'
-    EVALUATION_LICENSE: str = 'http://creativecommons.org/licenses/by/4.0/'
+    EVALUATION_LICENSE: str = 'https://creativecommons.org/licenses/by/4.0/'
     # SERVER_NAME: str = 'localhost'
     # SERVER_HOST: AnyHttpUrl = 'http://localhost'
 
@@ -44,6 +44,7 @@ class Settings(BaseSettings):
 
         "_id": "http://purl.org/dc/terms/identifier",
         "title": "http://purl.org/dc/terms/title",
+        "name": "https://schema.org/name",
         "description": "http://rdfs.org/ns/void#description",
         "homepage": "http://www.w3.org/ns/dcat#publisher",
         "author": "http://purl.org/dc/elements/1.1/authoredBy",
