@@ -102,7 +102,7 @@ const App = () => {
           <Route exact path="/about" component={About} />
           <Route exact path="/collections" component={Collections} />
           <Route exact path="/metrics" component={MetricTests} />
-          <Route exact path="/collections/create" component={CreateCollection} />
+          <Route exact path="/collection/create" component={CreateCollection} />
           <Route exact path="/" component={RunEvaluations} />
           <Footer />
         </View>

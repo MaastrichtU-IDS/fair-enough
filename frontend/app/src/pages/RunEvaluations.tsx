@@ -74,7 +74,7 @@ export default function Evaluation() {
     evaluationRunning: false,
     evaluationsList: [],
     collectionsList: [],
-    collectionSelected: 'fair-enough-maturity-indicators',
+    collectionSelected: 'fair-enough-dataset',
     showReleaseMsg: true,
     openError: 'none',
     errorMessage: '',

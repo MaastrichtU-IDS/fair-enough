@@ -238,7 +238,7 @@ export default function Collections() {
         Collections of Metrics Tests
       </Typography>
 
-      <Link to="/collections/create">
+      <Link to="/collection/create">
         <Button variant="contained" 
           // className={classes.submitButton} 
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(3), textTransform: 'none'}}

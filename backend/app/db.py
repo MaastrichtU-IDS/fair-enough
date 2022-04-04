@@ -79,10 +79,10 @@ def init_db() -> None:
         new_collection = db["collections"].insert_one(collec_obj)
 
         # TODO: replace with https://w3id.org/fair-enough/metrics
-        collec_id = "fair-enough-maturity-indicators"
+        collec_id = "fair-enough-dataset"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR Enough maturity indicators",
+            "title": "FAIR Enough dataset maturity indicators",
             "description": "Implementation of the FAIR Metrics maturity indicators (https://github.com/FAIRMetrics/Metrics) in python to evaluate a dataset FAIRness",
             "homepage": "https://github.com/MaastrichtU-IDS/fair-enough-metrics",
             "assessments": [
@@ -122,6 +122,39 @@ def init_db() -> None:
             '@context': settings.CONTEXT
         }
         new_collection = db["collections"].insert_one(collec_obj)
+
+        collec_id = "fair-enough-metadata"
+        collec_obj = {
+            "_id": collec_id,
+            "title": "FAIR Enough metadata maturity indicators",
+            "description": "Implementation of the FAIR Metrics maturity indicators (https://github.com/FAIRMetrics/Metrics) in python to evaluate the FAIRness of a resource metadata",
+            "homepage": "https://github.com/MaastrichtU-IDS/fair-enough-metrics",
+            "assessments": [
+                # f"{settings.TESTS_API_URL}/tests/a1-access-protocol",
+                f"https://w3id.org/fair-enough/metrics/tests/a1-metadata-authorization",
+                f"https://w3id.org/fair-enough/metrics/tests/a1-metadata-protocol",
+                f"https://w3id.org/fair-enough/metrics/tests/a2-metadata-persistent",
+                f"https://w3id.org/fair-enough/metrics/tests/f1-metadata-identifier-persistent",
+                f"https://w3id.org/fair-enough/metrics/tests/f1-metadata-identifier-unique",
+                f"https://w3id.org/fair-enough/metrics/tests/f2-grounded-metadata",
+                f"https://w3id.org/fair-enough/metrics/tests/f2-structured-metadata",
+                f"https://w3id.org/fair-enough/metrics/tests/f3-metadata-identifier-in-metadata",
+                f"https://w3id.org/fair-enough/metrics/tests/f4-searchable",
+                f"https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-structured",
+                f"https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-semantic",
+                f"https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies-known",
+                f"https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies-resolve",
+                f"https://w3id.org/fair-enough/metrics/tests/i3-metadata-contains-outward-links",
+                f"https://w3id.org/fair-enough/metrics/tests/r1-includes-license",
+                f"https://w3id.org/fair-enough/metrics/tests/r1-includes-standard-license",
+            ],
+            "author": "https://orcid.org/0000-0002-1501-1082",
+            'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
+            '@id': f'{settings.BASE_URI}/collections/{collec_id}',
+            '@context': settings.CONTEXT
+        }
+        new_collection = db["collections"].insert_one(collec_obj)
+
         
         collec_id = "rare-disease-maturity-indicators"
         collec_obj = {

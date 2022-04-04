@@ -6,7 +6,7 @@ const settings = {
   restUrl: ((process.env.EXPO_API_URL) ? process.env.EXPO_API_URL : null) || 'http://localhost',
   docsUrl: ((process.env.EXPO_API_URL) ? process.env.EXPO_API_URL + '/docs' : null) || 'http://localhost/docs',
   graphqlUrl: ((process.env.EXPO_API_URL) ? process.env.EXPO_API_URL + '/graphql' : null) || 'http://localhost/graphql',
-  OauthRedirectUri: process.env.OAUTH_REDIRECT_FRONTEND || "http://localhost:19006/collections/create"
+  OauthRedirectUri: process.env.OAUTH_REDIRECT_FRONTEND || "http://localhost:19006/collection/create"
 }
 
 const getUrlHtml = (urlString: string) => {

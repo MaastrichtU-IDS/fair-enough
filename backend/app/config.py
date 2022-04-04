@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     # SERVER_HOST: AnyHttpUrl = 'http://localhost'
 
     FRONTEND_URL: str = 'http://localhost:19006'
-    OAUTH_REDIRECT_FRONTEND: str = 'http://localhost:19006/collections/create'
+    OAUTH_REDIRECT_FRONTEND: str = 'http://localhost:19006/collection/create'
 
     ORCID_CLIENT_ID: Optional[str]
     ORCID_CLIENT_SECRET: Optional[str]

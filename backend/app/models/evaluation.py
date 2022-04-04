@@ -30,7 +30,7 @@ class CreateEvaluationModel(BaseModel):
         schema_extra = {
             "example": {
                 "subject": "https://doi.org/10.1594/PANGAEA.908011",
-                "collection": "fair-enough-maturity-indicators"
+                "collection": "fair-enough-dataset"
             }
         }
 

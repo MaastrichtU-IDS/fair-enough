@@ -29,6 +29,7 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "expo": "~39.0.0",
     "highlight.js": "^11.2.0",
+    "markdown-to-jsx": "^7.1.7",
     "oidc-react": "^1.5.1",
     "react": "^17.0.0",
     "react-chartjs-2": "^2.10.0",

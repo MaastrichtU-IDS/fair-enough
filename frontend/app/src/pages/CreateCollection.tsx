@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useLocation, useHistory } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
-import { Typography, Container, Button, IconButton, Paper, Card, CardContent, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
+import { Typography, Container, Button, IconButton, Paper, Card, CardContent, Box, Link, Chip, Tooltip, TextField, CircularProgress, Grid } from "@mui/material";
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
@@ -11,6 +11,7 @@ import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText }
 import CreateCollectionIcon from '@mui/icons-material/LibraryAdd';
 import ArrowIcon from '@mui/icons-material/ArrowForward';
 import AddIcon from '@mui/icons-material/Add';
+import Markdown from 'markdown-to-jsx';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -171,6 +172,7 @@ export default function Evaluation() {
             // collec['fair_metric'] = collec['fair_type'].toUpperCase() + collec['metric_id'] + ' (' + collec['role'] + ')'
             collec['fair_metric'] = collec['info']['x-applies_to_principle']
             collec['fairType'] = collec['info']['x-applies_to_principle']
+            collec['topics'] = collec['info']['x-topics']
             collec['title'] = collec['info']['title']
             collec['description'] = collec['info']['description']
             collec['author'] = collec['info']['contact']['x-id']
@@ -478,10 +480,66 @@ export default function Evaluation() {
                             {item.title}
                           </Typography>
                         </Box>
-                        <Typography variant='body2'>
+                        <Typography variant='body2' style={{marginTop: theme.spacing(1)}}>
                           <a onClick={(event) => {} } href={item.file_url} className={classes.link} target="_blank" rel="noopener noreferrer">{item.id}</a>
                         </Typography>
-                        <Typography variant='body2'>{item.description}</Typography>
+                        {/* {item.description.split('\n').map((descParagraph: string) => (
+                          <Typography variant='body2' style={{marginTop: theme.spacing(1)}}>
+                            {descParagraph}
+                          </Typography>
+                        ))} */}
+                        <Markdown style={{marginTop: theme.spacing(1)}}
+                          // https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/blog/Markdown.js
+                          options={{
+                            wrapper: 'aside', 
+                            forceWrapper: true,
+                            forceBlock: true,
+                            overrides: {
+                              h1: {
+                                component: Typography,
+                                props: {
+                                  gutterBottom: true,
+                                  variant: 'h4',
+                                  component: 'h1',
+                                },
+                              },
+                              h2: {
+                                component: Typography,
+                                props: { gutterBottom: true, variant: 'h6', component: 'h2' },
+                              },
+                              h3: {
+                                component: Typography,
+                                props: { gutterBottom: true, variant: 'subtitle1' },
+                              },
+                              h4: {
+                                component: Typography,
+                                props: {
+                                  gutterBottom: true,
+                                  variant: 'caption',
+                                  paragraph: true,
+                                },
+                              },
+                              p: {
+                                component: Typography,
+                                props: { paragraph: true },
+                              },
+                              span: {
+                                component: Typography,
+                                props: { paragraph: true },
+                              },
+                              a: { component: Link },
+                              li: {
+                                component: (props) => (<Box component="li" sx={{ mt: 1, typography: 'body1' }} {...props} />),
+                              },
+                            },
+                          }}
+                        >
+                          {item.description}
+                        </Markdown>
+                        {/* <span>{item.description}</span> */}
+                        {item.topics && item.topics.map((topic: string) => (
+                          <Chip color='primary' label={topic} style={{marginRight: theme.spacing(1)}} />
+                        ))}
                         {/* <Typography variant='body2'>Max score: {item.max_score} | Max bonus: {item.max_bonus}</Typography> */}
                     </Paper>
                   {/* </div> */}
