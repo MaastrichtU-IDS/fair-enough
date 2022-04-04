@@ -44,7 +44,7 @@ def init_db() -> None:
         collec_id = "fair-evaluator-maturity-indicators"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR metrics maturity indicators",
+            "title": "FAIR Evaluator maturity indicators",
             "description": "Implementation of the FAIR Metrics maturity indicators in ruby to evaluate a dataset FAIRness",
             "homepage": "https://github.com/FAIRMetrics/Metrics",
             "assessments": [
@@ -126,7 +126,7 @@ def init_db() -> None:
         collec_id = "rare-disease-maturity-indicators"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR maturity indicators for Rare Disease research",
+            "title": "FAIR maturity indicators for Rare Disease",
             "description": "FAIR Maturity Indicators for Rare Disease research",
             "homepage": "https://github.com/LUMC-BioSemantics/RD-FAIRmetric-F4",
             "assessments": [
