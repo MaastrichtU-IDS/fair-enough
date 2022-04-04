@@ -41,11 +41,11 @@ def init_db() -> None:
     collection = db["collections"].find_one({"_id": id})
     if collection is not None:
         print('Initialize the database with a few collections')
-        collec_id = "fair-metrics-maturity-indicators"
+        collec_id = "fair-evaluator-maturity-indicators"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR metrics",
-            "description": "Implementation of the FAIR Metrics (Working Group result) to evaluate a dataset FAIRness",
+            "title": "FAIR metrics maturity indicators",
+            "description": "Implementation of the FAIR Metrics maturity indicators in ruby to evaluate a dataset FAIRness",
             "homepage": "https://github.com/FAIRMetrics/Metrics",
             "assessments": [
                 f"https://w3id.org/FAIR_Tests/tests/gen2_unique_identifier",
@@ -79,12 +79,12 @@ def init_db() -> None:
         new_collection = db["collections"].insert_one(collec_obj)
 
         # TODO: replace with https://w3id.org/fair-enough/metrics
-        collec_id = "fair-enough-metrics"
+        collec_id = "fair-enough-maturity-indicators"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR Enough metrics",
-            "description": "Python implementation of the FAIR Metrics (Working Group result) to evaluate a dataset FAIRness",
-            "homepage": "https://github.com/FAIRMetrics/Metrics",
+            "title": "FAIR Enough maturity indicators",
+            "description": "Implementation of the FAIR Metrics maturity indicators (https://github.com/FAIRMetrics/Metrics) in python to evaluate a dataset FAIRness",
+            "homepage": "https://github.com/MaastrichtU-IDS/fair-enough-metrics",
             "assessments": [
                 # f"{settings.TESTS_API_URL}/tests/a1-access-protocol",
                 f"https://w3id.org/fair-enough/metrics/tests/a1-data-authorization",
@@ -100,13 +100,15 @@ def init_db() -> None:
                 f"https://w3id.org/fair-enough/metrics/tests/f3-data-identifier-in-metadata",
                 f"https://w3id.org/fair-enough/metrics/tests/f3-metadata-identifier-in-metadata",
                 f"https://w3id.org/fair-enough/metrics/tests/f4-searchable",
-                f"https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-weak",
-                f"https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation",
-                f"https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-weak",
-                f"https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation",
-                f"https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies",
+                f"https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-structured",
+                f"https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-semantic",
+                f"https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-structured",
+                f"https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-semantic",
+                f"https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies-known",
+                f"https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies-resolve",
                 f"https://w3id.org/fair-enough/metrics/tests/i3-metadata-contains-outward-links",
                 f"https://w3id.org/fair-enough/metrics/tests/r1-includes-license",
+                f"https://w3id.org/fair-enough/metrics/tests/r1-includes-standard-license",
                 # f"https://w3id.org/fair-enough/metrics/tests/a2-metadata-longevity",
                 # f"https://w3id.org/fair-enough/metrics/tests/i3-check-sparl-endpoint",
                 # f"https://w3id.org/fair-enough/metrics/tests/i3-data-management-plan",
@@ -121,11 +123,11 @@ def init_db() -> None:
         }
         new_collection = db["collections"].insert_one(collec_obj)
         
-        collec_id = "rare-disease-metrics"
+        collec_id = "rare-disease-maturity-indicators"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR metrics for Rare Disease research",
-            "description": "Maturity Indicators for Rare Disease research",
+            "title": "FAIR maturity indicators for Rare Disease research",
+            "description": "FAIR Maturity Indicators for Rare Disease research",
             "homepage": "https://github.com/LUMC-BioSemantics/RD-FAIRmetric-F4",
             "assessments": [
                 f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4",

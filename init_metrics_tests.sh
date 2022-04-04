@@ -32,13 +32,15 @@ curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f2-structur
 curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f3-data-identifier-in-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f3-metadata-identifier-in-metadata"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/f4-searchable"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-weak"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-structured"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-data-knowledge-representation-semantic"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-structured"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i1-metadata-knowledge-representation-semantic"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies-known"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i2-fair-vocabularies-resolve"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/i3-metadata-contains-outward-links"}' -H "Content-Type: application/json" $POST_TESTS_URL
 curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/r1-includes-license"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/r1-includes-standard-license"}' -H "Content-Type: application/json" $POST_TESTS_URL
 
 
 

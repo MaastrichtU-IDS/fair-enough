@@ -56,6 +56,10 @@ class CollectionModel:
 #         directives=[MyDirective],
 #     )
 
+@strawberry.type
+class TestResults:
+    metric_test: str
+    score: int
 
 @strawberry.type
 class EvaluationModel:
@@ -66,6 +70,8 @@ class EvaluationModel:
     score: int
     score_max: int
     score_percent: float
+    duration: float
+    results: List[TestResults]
     created_at: Optional[str]
     author: Optional[str]
     # license: Optional[str]
@@ -107,6 +113,7 @@ class Query:
             # id: Optional[str] = None,
             subject: Optional[str] = None,
             collection: Optional[str] = None,
+            author: Optional[str] = None,
             maxScore: Optional[int] = None,
             minScore: Optional[int] = None,
             # maxBonus: Optional[int] = None,
@@ -125,6 +132,8 @@ class Query:
                 continue
             if collection and collection != eval['collection']:
                 continue
+            if author and author != eval['author']:
+                continue
             if maxScore and maxScore < eval['score']:
                 continue
             if minScore and minScore > eval['score']:
@@ -137,26 +146,24 @@ class Query:
                 continue
             if minPercent and minPercent > eval['score_percent']:
                 continue
-            # result_list = []
-            # for result in eval['results']:
-            #     # Convert the results list to objects
-            #     del result['@id']
-            #     del result['@context']
-            #     result_list.append(EvaluationResults(**result))
 
-            # Convert the evaluations to objects
-            # eval['results'] = result_list
-            # eval['score'] = EvaluationScore(**eval['score'])
-            
             # GraphqlEvaluation.from_pydantic(EvaluationModel(**eval))
             eval['id'] = eval['_id']
             del eval['_id']
             del eval['@id']
             del eval['@context']
             del eval['@type']
+            eval['results'] = []
+            # Add list of metrics tests individual scores
+            for test_url, test_res in eval['contains'].items():
+                if isinstance(test_res, list) and len(test_res) > 0:
+                    if test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']:
+                        eval['results'].append(TestResults(**{
+                            'metric_test': test_url,
+                            'score': int(test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']),
+                        }))
             del eval['contains']
-            if 'duration' in eval.keys():
-                del eval['duration']
+            
             if 'license' in eval.keys():
                 del eval['license']
             if 'metadata' in eval.keys():
@@ -164,6 +171,8 @@ class Query:
             # eval['contains'] = json.dumps(eval['contains'], indent=2)
             if 'author' not in eval.keys():
                 eval['author'] = ""
+            if 'duration' not in eval.keys():
+                eval['duration'] = ""
             print(eval)
             eval_list.append(EvaluationModel(**eval))
         return eval_list

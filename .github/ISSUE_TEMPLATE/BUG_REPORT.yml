@@ -1,0 +1,100 @@
+name: 🐞 Bug Report
+description: A FAIR metric test isn't returning the expected result? Report the problem here.
+labels: ["bug"]
+assignees:
+  - vemonet
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form will help you to report when a FAIR metrics test is not returning the expected results.
+        Please fill out each section below. This info allows the maintainers to diagnose (and fix!) your issue as quickly as possible. Otherwise we might need to close the issue without e.g. clear reproduction steps.
+  - type: input
+    id: metrics-tests-concerned
+    attributes:
+      label: Metrics tests concerned
+      placeholder: "https://w3id.org/fair-enough/metrics/tests/a1-metadata-protocol"
+      description: "For which metrics test(s) the issue happens"
+    validations:
+      required: true
+  - type: input
+    id: evaluation-link
+    attributes:
+      label: Evaluation Link
+      placeholder: "https://fair-enough.semanticscience.org/evaluations/995e63bfb045c5843c02c20062da0beb6235e991"
+      description: "Link to the evaluation where the issue happened"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe the issue that you're seeing, and the results you would expected.
+      placeholder: Be as precise as you can. Feel free to share links, screenshots, or evaluations logs.
+    validations:
+      required: true
+  # - type: checkboxes
+  #   attributes:
+  #     label: Preliminary Checks
+  #     description: Please make sure that you verify each checkbox and follow the instructions for them.
+  #     options:
+  #       - label: "This issue is not a duplicate. Before opening a new issue, please search existing issues: https://github.com/gatsbyjs/gatsby/issues"
+  #         required: true
+  #       - label: "This issue is not a question, feature request, RFC, or anything other than a bug report directly related to Gatsby. Please post those things in GitHub Discussions: https://github.com/gatsbyjs/gatsby/discussions"
+  #         required: true
+  # - type: textarea
+  #   attributes:
+  #     label: Steps to Reproduce
+  #     description: Clear steps describing how to reproduce the issue.
+  #     value: |
+  #       1.
+  #       2.
+  #       3.
+  #       ...
+  #   validations:
+  #     required: true
+  # - type: textarea
+  #   attributes:
+  #     label: Expected Result
+  #     description: Describe what you expected to happen.
+  #   validations:
+  #     required: true
+  # - type: textarea
+  #   attributes:
+  #     label: Actual Result
+  #     description: Describe what actually happened.
+  #   validations:
+  #     required: true
+  # - type: textarea
+  #   attributes:
+  #     label: Environment
+  #     render: shell
+  #     description: Run "gatsby info --clipboard" in your project directory and paste the output here.
+  #     placeholder: |
+  #       You'll get an output similar to this:
+
+  #       System:
+  #         OS: Operating System
+  #         CPU: CPU
+  #       Binaries:
+  #         Node: X
+  #         npm: X
+  #       Languages:
+  #         Python: X
+  #       Browsers:
+  #         Chrome: X
+  #         Edge: X
+  #       npmPackages:
+  #         gatsby: X => X
+  #   validations:
+  #     required: true
+  # - type: textarea
+  #   attributes:
+  #     label: Config Flags
+  #     description: Do you use any "flags" inside "gatsby-config"? If yes, please paste them here.
+  #     placeholder: |
+  #       For example:
+
+  #       DEV_SSR: true
+  #       FAST_DEV: false
+  #   validations:
+  #     required: false

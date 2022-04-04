@@ -52,6 +52,8 @@ async def create_evaluation(
     if len(evaluation['subject']) < 2:
         raise HTTPException(status_code=422, detail=f"No URL has been provided as subject to evaluate")
 
+    evaluation['subject'] = evaluation['subject'].strip()
+
     collection = await db["collections"].find_one({"_id": evaluation['collection']})
     if collection is None:
         raise HTTPException(status_code=404, detail=f"Provided collection {id} not found")

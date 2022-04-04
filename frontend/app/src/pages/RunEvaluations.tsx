@@ -74,12 +74,12 @@ export default function Evaluation() {
     evaluationRunning: false,
     evaluationsList: [],
     collectionsList: [],
-    collectionSelected: 'fair-metrics-maturity-indicators',
-    metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
-    use_datacite: true,
+    collectionSelected: 'fair-enough-maturity-indicators',
     showReleaseMsg: true,
     openError: 'none',
     errorMessage: '',
+    // metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
+    // use_datacite: true,
   });
   const stateRef = React.useRef(state);
   // Avoid conflict when async calls
