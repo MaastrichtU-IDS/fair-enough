@@ -171,9 +171,9 @@ async def list_evaluations():
             '@id': eval['@id'],
         }
         if 'title' in eval['metadata'].keys():
-            if isinstance(eval['metadata']['title'], list):
+            if isinstance(eval['metadata']['title'], list) and len(eval['metadata']['title']) > 0:
                 partial_eval['title'] = eval['metadata']['title'][0]
-            else:
+            elif isinstance(eval['metadata']['title'], str):
                 partial_eval['title'] = eval['metadata']['title']
         if 'author' in eval.keys():
             partial_eval['author'] = eval['author']

@@ -14,7 +14,7 @@ body:
     attributes:
       label: Metrics tests concerned
       placeholder: "https://w3id.org/fair-enough/metrics/tests/a1-metadata-protocol"
-      description: "For which metrics test(s) the issue happens"
+      description: "For which metrics test(s) the issue happens?"
     validations:
       required: true
   - type: input
@@ -22,7 +22,7 @@ body:
     attributes:
       label: Evaluation Link
       placeholder: "https://fair-enough.semanticscience.org/evaluations/995e63bfb045c5843c02c20062da0beb6235e991"
-      description: "Link to the evaluation where the issue happened"
+      description: "Provide the link to the evaluation where the issue happened"
     validations:
       required: true
   - type: textarea
