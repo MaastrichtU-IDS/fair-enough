@@ -98,6 +98,8 @@ async def current_user(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 
+# TODO: implement auth with username/password sent for CLI? https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/ 
+
 
 # def get_current_active_superuser(
 #     current_user: models.User = Depends(get_current_user),
