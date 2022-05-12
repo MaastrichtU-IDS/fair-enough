@@ -205,7 +205,7 @@ export default function Collection() {
           <Grid container spacing={1}>
             { state.collectionResults['assessments']
               .map((item: any, key: number) => (
-                <Grid item xs={4} display="flex" key={key} style={{alignItems: 'center'}} >
+                <Grid item xs={6} display="flex" key={key} style={{alignItems: 'center'}} >
                   <ArrowIcon />
                   {/* <div onClick={() => removeAssessment(item.id)}> */}
                     {/* <Tooltip title='Click to remove this assessment from your collection'> */}
@@ -269,6 +269,10 @@ export default function Collection() {
                             >
                               {state.assessmentsDict[item]['info']['description']}
                             </Markdown>
+
+                            {state.assessmentsDict[item]['info']['x-topics'] && state.assessmentsDict[item]['info']['x-topics'].map((topic: string) => (
+                              <Chip color='primary' label={topic} style={{marginRight: theme.spacing(1)}} />
+                            ))}
 
                             {/* <Typography variant='body2'>
                               {state.assessmentsDict[item]['info']['description']}
