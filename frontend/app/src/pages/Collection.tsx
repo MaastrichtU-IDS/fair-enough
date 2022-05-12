@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 // import { makeStyles, useTheme, withStyles } from '@mui/styles';
-import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
+import { Typography, Container, Link, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
 import { LinearProgress, Accordion, AccordionSummary, AccordionDetails, Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DownloadJsonIcon from '@mui/icons-material/GetApp';
@@ -15,6 +15,7 @@ import FailIcon from '@mui/icons-material/Error';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 import ArrowIcon from '@mui/icons-material/ArrowForward';
+import Markdown from 'markdown-to-jsx';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 // import Pagination from '@mui/material/Pagination';
@@ -111,7 +112,7 @@ export default function Collection() {
           let assessmentsDict: any = {}
           res.data.map((assess: any, key: number) => {
             console.log(assess);
-            assessmentsDict[assess['id']] = assess
+            assessmentsDict[assess['_id']] = assess
           })
           console.log(assessmentsDict)
           updateState({ assessmentsDict: assessmentsDict })
@@ -159,14 +160,14 @@ export default function Collection() {
     document.body.removeChild(element);
   }
 
-  const getBadgeFair  = (fairType: string, metricId: number) => {
+  const getBadgeFair  = (fairType: string) => {
     const emojiMap: any = {
       'f': '🔍️',
       'a': '📬️',
       'i': '⚙️',
       'r': '♻️'
     }
-    return <Chip size='medium' label={emojiMap[fairType] + ' ' + fairType.toUpperCase() + metricId.toString()}/> // blue
+    return <Chip size='medium' label={emojiMap[fairType[0].toLowerCase()] + ' ' + fairType.toUpperCase()}/> // blue
   }
 
   return(
@@ -200,6 +201,7 @@ export default function Collection() {
           <Typography variant="h5" style={{textAlign: 'center', marginBottom: theme.spacing(2)}}>
             Contains {state.collectionResults['assessments'].length} metrics tests:
           </Typography>
+          
           <Grid container spacing={1}>
             { state.collectionResults['assessments']
               .map((item: any, key: number) => (
@@ -211,20 +213,69 @@ export default function Collection() {
                         { state.assessmentsDict[item] && 
                           <>
                             <Box display='flex' style={{alignItems: 'center'}}>
-                              {getBadgeFair(state.assessmentsDict[item]['fair_type'], state.assessmentsDict[item]['metric_id'])}&nbsp;
+                              {getBadgeFair(state.assessmentsDict[item]['info']['x-applies_to_principle'])}&nbsp;
                               <Typography variant='body1'>
-                                <a href={state.assessmentsDict[item]['file_url']} target="_blank" 
+                                <a href={state.assessmentsDict[item]['_id']} target="_blank" 
                                     rel="noopener noreferrer" style={{color: theme.palette.primary.main, textDecoration: 'none'}}>
-                                  {state.assessmentsDict[item]['title']}
+                                  {state.assessmentsDict[item]['info']['title']}
                                 </a>
                               </Typography>
                             </Box>
-                            <Typography variant='body2'>
-                              {state.assessmentsDict[item]['description']}
-                            </Typography>
-                            <Typography variant='body2'>
+                            <Markdown style={{marginTop: theme.spacing(1)}}
+                              // https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/blog/Markdown.js
+                              options={{
+                                wrapper: 'aside', 
+                                forceWrapper: true,
+                                forceBlock: true,
+                                overrides: {
+                                  h1: {
+                                    component: Typography,
+                                    props: {
+                                      gutterBottom: true,
+                                      variant: 'h4',
+                                      component: 'h1',
+                                    },
+                                  },
+                                  h2: {
+                                    component: Typography,
+                                    props: { gutterBottom: true, variant: 'h6', component: 'h2' },
+                                  },
+                                  h3: {
+                                    component: Typography,
+                                    props: { gutterBottom: true, variant: 'subtitle1' },
+                                  },
+                                  h4: {
+                                    component: Typography,
+                                    props: {
+                                      gutterBottom: true,
+                                      variant: 'caption',
+                                      paragraph: true,
+                                    },
+                                  },
+                                  p: {
+                                    component: Typography,
+                                    props: { paragraph: true },
+                                  },
+                                  span: {
+                                    component: Typography,
+                                    props: { paragraph: true },
+                                  },
+                                  a: { component: Link },
+                                  li: {
+                                    component: (props) => (<Box component="li" sx={{ mt: 1, typography: 'body1' }} {...props} />),
+                                  },
+                                },
+                              }}
+                            >
+                              {state.assessmentsDict[item]['info']['description']}
+                            </Markdown>
+
+                            {/* <Typography variant='body2'>
+                              {state.assessmentsDict[item]['info']['description']}
+                            </Typography> */}
+                            {/* <Typography variant='body2'>
                               Max score: {state.assessmentsDict[item]['max_score']} | Max bonus: {state.assessmentsDict[item]['max_bonus']}
-                            </Typography>
+                            </Typography> */}
                           </>
                         }
                         { !state.assessmentsDict[item] && 

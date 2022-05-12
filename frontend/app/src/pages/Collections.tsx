@@ -69,7 +69,8 @@ export default function Collections() {
     collectionsList: [],
     evaluationRunning: false,
     evaluationsList: [],
-    metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
+    assessmentsList: [],
+    // metadata_service_endpoint: 'https://ws.pangaea.de/oai/provider',
     use_datacite: true,
   });
   const stateRef = React.useRef(state);
