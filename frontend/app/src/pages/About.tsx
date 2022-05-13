@@ -57,12 +57,17 @@ export default function About() {
       </Typography>
 
       <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
-        This FAIR evaluation service is compliant with the specifications defined by the <a href="https://github.com/FAIRMetrics/Metrics" className={classes.link} target="_blank" rel="noopener noreferrer">FAIRMetrics working group</a>, hence it can register and use the same FAIR metrics test APIs as the FAIR evaluator.
+        This FAIR evaluation service is compliant with the specifications defined by the <a href="https://github.com/FAIRMetrics/Metrics" className={classes.link} target="_blank" rel="noopener noreferrer">FAIRMetrics working group</a>, 
+        hence it can register and use the same FAIR metrics test APIs as the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>.
       </Typography>
 
       <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
-        You can easily define and publish new FAIR metrics tests with the <a href="https://maastrichtu-ids.github.io/fair-test" className={classes.link} target="_blank" rel="noopener noreferrer">fair-test</a> python library.
+        You can easily define and publish new FAIR metrics tests for your community with the <a href="https://maastrichtu-ids.github.io/fair-test" className={classes.link} target="_blank" rel="noopener noreferrer">fair-test</a> python library.
         The published metric test API can then be registered in FAIR enough using their public URL.  
+      </Typography>
+
+      <Typography variant="h4" className={classes.mainText} style={{margin: theme.spacing(2,0)}}>
+        Credits
       </Typography>
 
       <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
