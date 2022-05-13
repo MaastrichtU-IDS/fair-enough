@@ -57,11 +57,20 @@ export default function About() {
       </Typography>
 
       <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
-        Developed and hosted by the <a href="https://www.maastrichtuniversity.nl/research/institute-data-science" className={classes.link} target="_blank" rel="noopener noreferrer">Institute of Data Science</a> at Maastricht University.
+        This FAIR evaluation service is compliant with the specifications defined by the <a href="https://github.com/FAIRMetrics/Metrics" className={classes.link} target="_blank" rel="noopener noreferrer">FAIRMetrics working group</a>, hence it can register and use the same FAIR metrics test APIs as the FAIR evaluator.
+      </Typography>
+
+      <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
+        You can easily define and publish new FAIR metrics tests with the <a href="https://maastrichtu-ids.github.io/fair-test" className={classes.link} target="_blank" rel="noopener noreferrer">fair-test</a> python library.
+        The published metric test API can then be registered in FAIR enough using their public URL.  
+      </Typography>
+
+      <Typography variant="body1" className={classes.mainText} style={{ marginBottom: theme.spacing(1)}}>
+        FAIR enough is developed and hosted by the <a href="https://www.maastrichtuniversity.nl/research/institute-data-science" className={classes.link} target="_blank" rel="noopener noreferrer">Institute of Data Science</a> at Maastricht University.
       </Typography>
 
       <Typography variant="body1" className={classes.mainText}>
-        This platform take inspiration from existing FAIR evaluation implementations: the <a href="https://fairsharing.github.io/FAIR-Evaluator-FrontEnd/#!/" className={classes.link} target="_blank" rel="noopener noreferrer">FAIR evaluator</a>, 
+        This platform takes inspiration from existing FAIR evaluation services implementations: the <a href="https://fairsharing.github.io/FAIR-Evaluator-FrontEnd/#!/" className={classes.link} target="_blank" rel="noopener noreferrer">FAIR evaluator</a>, 
         FAIRsFAIR's <a href="https://f-uji.net/" className={classes.link} target="_blank" rel="noopener noreferrer">F-UJI</a>, 
         and <a href="https://foops.linkeddata.es/FAIR_validator.html" className={classes.link} target="_blank" rel="noopener noreferrer">FOOPS!</a> ontology validator.
       </Typography>
