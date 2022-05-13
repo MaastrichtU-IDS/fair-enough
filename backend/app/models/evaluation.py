@@ -30,7 +30,7 @@ class CreateEvaluationModel(BaseModel):
         schema_extra = {
             "example": {
                 "subject": "https://doi.org/10.1594/PANGAEA.908011",
-                "collection": "fair-enough-dataset"
+                "collection": "fair-enough-data"
             }
         }
 
@@ -44,7 +44,7 @@ class UpdateEvaluationModel(BaseModel):
         schema_extra = {
             "example": {
                 "subject": "https://doi.org/10.1594/PANGAEA.908011",
-                "collection": "fair-metrics"
+                "collection": "fair-enough-data"
             }
         }
 
@@ -114,7 +114,7 @@ class UpdateEvaluationModel(BaseModel):
 #             "example": {
 #                 "subject": "https://doi.org/10.1594/PANGAEA.908011",
 #                 # "title": "FAIR metrics dataset evaluation",
-#                 "collection": "fair-metrics",
+#                 "collection": "fair-enough-data",
 #                 'results':[],
 #                 'data': {},
 #                 'score': {}

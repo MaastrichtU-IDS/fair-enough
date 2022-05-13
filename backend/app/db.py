@@ -79,7 +79,7 @@ def init_db() -> None:
         new_collection = db["collections"].insert_one(collec_obj)
 
         # TODO: replace with https://w3id.org/fair-enough/metrics
-        collec_id = "fair-enough-dataset"
+        collec_id = "fair-enough-data"
         collec_obj = {
             "_id": collec_id,
             "title": "FAIR Enough dataset maturity indicators",

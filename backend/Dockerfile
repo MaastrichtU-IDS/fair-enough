@@ -1,4 +1,4 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
 WORKDIR /app/
 
@@ -22,4 +22,15 @@ ARG INSTALL_JUPYTER=false
 RUN bash -c "if [ $INSTALL_JUPYTER == 'true' ] ; then pip install jupyterlab ; fi"
 
 COPY . /app
+
+
+# Create non root user app
+RUN addgroup --system app && adduser --system --group app
+
+# Make sure all files belongs to the app user
+RUN chown -R app:app /app && \
+    chown -R app:app $HOME
+
+USER app
+
 ENV PYTHONPATH=/app

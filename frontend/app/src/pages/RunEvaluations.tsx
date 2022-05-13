@@ -74,7 +74,7 @@ export default function Evaluation() {
     evaluationRunning: false,
     evaluationsList: [],
     collectionsList: [],
-    collectionSelected: 'fair-enough-dataset',
+    collectionSelected: 'fair-enough-data',
     showReleaseMsg: true,
     openError: 'none',
     errorMessage: '',
