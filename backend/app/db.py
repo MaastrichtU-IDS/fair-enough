@@ -82,8 +82,8 @@ def init_db() -> None:
         collec_id = "fair-enough-data"
         collec_obj = {
             "_id": collec_id,
-            "title": "FAIR Enough dataset maturity indicators",
-            "description": "Implementation of the FAIR Metrics maturity indicators (https://github.com/FAIRMetrics/Metrics) in python to evaluate a dataset FAIRness",
+            "title": "FAIR Enough data maturity indicators",
+            "description": "Implementation of the FAIR Metrics maturity indicators (https://github.com/FAIRMetrics/Metrics) in python to evaluate the FAIRness of data available at a URL (such as a dataset)",
             "homepage": "https://github.com/MaastrichtU-IDS/fair-enough-metrics",
             "assessments": [
                 # f"{settings.TESTS_API_URL}/tests/a1-access-protocol",
@@ -163,8 +163,8 @@ def init_db() -> None:
             "description": "FAIR Maturity Indicators for Rare Disease research",
             "homepage": "https://github.com/LUMC-BioSemantics/RD-FAIRmetric-F4",
             "assessments": [
-                f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4",
-                f"https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3",
+                f"https://w3id.org/rd-fairness-tests/tests/RD-F4",
+                f"https://w3id.org/rd-fairness-tests/tests/RD-R1-3",
             ],
             "author": "https://orcid.org/0000-0002-1501-1082",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),

@@ -64,8 +64,8 @@ curl -X POST -d '{"url": "https://w3id.org/fair-enough/metrics/tests/r1-includes
 
 
 # Rare Disease metrics
-curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-F4"}' -H "Content-Type: application/json" $POST_TESTS_URL
-curl -X POST -d '{"url": "https://rare-disease.api.fair-enough.semanticscience.org/tests/RD-R1-3"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/rd-fairness-tests/tests/RD-F4"}' -H "Content-Type: application/json" $POST_TESTS_URL
+curl -X POST -d '{"url": "https://w3id.org/rd-fairness-tests/tests/RD-R1-3"}' -H "Content-Type: application/json" $POST_TESTS_URL
 
 
 echo "######### FAIR Evaluator metrics #########"
