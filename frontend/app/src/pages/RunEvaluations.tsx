@@ -371,7 +371,7 @@ export default function Evaluation() {
   return(
     <Container className='mainContainer'>
 
-      <Card style={{
+      {/* <Card style={{
         display: state.showReleaseMsg ? 'flow' : 'none', textAlign: 'center',
         backgroundColor: '#e8f5e9',
         marginBottom: theme.spacing(3)
@@ -396,7 +396,7 @@ export default function Evaluation() {
             or contact vincent.emonet@maastrichtuniversity.nl for remarks or requests 💌
           </Typography>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
         {/* ⚖️ Evaluate how FAIR is a resource 🔗 */}
