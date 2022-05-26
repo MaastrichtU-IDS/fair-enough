@@ -429,84 +429,67 @@ export default function Evaluation() {
       } */}
 
       {/* Form to provide the URL to evaludate */}
-      <form onSubmit={handleSubmit}>
-        <Box display="flex">
-          <TextField
-            id='urlToEvaluate'
-            label='URL of the resource to evaluate'
-            placeholder='URL of the resource to evaluate'
-            value={state.urlToEvaluate}
-            className={classes.fullWidth}
-            variant="outlined"
-            onChange={handleTextFieldChange}
-            // size='small'
-            InputProps={{
-              className: classes.formInput,
-            }}
-          />
-          {/* Log level dropdown select */}
-          <TextField select
-              value={state.collectionSelected} 
-              label={"Using the collection"} 
-              id="collectionSelected" 
-              onChange={handleCollectionChange} 
-              SelectProps={{ MenuProps: { disableScrollLock: true } }}
-              style={{margin: theme.spacing(0, 2), backgroundColor: 'white'}}
-              variant="outlined"> 
-            { state.collectionsList.map((collec: any, key: number) => (
-              <MenuItem value={collec.id}>{collec.title} ({collec.id})</MenuItem>
-            ))}
-          </TextField>
+      <form onSubmit={handleSubmit} style={{textAlign: 'left'}}>
 
-          {/* <Tooltip  title='Evaluator settings'>
-            <Button style={{margin: theme.spacing(1)}} onClick={handleClick}>
-              <SettingsIcon />
-            </Button>
-          </Tooltip> */}
-          {/* <Popper open={open} anchorEl={anchorEl}>
-            <ClickAwayListener onClickAway={handleClickAway}>
-              <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'center'}}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <Tooltip title='By default, the FAIR Enough evaluator uses content negociation based on the DOI URL to retrieve DataCite JSON metadata. If you uncheck this option F-UJI will try to use the landing page URL instead.'>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={state.use_datacite}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                              updateState({[event.target.name]: event.target.checked});
-                            }}
-                            name="use_datacite"
-                            color="primary"
-                          />
-                        }
-                        label="Use DataCite"
-                      />
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Tooltip title='OAI-PMH (Open Archives Initiative Protocol for Metadata Harvesting) endpoint to use when searching for metadata about this resource.'>
-                      <TextField
-                        id='metadata_service_endpoint'
-                        label='OAI-PMH metadata endpoint URL'
-                        placeholder='OAI-PMH metadata endpoint URL'
-                        value={state.metadata_service_endpoint}
-                        className={classes.fullWidth}
-                        variant="outlined"
-                        onChange={handleTextFieldChange}
-                        // size='small'
-                        InputProps={{
-                          className: classes.formInput
-                        }}
-                      />
-                    </Tooltip>
-                    <FormHelperText>List of OAI-PMH providers: {getUrlHtml('https://www.openarchives.org/Register/BrowseSites')}</FormHelperText>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </ClickAwayListener>
-          </Popper> */}
+        <Typography variant='body1' style={{marginBottom: theme.spacing(3)}}>
+          1. Choose the collection of FAIR Maturity Indicators (aka. FAIR Metrics tests) to validate your resource against:
+        </Typography>
+
+        <Box display="flex" style={{marginBottom: theme.spacing(1)}}>
+          {/* Collection dropdown */}
+          <Box>
+            <TextField select
+                value={state.collectionSelected} 
+                label={"Use the collection"} 
+                id="collectionSelected" 
+                onChange={handleCollectionChange} 
+                SelectProps={{ MenuProps: { disableScrollLock: true } }}
+                style={{margin: theme.spacing(0, 0), backgroundColor: 'white'}}
+                variant="outlined"> 
+              { state.collectionsList.map((collec: any, key: number) => (
+                <MenuItem value={collec.id}>{collec.title} ({collec.id})</MenuItem>
+              ))}
+            </TextField>
+          </Box>
+
+          { state.collectionsList.map((collec: any, key: number) => {
+            if (collec.id === state.collectionSelected) {
+              return (
+                <Card style={{marginLeft: theme.spacing(1), padding: '15px'}}>
+                  <Typography variant='body1'>
+                    {collec.description}
+                  </Typography>
+                </Card>
+              )
+            }
+          })}
         </Box>
+
+        <Typography variant='body1' style={{marginBottom: theme.spacing(1)}}>
+          2. Provide the URL to the resource you want to evaluate <Tooltip
+          title={<Typography>
+            🔗 We require the use of URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online. 
+            <br/>⚠️ If you are trying to validate a DOI,
+            then you should prefix it with https://doi.org/
+          </Typography>}
+        >
+          <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>
+        </Tooltip>
+        </Typography>
+
+        <TextField
+          id='urlToEvaluate'
+          label='URL of the resource to evaluate'
+          placeholder='URL of the resource to evaluate'
+          value={state.urlToEvaluate}
+          className={classes.fullWidth}
+          variant="outlined"
+          onChange={handleTextFieldChange}
+          // size='small'
+          InputProps={{
+            className: classes.formInput,
+          }}
+        />
 
         <Button type="submit" 
           variant="contained" 
