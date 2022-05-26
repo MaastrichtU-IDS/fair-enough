@@ -104,7 +104,6 @@ async def update_collection(
         id: str, 
         collection: UpdateCollectionModel = Body(...),
         current_user: models.User = Depends(login.get_current_user) ):
-    collection = {k: v for k, v in collection.dict(by_alias=True).items() if v is not None}
     db = get_db()
     existing_collection = await db["collections"].find_one({"_id": id})
 
@@ -112,6 +111,8 @@ async def update_collection(
     if current_user['id'] != existing_collection['author']:
         raise HTTPException(status_code=403, detail=f"Collection belongs to {existing_collection['author']}, but you are logged with {current_user['id']}")
 
+    # Convert the collection to update object to a dict
+    collection = {k: v for k, v in collection.dict(by_alias=True).items() if v is not None}
     if len(collection) >= 1:
         update_result = await db["collections"].update_one({"_id": id}, {"$set": collection})
 
@@ -119,6 +120,9 @@ async def update_collection(
             updated_collection = await db["collections"].find_one({"_id": id})
             if updated_collection is not None:
                 return updated_collection
+    else:
+        raise HTTPException(status_code=422, detail=f"No new values provided to update the collection")
+
     existing_collection = await db["collections"].find_one({"_id": id})
     if existing_collection is not None:
         return existing_collection

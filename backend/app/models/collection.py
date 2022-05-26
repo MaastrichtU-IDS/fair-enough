@@ -91,7 +91,7 @@ class UpdateCollectionModel(BaseModel):
     description: Optional[str] = None
     # description: Optional[str] = Field(...)
     homepage: Optional[AnyUrl] = None
-    assessments: List[str]
+    assessments: Optional[List[str]]
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
