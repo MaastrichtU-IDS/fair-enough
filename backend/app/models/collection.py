@@ -1,10 +1,11 @@
-from email.policy import default
-from pydantic import BaseModel, Field, AnyUrl
-from typing import Optional, List, Dict
-from bson import ObjectId
 from datetime import datetime
-from app.config import settings
+from typing import Dict, List, Optional
 
+from app.config import settings
+from bson import ObjectId
+from pydantic import AnyUrl, BaseModel, Field
+
+# from email.policy import default
 # FAIR evaluator API: http://smart-api.info/ui/4831dbbe28707c16b8c2b513b3523402
 
 class PyObjectId(ObjectId):

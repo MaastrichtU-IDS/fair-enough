@@ -1,16 +1,20 @@
-from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-from typing import List
 import datetime
-from pymongo.errors import DuplicateKeyError
+import re
+from typing import List
 
 from app import models
 from app.api import login
-from app.db import get_db
 from app.config import settings
-from app.models.collection import CollectionModel, CreateCollectionModel, UpdateCollectionModel
-import re
+from app.db import get_db
+from app.models.collection import (
+    CollectionModel,
+    CreateCollectionModel,
+    UpdateCollectionModel,
+)
+from fastapi import APIRouter, Body, Depends, FastAPI, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+from pymongo.errors import DuplicateKeyError
 
 router = APIRouter()
 

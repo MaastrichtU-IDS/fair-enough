@@ -1,16 +1,19 @@
+import datetime
+import json
+import urllib.parse
+from typing import List, Optional
+
+import requests
+import yaml
+from app.config import settings
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from typing import Optional, List
-import datetime
-import urllib.parse
-import json
-import requests
-import yaml
-from rdflib import Graph, URIRef
+
 # Plugin and serializer required to parse jsonld with rdflib
 from pyld import jsonld
-from app.config import settings
+from rdflib import Graph, URIRef
+
 # import logging
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
