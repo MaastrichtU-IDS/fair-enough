@@ -338,6 +338,7 @@ export default function NavBar() {
             className={classes.loginButton}
             authorizationUrl="https://orcid.org/oauth/authorize"
             responseType="token"
+            scope="/authenticate"
             clientId={process.env.ORCID_CLIENT_ID}
             clientSecret={process.env.ORCID_CLIENT_SECRET}
             redirectUri={settings.OauthRedirectUri}
