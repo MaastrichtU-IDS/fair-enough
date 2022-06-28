@@ -1,15 +1,16 @@
-import strawberry
-from strawberry.asgi import GraphQL
-from typing import List, Optional, Union, Any
-from pydantic import BaseModel, Field
 import json
-from starlette.requests import Request
-from starlette.websockets import WebSocket
-from starlette.responses import Response 
-from strawberry.types import Info
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from typing import Any, Dict, List, Optional, Union
 
+import strawberry
 from app.config import settings
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from pydantic import BaseModel, Field
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.websockets import WebSocket
+from strawberry.asgi import GraphQL
+from strawberry.types import Info
+
 # from app.models import EvaluationModel
 # from app.api.collections import list_collections, show_collection
 
@@ -59,6 +60,11 @@ class CollectionModel:
 @strawberry.type
 class TestResults:
     metric_test: str
+    score: int
+
+@strawberry.input
+class TestFiltered:
+    metric: str
     score: int
 
 @strawberry.type
@@ -120,7 +126,7 @@ class Query:
             # minBonus: Optional[int] = None,
             maxPercent: Optional[int] = None,
             minPercent: Optional[int] = None,
-            
+            filterTests: Optional[List[TestFiltered]] = None,
         ) -> List[EvaluationModel]:
         db = info.context["db"]
         evaluations = await db["evaluations"].find().to_list(1000)
@@ -154,14 +160,32 @@ class Query:
             del eval['@context']
             del eval['@type']
             eval['results'] = []
+
+            filter_tests = {}
+            filter_success = 0
+            if filterTests:
+                for ft in filterTests:
+                    filter_tests[ft.metric] = ft.score
+
             # Add list of metrics tests individual scores
             for test_url, test_res in eval['contains'].items():
                 if isinstance(test_res, list) and len(test_res) > 0:
                     if test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']:
+                        score = int(test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value'])
                         eval['results'].append(TestResults(**{
                             'metric_test': test_url,
-                            'score': int(test_res[0]['http://semanticscience.org/resource/SIO_000300'][0]['@value']),
+                            'score': score,
                         }))
+
+                        if test_url in filter_tests:
+                            if score == filter_tests[test_url]:
+                                filter_success += 1 
+            
+            if filterTests:
+                # If filter tests enabled, check if we have as many success as we have tests
+                if filter_success < len(filterTests):
+                    continue
+
             del eval['contains']
             
             if 'license' in eval.keys():
