@@ -589,6 +589,12 @@ export default function Evaluation() {
               </AccordionDetails>
             </Accordion>
           </>} */}
+
+          {state.evaluationResults.collection.startsWith("fair-enough-") && 
+            <Typography variant="body2" style={{marginTop: theme.spacing(4), marginBottom: theme.spacing(2)}}>
+              A FAIR metric test isn't returning the expected result? Notify us <a href={"https://github.com/MaastrichtU-IDS/fair-enough/issues/new?template=BUG_REPORT.yml"} className={classes.link} target="_blank" rel="noopener noreferrer">here</a>
+            </Typography>
+          }
           
           <Button
             variant="contained" 

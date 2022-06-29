@@ -1,4 +1,4 @@
-name: 🐞 Bug Report
+name: 🐞 FAIR Metrics bug report
 description: A FAIR metric test isn't returning the expected result? Report the problem here.
 labels: ["bug"]
 assignees:
