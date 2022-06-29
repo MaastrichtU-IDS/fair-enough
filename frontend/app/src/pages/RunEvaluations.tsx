@@ -74,7 +74,7 @@ export default function Evaluation() {
     evaluationRunning: false,
     evaluationsList: [],
     collectionsList: [],
-    collectionSelected: 'fair-enough-data',
+    collectionSelected: 'fair-evaluator-maturity-indicators',
     showReleaseMsg: true,
     openError: 'none',
     errorMessage: '',
@@ -466,11 +466,10 @@ export default function Evaluation() {
         </Box>
 
         <Typography variant='body1' style={{marginBottom: theme.spacing(1)}}>
-          2. Provide the URL to the resource you want to evaluate <Tooltip
+          2. Provide the URL to the resource, or digital object, you want to evaluate <Tooltip
           title={<Typography>
-            🔗 We require the use of URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online. 
-            <br/>⚠️ If you are trying to validate a DOI,
-            then you should prefix it with https://doi.org/
+            🔗 The best is to a URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online. 
+            <br/>But DOI and handles are also accepted by some collections
           </Typography>}
         >
           <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>

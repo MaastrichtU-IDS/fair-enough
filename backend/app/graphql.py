@@ -177,7 +177,7 @@ class Query:
                             'score': score,
                         }))
 
-                        if test_url in filter_tests:
+                        if test_url in filter_tests.keys():
                             if score == filter_tests[test_url]:
                                 filter_success += 1 
             
