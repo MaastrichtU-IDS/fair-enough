@@ -251,7 +251,9 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
 
 
-
+# TODO: we added verify=False because the FAIR evaluator does not support HTTPS
+# In 2022... wtf are those FAIR people doing? They really have no idea how the web works
+# And they are going around explaining how people should publish
 def query_url(url, data, timeout=100, content_type=None, accept=None, verify=False):
     headers = {}
     if content_type:

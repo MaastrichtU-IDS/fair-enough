@@ -14,8 +14,8 @@ services:
     ports:
       - "80:80"
     command: /start-reload.sh
-    # volumes:
-    #   - ./backend:/app
+    volumes:
+      - ./backend:/app
     environment:
       - FRONTEND_URL=http://localhost:19006
       - DEV_MODE=true

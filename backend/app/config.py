@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     # The settings used by Docker deployment are in the .env file
     PROJECT_NAME: str = 'FAIR enough API'
     EVALUATION_LICENSE: str = 'https://creativecommons.org/licenses/by/4.0/'
+    ADMIN_ORCID: str = 'https://orcid.org/0000-0002-1501-1082'
+    
     # SERVER_NAME: str = 'localhost'
     # SERVER_HOST: AnyHttpUrl = 'http://localhost'
 

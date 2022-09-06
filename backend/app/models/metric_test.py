@@ -38,19 +38,46 @@ async def register_test(test, db):
 
 # class UpdateMetricTestModel(BaseModel):
 #     id: Optional[str]
-#     url: Optional[str]
-#     description: Optional[str] = None
+#     new_url: Optional[str]
+#     # description: Optional[str] = None
 #     # description: Optional[str] = Field(...)
-#     homepage: Optional[AnyUrl] = None
+#     # homepage: Optional[AnyUrl] = None
+
 #     class Config:
 #         arbitrary_types_allowed = True
 #         json_encoders = {ObjectId: str}
 #         schema_extra = {
 #             "example": {
-#                 # "id": "fair-metrics",
-#                 "id": "FAIR Metrics for datasets",
-#                 "url": "A collection to evaluate a dataset FAIRness",
-#                 "homepage": "https://github.com/FAIRMetrics/Metrics",
-#                 "assessments": ["f1_unique_persistent_identifier"]
+#                 "id": "https://w3id.org/FAIR_Tests/tests/gen2_unique_identifier",
+#                 "new_url": "https://w3id.org/FAIR_Tests/tests/gen2_unique_identifier",
 #             }
 #         }
+
+
+
+# async def update_test(test_update, db):
+#     existing_test = await db["metrics"].find_one({"_id": test_update.id})
+    
+#     if not existing_test:
+#         raise HTTPException(status_code=422, detail=f"Provided metrics test URL {test_update.id} does not exist")
+
+#     try:
+#         # test = {k: v for k, v in test.dict(by_alias=True).items() if v is not None}
+
+#         res = requests.get(test_update.new_url)
+#         new_test = yaml.load(res.text, Loader=yaml.FullLoader)
+
+#         if not new_test['info']['x-tests_metric']:
+#             raise HTTPException(status_code=422, detail='Missing the field info.x-tests_metric in the YAML')
+#         if not new_test['info']['x-applies_to_principle']:
+#             raise HTTPException(status_code=422, detail='Missing the field info.x-applies_to_principle in the YAML')
+        
+#         new_test['_id'] = test_update.new_url
+#         # print(testInfo)
+
+#         update_result = await db["metrics"].update_one({"_id": test_update.id}, {"$set": new_test})
+
+#         return JSONResponse(content=new_test)
+#     except Exception as e:
+#         raise HTTPException(status_code=422, detail=str(e))
+
