@@ -252,16 +252,16 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
 
 
 
-def query_url(url, data, timeout=100, content_type=None, accept=None):
+def query_url(url, data, timeout=100, content_type=None, accept=None, verify=False):
     headers = {}
     if content_type:
         headers['Content-Type'] = content_type
     if accept:
         headers['Accept'] = accept
     if data:
-        return requests.post(url, json=data, timeout=timeout, headers=headers, allow_redirects=True)
+        return requests.post(url, json=data, timeout=timeout, headers=headers, allow_redirects=True, verify=verify)
     else:
-        return requests.get(url, timeout=timeout, headers=headers, allow_redirects=True)
+        return requests.get(url, timeout=timeout, headers=headers, allow_redirects=True, verify=verify)
 
 
 def async_requests(urls, post_data, content_type=None, accept=None, max_workers=30):
@@ -270,7 +270,7 @@ def async_requests(urls, post_data, content_type=None, accept=None, max_workers=
     resp_err = 0
     timeout = 100
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type, accept): url for url in urls}
+        future_to_url = {executor.submit(query_url, url, post_data, timeout, content_type, accept, False): url for url in urls}
         for future in concurrent.futures.as_completed(future_to_url):
             url = future_to_url[future]
             try:
