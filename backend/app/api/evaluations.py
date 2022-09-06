@@ -1,20 +1,20 @@
-# from urllib import request
-from fastapi import FastAPI, APIRouter, Body, HTTPException, status, Depends, Header
-from fastapi.responses import JSONResponse, PlainTextResponse
-from fastapi.encoders import jsonable_encoder
-from typing import List, Optional
-from starlette.responses import RedirectResponse
-from rdflib import Graph
-import requests
 import concurrent.futures
-import json
-import yaml
-from datetime import datetime
 import hashlib
-from app.models import CreateEvaluationModel, User
+import json
+from datetime import datetime
+from typing import List, Optional
+
+import requests
+import yaml
 from app.api.login import get_current_user
-from app.db import get_db
 from app.config import settings
+from app.db import get_db
+from app.models import CreateEvaluationModel, User
+from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse, PlainTextResponse
+from rdflib import Graph
+from starlette.responses import RedirectResponse
 
 router = APIRouter()
 

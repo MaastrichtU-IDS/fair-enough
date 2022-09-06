@@ -1,18 +1,13 @@
-import datetime
-import json
-import urllib.parse
 from typing import List, Optional
 
 import requests
 import yaml
-from app.config import settings
+from bson import ObjectId
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import AnyUrl, BaseModel, Field
 
 # Plugin and serializer required to parse jsonld with rdflib
-from pyld import jsonld
-from rdflib import Graph, URIRef
 
 # import logging
 # logging.basicConfig(level=logging.INFO)
@@ -39,3 +34,23 @@ async def register_test(test, db):
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
 
+
+
+# class UpdateMetricTestModel(BaseModel):
+#     id: Optional[str]
+#     url: Optional[str]
+#     description: Optional[str] = None
+#     # description: Optional[str] = Field(...)
+#     homepage: Optional[AnyUrl] = None
+#     class Config:
+#         arbitrary_types_allowed = True
+#         json_encoders = {ObjectId: str}
+#         schema_extra = {
+#             "example": {
+#                 # "id": "fair-metrics",
+#                 "id": "FAIR Metrics for datasets",
+#                 "url": "A collection to evaluate a dataset FAIRness",
+#                 "homepage": "https://github.com/FAIRMetrics/Metrics",
+#                 "assessments": ["f1_unique_persistent_identifier"]
+#             }
+#         }

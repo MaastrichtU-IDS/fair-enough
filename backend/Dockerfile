@@ -5,10 +5,10 @@ WORKDIR /app/
 RUN apt-get update && apt-get install -y curl
 
 # Install Poetry
-ENV POETRY_VERSION=1.2.0
-RUN curl -sSL https://install.python-poetry.org | python - --version $POETRY_VERSION
-ENV PATH=/root/.local/bin:$PATH
-RUN poetry config virtualenvs.create false
+# ENV POETRY_VERSION=1.2.0
+# RUN curl -sSL https://install.python-poetry.org | python - --version $POETRY_VERSION
+# ENV PATH=/root/.local/bin:$PATH
+# RUN poetry config virtualenvs.create false
 
 ## Recommended by some guy on SO, but the whole poetry setup makes no freaking sense
 ## The whole community behind it is quite mentally challenged
