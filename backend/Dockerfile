@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y curl
 
 
 ## Old way (was working well in prod, but stopped working magically locally)
+ENV POETRY_VERSION=1.1.13
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
     cd /usr/local/bin && \
     ln -s /opt/poetry/bin/poetry && \
