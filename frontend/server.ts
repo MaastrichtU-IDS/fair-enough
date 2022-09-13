@@ -8,8 +8,10 @@ export const app = express();
 // For production (cf. https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/deployment)
 app.use(compression());
 // Security: https://github.com/helmetjs/helmet
+
 app.use(helmet({
   contentSecurityPolicy: false,
+  hsts: false,
 }));
 // app.use(cors());
 
