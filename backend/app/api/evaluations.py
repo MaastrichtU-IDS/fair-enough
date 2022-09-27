@@ -19,7 +19,7 @@ from starlette.responses import RedirectResponse
 router = APIRouter()
 
 
-@router.post("/evaluations", 
+@router.post("/evaluations",
     description="""You can run this evaluation without being authenticated, but if you are authenticated your ORCID will be added as author of the evaluation.
 
 Examples of resources to evaluate:
@@ -34,12 +34,12 @@ Examples of resources to evaluate:
 * Bio2RDF publication: https://doi.org/10.1016/j.jbi.2008.03.004
 * SIO publication: https://doi.org/10.1186/2041-1480-5-14
 * SIO Ontology: http://semanticscience.org/ontology/sio.owl
-* Kaggle: https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge 
+* Kaggle: https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge
 * RIVM data repository: https://data.rivm.nl/meta/srv/eng/rdf.metadata.get?uuid=1c0fcd57-1102-4620-9cfa-441e93ea5604&approved=true
 * NeuroDKG publication: https://doi.org/10.5281/zenodo.5541440
 * Human Protein Atlas page: https://www.proteinatlas.org/ENSG00000084110-HAL
 * ORCID profile: https://orcid.org/0000-0002-1501-1082""",
-    response_description="Add a new evaluation", 
+    response_description="Add a new evaluation",
     response_model={})
 async def create_evaluation(
         evaluation: CreateEvaluationModel = Body(...),
@@ -67,7 +67,7 @@ async def create_evaluation(
 
     # Send asynchronous requests to get each test result
     eval_results = async_requests(
-        urls=collection['assessments'], 
+        urls=collection['assessments'],
         post_data={'subject': str(evaluation['subject'])},
         content_type='application/json',
         accept='application/json',
@@ -157,7 +157,7 @@ async def create_evaluation(
 
 
 @router.get(
-    "/evaluations", response_description="List all evaluations", 
+    "/evaluations", response_description="List all evaluations",
     # response_model=List[EvaluationModel]
     response_model=List[dict]
 )
@@ -213,7 +213,7 @@ api_responses={
     },
     403:{
         "description": "Forbidden",
-    }, 
+    },
     422:{
         "description": "Unprocessable Entity",
     },
@@ -221,8 +221,8 @@ api_responses={
 
 
 @router.get(
-    "/evaluations/{id}", 
-    response_description="Get a single evaluation", 
+    "/evaluations/{id}",
+    response_description="Get a single evaluation",
     response_model=dict, # response_model=EvaluationModel
     responses=api_responses
 )
@@ -231,11 +231,11 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
     db = get_db()
 
     evaluation = await db["evaluations"].find_one({"_id": id})
-    
+
     if not evaluation is None:
         if accept.startswith('text/html'):
             return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
-        
+
         if accept.startswith('text/turtle'):
             g = Graph()
             g.parse(data=json.dumps(evaluation), format="json-ld")

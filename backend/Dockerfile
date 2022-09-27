@@ -10,8 +10,7 @@ RUN apt-get update && apt-get install -y curl
 # ENV PATH=/root/.local/bin:$PATH
 # RUN poetry config virtualenvs.create false
 
-## Recommended by some guy on SO, but the whole poetry setup makes no freaking sense
-## The whole community behind it is quite mentally challenged
+## Recommended by some guy on SO
 # RUN poetry config virtualenvs.in-project true --local
 
 
