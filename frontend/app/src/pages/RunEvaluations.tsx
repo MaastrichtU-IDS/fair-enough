@@ -61,7 +61,7 @@ export default function Evaluation() {
   const { user }: any = useContext(UserContext);
 
   // useLocation hook to get URL params
-  let location = useLocation();  
+  let location = useLocation();
   let evaluationResults: any = null;
   let resourceMetadata: any = null;
   let fairDoughnutConfig: any = null;
@@ -101,7 +101,7 @@ export default function Evaluation() {
   //   setAnchorEl(anchorEl ? null : anchorEl);
   // };
   // const id = open ? 'simple-popper' : undefined;
-  
+
 
   // Run on page init
   React.useEffect(() => {
@@ -123,7 +123,7 @@ export default function Evaluation() {
             collec['id'] = collec['_id']
             collectionsList.push(collec)
           })
-          updateState({ 
+          updateState({
             collectionsList: collectionsList,
           })
         })
@@ -153,7 +153,7 @@ export default function Evaluation() {
         })
         .catch(function (error) {
           updateState({
-            openError: 'inline', 
+            openError: 'inline',
             evaluationRunning: false,
             errorMessage: 'Error when retrieving the evaluations, please retry. If it persists, it means the server is probably having some issues! 😱'
           })
@@ -202,7 +202,7 @@ export default function Evaluation() {
     if (user && user['access_token']) {
       headers['Authorization'] = 'Bearer ' + user['access_token']
     }
-    axios.post(settings.restUrl + '/evaluations', JSON.stringify(postJson), 
+    axios.post(settings.restUrl + '/evaluations', JSON.stringify(postJson),
       { headers: headers }
     )
       .then(res => {
@@ -228,7 +228,7 @@ export default function Evaluation() {
       })
       .catch(function (error) {
         updateState({
-          openError: 'inline', 
+          openError: 'inline',
           evaluationRunning: false,
           errorMessage: 'Error when running the evaluation, please retry.'
         })
@@ -253,7 +253,7 @@ export default function Evaluation() {
   }
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Set the TextField input to the state variable corresponding to the field id  
+    // Set the TextField input to the state variable corresponding to the field id
     updateState({[event.target.id]: event.target.value})
   }
   const handleSubmit  = (event: React.FormEvent) => {
@@ -281,12 +281,12 @@ export default function Evaluation() {
 
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
-    { 
+    {
       field: 'id', headerName: 'Access evaluation', flex: 0.4,
       renderCell: (params: GridRenderCellParams) => (
         <Link to={'/evaluations/' + params.value as string}>
-          <Button variant="contained" 
-              className={classes.submitButton} 
+          <Button variant="contained"
+              className={classes.submitButton}
               startIcon={<EvaluationIcon />}
               color="primary" style={{textTransform: 'none'}}>
             Results
@@ -360,7 +360,7 @@ export default function Evaluation() {
         </>)
     }
   ]
-  
+
   const [sortModel, setSortModel] = React.useState<GridSortModel>([
     {
       field: 'created',
@@ -388,18 +388,18 @@ export default function Evaluation() {
         />
         <CardContent style={{paddingTop: theme.spacing(1), paddingBottom: theme.spacing(2)}}>
           <Typography>
-            The service has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>. 
+            The service has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>.
             This means you can run the exact same suite of metrics tests as with the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>, or easily register new metrics tests deployed in external APIs.
           </Typography>
           <Typography>
-            Thanks a lot everyone for your contributions to making research more FAIR, and feel free to <a href='https://github.com/MaastrichtU-IDS/fair-enough/issues' target="_blank" rel="noopener noreferrer" className={classes.link}>create issues</a>, 
+            Thanks a lot everyone for your contributions to making research more FAIR, and feel free to <a href='https://github.com/MaastrichtU-IDS/fair-enough/issues' target="_blank" rel="noopener noreferrer" className={classes.link}>create issues</a>,
             or contact vincent.emonet@maastrichtuniversity.nl for remarks or requests 💌
           </Typography>
         </CardContent>
       </Card> */}
 
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-        {/* ⚖️ Evaluate how FAIR is a resource 🔗 */}
+        {/* ⚖️ Evaluate how FAIR a resource is 🔗 */}
         🎯 Evaluate how <Tooltip
           title={<Typography>🔍️ Findable<br/>
             📬️ Accessible<br/>
@@ -409,7 +409,7 @@ export default function Evaluation() {
           <span>
             FAIR
           </span>
-        </Tooltip> is a resource 
+        </Tooltip> a resource is
 
         <Tooltip
           title={<Typography>🔍️ Findable<br/>
@@ -439,13 +439,13 @@ export default function Evaluation() {
           {/* Collection dropdown */}
           <Box>
             <TextField select
-                value={state.collectionSelected} 
-                label={"Use the collection"} 
-                id="collectionSelected" 
-                onChange={handleCollectionChange} 
+                value={state.collectionSelected}
+                label={"Use the collection"}
+                id="collectionSelected"
+                onChange={handleCollectionChange}
                 SelectProps={{ MenuProps: { disableScrollLock: true } }}
                 style={{margin: theme.spacing(0, 0), backgroundColor: 'white'}}
-                variant="outlined"> 
+                variant="outlined">
               { state.collectionsList.map((collec: any, key: number) => (
                 <MenuItem value={collec.id}>{collec.title} ({collec.id})</MenuItem>
               ))}
@@ -468,7 +468,7 @@ export default function Evaluation() {
         <Typography variant='body1' style={{marginBottom: theme.spacing(1)}}>
           2. Provide the URL to the resource, or digital object, you want to evaluate <Tooltip
           title={<Typography>
-            🔗 The best is to a URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online. 
+            🔗 The best is to a URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online.
             <br/>But DOI and handles are also accepted by some collections
           </Typography>}
         >
@@ -490,9 +490,9 @@ export default function Evaluation() {
           }}
         />
 
-        <Button type="submit" 
-          variant="contained" 
-          // className={classes.submitButton} 
+        <Button type="submit"
+          variant="contained"
+          // className={classes.submitButton}
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(1), textTransform: 'none'}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
@@ -506,10 +506,10 @@ export default function Evaluation() {
       </form>
 
       <Box style={{margin: theme.spacing(4, 0)}}>
-        {state.evaluationRunning && 
+        {state.evaluationRunning &&
           <>
             <Typography>
-              An evaluation can take up to 1 minute depending on the URL evaluated, and the collection used. 
+              An evaluation can take up to 1 minute depending on the URL evaluated, and the collection used.
             </Typography>
             <Typography>
               If you leave this page the evaluation will not stop, and you will be able to find it in the list below when it is done.
@@ -517,15 +517,15 @@ export default function Evaluation() {
             <CircularProgress style={{marginTop: '20px'}} />
           </>
         }
-        <Card elevation={4} 
-            style={{background: "#e57373", padding: '15px', fontFamily: "Open Sans", fontSize: 12}} 
+        <Card elevation={4}
+            style={{background: "#e57373", padding: '15px', fontFamily: "Open Sans", fontSize: 12}}
             sx={{ display: state.openError }}>
           ⚠️&nbsp;&nbsp;{state.errorMessage}
         </Card>
       </Box>
 
       {/* Display the Data table listing the Evaluations */}
-      {state.evaluationsList.length > 0 && 
+      {state.evaluationsList.length > 0 &&
         <div style={{ height: 600, width: '100%' }}>
           {/* {console.log(state.evaluationsList)} */}
           <DataGrid

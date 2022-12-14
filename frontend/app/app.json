@@ -1,7 +1,7 @@
 {
     "expo": {
       "name": "FAIR Enough",
-      "description": "Evaluate how FAIR is a resource URL with FAIR Enough (Findable, Accessible, Interoperable, Reusable)",
+      "description": "Service to define and run evaluations of the FAIR principles (Findable, Accessible, Interoperable, Reusable) against resources published online.",
       "slug": "fair-enough ",
       "privacy": "public",
       "sdkVersion": "35.0.0",
@@ -13,4 +13,4 @@
         "assetExts": ["html"]
       }
     }
-  }  
+  }
