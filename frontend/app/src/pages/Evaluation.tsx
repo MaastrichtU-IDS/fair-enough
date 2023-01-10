@@ -21,9 +21,9 @@ import hljs from 'highlight.js/lib/core';
 import 'highlight.js/styles/github-dark-dimmed.css';
 import json from 'highlight.js/lib/languages/json';
 hljs.registerLanguage('json', json);
-// Custom codeblocks highlight 
+// Custom codeblocks highlight
 hljs.registerLanguage("pythonlogging",function(e){return {
-  // Define codeblock highlight for API tests logs ouput 
+  // Define codeblock highlight for API tests logs ouput
   // purple: title https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html
   aliases: ['pythonlogging'],
   contains: [
@@ -77,7 +77,7 @@ export default function Evaluation() {
   // const { id } = useParams();
   const evalParams: any = useParams();
   // useLocation hook to get URL params
-  let location = useLocation();  
+  let location = useLocation();
   let evaluationResults: any = null;
   let evalHistory: any = null;
   let resourceMetadata: any = null;
@@ -146,8 +146,8 @@ export default function Evaluation() {
             evalArray.push(metricRes)
           }
         })
-        updateState({ 
-          evaluationResults: evalResults, 
+        updateState({
+          evaluationResults: evalResults,
           evalArray: evalArray,
         })
 
@@ -167,7 +167,7 @@ export default function Evaluation() {
           .then((res: any) => {
             console.log('HISTORY', res.data);
             if (res.data.data && res.data.data.evaluations) {
-              updateState({ 
+              updateState({
                 evalHistory: res.data.data.evaluations,
               })
             }
@@ -181,7 +181,7 @@ export default function Evaluation() {
               metricsTestsMap[test['_id']] = test
               metricsTestsArray.push(test)
             })
-            updateState({ 
+            updateState({
               metricsTestsMap: metricsTestsMap, metricsTestsArray: metricsTestsArray,
               loading: false
             })
@@ -219,7 +219,7 @@ export default function Evaluation() {
   }
 
   // const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   // Set the TextField input to the state variable corresponding to the field id  
+  //   // Set the TextField input to the state variable corresponding to the field id
   //   updateState({[event.target.id]: event.target.value})
   // }
 
@@ -262,7 +262,7 @@ export default function Evaluation() {
 
   const columns: GridColumns = [
     { field: '@id', headerName: 'ID', hide: true },
-    { 
+    {
       field: 'id', headerName: 'Access evaluation', flex: 0.4,
       renderCell: (params: GridRenderCellParams) => {
         const evalId = params.value as string
@@ -272,8 +272,8 @@ export default function Evaluation() {
           buttonColor = 'secondary'
         }
         return <Link to={'/evaluations/' + evalId}>
-          <Button variant="contained" 
-              className={classes.submitButton} 
+          <Button variant="contained"
+              className={classes.submitButton}
               startIcon={<EvaluationIcon />}
               onClick={() => window.location.reload()}
               color={buttonColor}
@@ -334,7 +334,7 @@ export default function Evaluation() {
       sort: 'desc',
     },
   ]);
-  
+
 
   const getResultsForCategory  = (category: string) => {
     const emojiMap: any = { 'f': '🔍️', 'a': '📬️', 'i': '⚙️', 'r': '♻️' }
@@ -437,7 +437,7 @@ export default function Evaluation() {
   return(
     <Container className='mainContainer'>
 
-      {state.loading && 
+      {state.loading &&
         <CircularProgress style={{marginTop: theme.spacing(10)}} />
       }
 
@@ -529,16 +529,16 @@ export default function Evaluation() {
           {/* Log level dropdown select */}
           <Box style={{alignItems: 'center', marginTop: theme.spacing(3)}}>
             <TextField select
-                value={state.logLevel} 
-                label={"Log level"} 
-                id="logLevel" 
-                style={{backgroundColor: 'white', 
+                value={state.logLevel}
+                label={"Log level"}
+                id="logLevel"
+                style={{backgroundColor: 'white',
                   marginRight: theme.spacing(2),
                   marginBottom: theme.spacing(1)
                 }}
                 SelectProps={{ MenuProps: { disableScrollLock: true } }}
-                onChange={handleLogLevelChange} 
-                variant="outlined"> 
+                onChange={handleLogLevelChange}
+                variant="outlined">
               <MenuItem key='success' value={'success'}>Only success and failures</MenuItem>
               <MenuItem key='warning' value={'warning'}>Success, warnings and failures</MenuItem>
               <MenuItem key='all' value={'all'}>All logs</MenuItem>
@@ -559,7 +559,7 @@ export default function Evaluation() {
           {getResultsForCategory('Accessible')}
           {getResultsForCategory('Interoperable')}
           {getResultsForCategory('Reusable')}
-            
+
           {/* { state.evaluationResults &&
           <>
             <Divider variant="middle" style={{margin: theme.spacing(6, 0)}}/>
@@ -590,14 +590,14 @@ export default function Evaluation() {
             </Accordion>
           </>} */}
 
-          {state.evaluationResults.collection.startsWith("fair-enough-") && 
+          {state.evaluationResults.collection.startsWith("fair-enough-") &&
             <Typography variant="body2" style={{marginTop: theme.spacing(4), marginBottom: theme.spacing(2)}}>
               A FAIR metric test isn't returning the expected result? Notify us <a href={"https://github.com/MaastrichtU-IDS/fair-enough/issues/new?template=BUG_REPORT.yml&labels=bug"} className={classes.link} target="_blank" rel="noopener noreferrer">here</a>
             </Typography>
           }
-          
+
           <Button
-            variant="contained" 
+            variant="contained"
             style={{textTransform: 'none', margin: theme.spacing(2, 2)}}
             onClick={downloadEvaluation}
             startIcon={<DownloadJsonIcon />}>
@@ -605,7 +605,7 @@ export default function Evaluation() {
           </Button>
 
           {/* Display the Data table listing the Evaluations */}
-          {state.evalHistory && state.evalHistory.length > 0 && 
+          {state.evalHistory && state.evalHistory.length > 0 &&
           <>
             <Typography variant="h5" style={{marginTop: theme.spacing(6), marginBottom: theme.spacing(3)}}>
               All evaluations for {getUrlHtml(state.evaluationResults['subject'])}

@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useLocation, useHistory } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, IconButton, Paper, Card, CardContent, Box, Link, Chip, Tooltip, TextField, CircularProgress, Grid } from "@mui/material";
@@ -28,7 +27,6 @@ import UserContext from '../UserContext';
 
 export default function Evaluation() {
   const theme = useTheme();
-  const history = useHistory();
   const { user }: any = useContext(UserContext);
   // const auth = useAuth();
 
@@ -65,7 +63,7 @@ export default function Evaluation() {
   const classes = useStyles();
 
   // useLocation hook to get URL params
-  // let location = useLocation();  
+  // let location = useLocation();
   let evaluationResults: any = null;
   let currentUser: any = null;
   let addedAssessments: any = [];
@@ -110,7 +108,7 @@ export default function Evaluation() {
     setAnchorEl(anchorEl ? null : anchorEl);
   };
   const id = open ? 'simple-popper' : undefined;
-  
+
   // response.headers.get("Authorization").replace('Bearer ', '')
   // Run on page init
   React.useEffect(() => {
@@ -213,7 +211,7 @@ export default function Evaluation() {
   }
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Set the TextField input to the state variable corresponding to the field id  
+    // Set the TextField input to the state variable corresponding to the field id
     updateState({[event.target.id]: event.target.value})
   }
   function handleClose (event: any, reason: any) {
@@ -235,8 +233,8 @@ export default function Evaluation() {
     }
     // console.log(settings.restUrl);
     console.log(user['access_token']);
-    axios.post(settings.restUrl + '/collections', 
-      postCollec, 
+    axios.post(settings.restUrl + '/collections',
+      postCollec,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -257,7 +255,7 @@ export default function Evaluation() {
         if (error.response) {
           // Request made and server responded
           // {"detail":[{"loc":["body","homepage"],"msg":"invalid or missing URL scheme","type":"value_error.url.scheme"}]}
-          
+
           if (error.response.data["detail"]) {
             updateState({ errorMessage: 'Error: ' + JSON.stringify(error.response.data["detail"])})
           // } else if (error.response.data["detail"][0]['loc']) {
@@ -275,7 +273,7 @@ export default function Evaluation() {
           console.log('Error', error.message);
           updateState({ errorMessage: error.message })
         }
-    
+
       });
 
   }
@@ -468,8 +466,8 @@ export default function Evaluation() {
                         <Box display='flex' style={{alignItems: 'center'}}>
                           <Tooltip title={'Add ' + item.id + ' to your collection'}>
                             <IconButton color='primary'
-                                // sx={{ borderRadius: 28 }} 
-                                style={{marginRight: theme.spacing(1)}} 
+                                // sx={{ borderRadius: 28 }}
+                                style={{marginRight: theme.spacing(1)}}
                                 onClick={() => addAssessment(item)}>
                               <AddIcon />
                             </IconButton>
@@ -491,7 +489,7 @@ export default function Evaluation() {
                         <Markdown style={{marginTop: theme.spacing(1)}}
                           // https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/blog/Markdown.js
                           options={{
-                            wrapper: 'aside', 
+                            wrapper: 'aside',
                             forceWrapper: true,
                             forceBlock: true,
                             overrides: {
@@ -558,7 +556,7 @@ export default function Evaluation() {
               <Paper elevation={4} className={classes.paperPadding} style={{textAlign: 'center'}}>
                 <Typography variant="h6" style={{textAlign: 'center'}}>
                   Evaluator settings
-                </Typography> 
+                </Typography>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <Tooltip title='By default, the FAIR Enough evaluator uses content negociation based on the DOI URL to retrieve DataCite JSON metadata. If you uncheck this option F-UJI will try to use the landing page URL instead.'>
@@ -601,10 +599,10 @@ export default function Evaluation() {
           </Popper> */}
         {/* </Box> */}
 
-        <Button type="submit" 
-          variant="contained" 
+        <Button type="submit"
+          variant="contained"
           disabled={!user['username']}
-          // className={classes.submitButton} 
+          // className={classes.submitButton}
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(4)}}
           startIcon={<CreateCollectionIcon />}
           color="secondary" >

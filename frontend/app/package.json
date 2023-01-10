@@ -4,7 +4,7 @@
   "scripts": {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "dev": "rm -rf .expo && EXPO_API_URL=http://localhost expo web",
+    "dev": "rm -rf .expo && NODE_OPTIONS=--openssl-legacy-provider EXPO_API_URL=http://localhost expo web",
     "dev-prod": "rm -rf .expo && EXPO_API_URL=https://api.fair-enough.semanticscience.org expo web",
     "eject": "expo eject",
     "build": "expo build:web",
@@ -31,14 +31,14 @@
     "highlight.js": "^11.2.0",
     "markdown-to-jsx": "^7.1.7",
     "oidc-react": "^1.5.1",
-    "react": "^17.0.0",
+    "react": "^18.2.0",
     "react-chartjs-2": "^2.10.0",
     "react-dom": "~16.13.0",
     "react-helmet": "^6.1.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
-    "react-native-web": "0.13.13",
-    "react-router-dom": "^5.2.0",
-    "react-router-native": "^5.1.2",
+    "react-native-web": "^0.18.10",
+    "react-router-dom": "^6.6.2",
+    "react-router-native": "^6.6.2",
     "react-simple-oauth2-login": "^0.5.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useLocation, useHistory, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography, Container, Button, Paper, Box, FormControl, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem, InputLabel } from "@mui/material";
@@ -23,7 +23,7 @@ import UserContext from '../UserContext';
 export default function Collections() {
   const theme = useTheme();
   const { user }: any = useContext(UserContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   // const auth = useAuth();
 
   const useStyles = makeStyles(() => ({
@@ -58,7 +58,7 @@ export default function Collections() {
   const classes = useStyles();
 
   // useLocation hook to get URL params
-  let location = useLocation();  
+  let location = useLocation();
   let evaluationResults: any = null;
   let resourceMetadata: any = null;
   let fairDoughnutConfig: any = null;
@@ -93,7 +93,7 @@ export default function Collections() {
     setAnchorEl(anchorEl ? null : anchorEl);
   };
   const id = open ? 'simple-popper' : undefined;
-  
+
 
   // Run on page init
   React.useEffect(() => {
@@ -103,7 +103,7 @@ export default function Collections() {
     // if (urlToEvaluate) {
     //   updateState({ urlToEvaluate: urlToEvaluate })
     //   doEvaluateUrl(urlToEvaluate)
-    // } 
+    // }
     updateState({ evaluationRunning: true })
     // Get the list of collections from API
     if (state.collectionsList.length < 1) {
@@ -148,7 +148,7 @@ export default function Collections() {
   }
 
   const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Set the TextField input to the state variable corresponding to the field id  
+    // Set the TextField input to the state variable corresponding to the field id
     updateState({[event.target.id]: event.target.value})
   }
   // const handleSubmit  = (event: React.FormEvent) => {
@@ -172,13 +172,13 @@ export default function Collections() {
 
   const columns: GridColumns = [
     // { field: 'id', headerName: 'ID', hide: false },
-    { 
+    {
       field: 'id', headerName: 'Access collection', flex: 0.9,
       renderCell: (params: GridRenderCellParams) => (
         // <Button href={'/#/evaluations/' + params.value as string}
         <Link to={'/collections/' + params.value as string}>
-          <Button variant="contained" 
-              className={classes.submitButton} 
+          <Button variant="contained"
+              className={classes.submitButton}
               // startIcon={<CollectionIcon />}
               color="primary" style={{textTransform: 'none'}}>
             {params.value as string}
@@ -225,7 +225,7 @@ export default function Collections() {
     //     </>)
     // }
   ]
-  
+
   const [sortModel, setSortModel] = React.useState<GridSortModel>([
     {
       field: 'created',
@@ -240,8 +240,8 @@ export default function Collections() {
       </Typography>
 
       <Link to="/collection/create">
-        <Button variant="contained" 
-          // className={classes.submitButton} 
+        <Button variant="contained"
+          // className={classes.submitButton}
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(3), textTransform: 'none'}}
           startIcon={<CreateCollectionIcon />}
           color="secondary" >
@@ -265,7 +265,7 @@ export default function Collections() {
         </Link> */}
 
       {/* Display the Data table listing the Evaluations */}
-      {state.collectionsList.length > 0 && 
+      {state.collectionsList.length > 0 &&
         <div style={{ height: 600, width: '100%' }}>
           {console.log(state.collectionsList)}
           <DataGrid
@@ -283,7 +283,7 @@ export default function Collections() {
       }
 
 
-      {/* {state.evaluationRunning && 
+      {/* {state.evaluationRunning &&
         <CircularProgress style={{margin: theme.spacing(5, 0)}} />
       } */}
     </Container>

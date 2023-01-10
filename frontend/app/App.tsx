@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import { View } from "react-native";
 import { HashRouter } from "react-router-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import { ThemeProvider } from '@mui/styles';
 // import { createTheme } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -9,7 +9,8 @@ import blue from '@mui/material/colors/blue';
 import './src/App.css';
 import NavBar from "./src/components/NavBar";
 import Footer from "./src/components/Footer";
-import RunEvaluations from "./src/pages/RunEvaluations";
+import SearchEvaluations from "./src/pages/SearchEvaluations";
+import FoundEvaluations from "./src/pages/FoundEvaluations";
 import Evaluation from "./src/pages/Evaluation";
 import Collection from "./src/pages/Collection";
 import CreateCollection from "./src/pages/CreateCollection";
@@ -96,14 +97,16 @@ const App = () => {
       {/* <HashRouter> */}
         <View style={{height: '100%', backgroundColor: '#eceff1'}}>
           <NavBar />
-
-          <Route exact path="/evaluations/:id" component={Evaluation} />
-          <Route exact path="/collections/:id" component={Collection} />
-          <Route exact path="/about" component={About} />
-          <Route exact path="/collections" component={Collections} />
-          <Route exact path="/metrics" component={MetricTests} />
-          <Route exact path="/collection/create" component={CreateCollection} />
-          <Route exact path="/" component={RunEvaluations} />
+          <Routes>
+            <Route path="/evaluations" element={<FoundEvaluations />} />
+            <Route path="/evaluations/:id" element={<Evaluation />} />
+            <Route path="/collections/:id" element={<Collection />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/collections" element={<Collections />} />
+            <Route path="/metrics" element={<MetricTests />} />
+            <Route path="/collection/create" element={<CreateCollection />} />
+            <Route path="/" element={<SearchEvaluations />} />
+          </Routes>
           <Footer />
         </View>
       {/* </HashRouter> */}
