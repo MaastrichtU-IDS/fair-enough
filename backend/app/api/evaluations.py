@@ -78,7 +78,7 @@ async def create_evaluation(
         'subject': evaluation['subject'],
         'collection': evaluation['collection'],
         'created_at': str(datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
-        'name': f"FAIR evaluation of {evaluation['subject']}",
+        'name': f"Evaluation of {evaluation['subject']}",
         'metadata': {}
     }
     eval_score = 0

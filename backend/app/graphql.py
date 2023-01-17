@@ -11,6 +11,8 @@ from starlette.websockets import WebSocket
 from strawberry.asgi import GraphQL
 from strawberry.types import Info
 
+from app.db import get_db
+
 # from app.models import EvaluationModel
 # from app.api.collections import list_collections, show_collection
 
@@ -19,8 +21,9 @@ from strawberry.types import Info
 
 class EnoughGraphQL(GraphQL):
     async def get_context(self, request: Union[Request, WebSocket], response: Optional[Response] = None) -> Any:
-        db_client = AsyncIOMotorClient(settings.MONGODB_URL)
-        return {"db": db_client.evaluations}
+        # db_client = AsyncIOMotorClient(settings.MONGODB_URL)
+        db = get_db()
+        return {"db": db}
 
 
 @strawberry.type
@@ -99,7 +102,8 @@ class Query:
     @strawberry.field
     async def collections(self, info: Info, id: Optional[str] = None) -> List[CollectionModel]:
         # db = get_db()
-        db = info.context["db"]
+        # db = info.context["db"]
+        db = get_db()
         collections = await db["collections"].find().to_list(1000)
         collec_list = []
         for collec in collections:
@@ -117,46 +121,55 @@ class Query:
 
     @strawberry.field
     async def evaluations(self, info: Info,
-            # id: Optional[str] = None,
-            subject: Optional[str] = None,
-            collection: Optional[str] = None,
-            author: Optional[str] = None,
-            title: Optional[str] = None,
-            maxScore: Optional[int] = None,
-            minScore: Optional[int] = None,
-            # maxBonus: Optional[int] = None,
-            # minBonus: Optional[int] = None,
-            maxPercent: Optional[int] = None,
-            minPercent: Optional[int] = None,
-            filterTests: Optional[List[TestFiltered]] = None,
-        ) -> List[EvaluationModel]:
-        db = info.context["db"]
-        evaluations = await db["evaluations"].find().to_list(1000)
-        eval_list = []
-        for eval in evaluations:
-            # if id and id != eval['_id']:
-            #     continue
-            if subject and subject != eval['subject']:
-                continue
-            if title and title.lower() not in eval['name'].lower():
-                continue
-            if collection and collection != eval['collection']:
-                continue
-            if author and author != eval['author']:
-                continue
-            if maxScore and maxScore < eval['score']:
-                continue
-            if minScore and minScore > eval['score']:
-                continue
-            # if maxBonus and maxBonus > eval['score_percent']:
-            #     continue
-            # if minBonus and minBonus < eval['score']['total_bonus']:
-            #     continue
-            if maxPercent and maxPercent < eval['score_percent']:
-                continue
-            if minPercent and minPercent > eval['score_percent']:
-                continue
+        # id: Optional[str] = None,
+        subject: Optional[str] = None,
+        collection: Optional[str] = None,
+        author: Optional[str] = None,
+        title: Optional[str] = None,
+        maxScore: Optional[int] = None,
+        minScore: Optional[int] = None,
+        # maxBonus: Optional[int] = None,
+        # minBonus: Optional[int] = None,
+        maxPercent: Optional[int] = None,
+        minPercent: Optional[int] = None,
+        filterTests: Optional[List[TestFiltered]] = None,
+    ) -> List[EvaluationModel]:
+        # db = info.context["db"]
+        db = get_db()
 
+        # evaluations = await db["evaluations"].find().to_list(1000)
+        filter_eval: Any = {}
+        if subject:
+            filter_eval["subject"] = subject
+        if collection:
+            filter_eval["collection"] = collection
+        if title:
+            # TODO: use db.createIndex( { "name": "text" } )
+            # And db.find( { $text: { $search: title } } )
+            filter_eval["name"] = {"$regex": title, '$options' : 'i'}
+        if author:
+            filter_eval["author"] = author
+        if maxScore or minScore:
+            filter_eval["score"] = {}
+            if maxScore:
+                filter_eval["score"]["$lt"] = maxScore
+            if minScore:
+                filter_eval["score"]["$gt"] = minScore
+        if maxPercent or minPercent:
+            filter_eval["score_percent"] = {}
+            if maxPercent:
+                filter_eval["score_percent"]["$lt"] = maxPercent
+            if minPercent:
+                filter_eval["score_percent"]["$gt"] = minPercent
+        print("filter_eval!!!")
+        print(filter_eval)
+        # evaluations = await db["evaluations"].find(filter_eval)
+        evaluations = db["evaluations"].aggregate([
+            {'$match': filter_eval},
+            # {'$group': {'_id':''}}
+        ])
+        eval_list = []
+        async for eval in evaluations:
             # GraphqlEvaluation.from_pydantic(EvaluationModel(**eval))
             eval['id'] = eval['_id']
             del eval['_id']
@@ -191,7 +204,6 @@ class Query:
                     continue
 
             del eval['contains']
-            print(eval)
 
             if 'license' in eval.keys():
                 del eval['license']
@@ -207,6 +219,5 @@ class Query:
                 eval['author'] = ""
             if 'duration' not in eval.keys():
                 eval['duration'] = ""
-            print(eval)
             eval_list.append(EvaluationModel(**eval))
         return eval_list

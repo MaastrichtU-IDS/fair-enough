@@ -70,7 +70,7 @@ def init_db() -> None:
                 f"https://w3id.org/FAIR_Tests/tests/gen2_metadata_uses_fair_vocabularies_strong",
                 f"https://w3id.org/FAIR_Tests/tests/gen2_metadata_uses_fair_vocabularies_weak",
                 f"https://w3id.org/FAIR_Tests/tests/gen2_searchable",
-            ],  
+            ],
             "author": "https://orcid.org/0000-0001-6960-357X",
             'created': str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")),
             '@id': f'{settings.BASE_URI}/collections/{collec_id}',
@@ -155,7 +155,7 @@ def init_db() -> None:
         }
         new_collection = db["collections"].insert_one(collec_obj)
 
-        
+
         collec_id = "rare-disease-maturity-indicators"
         collec_obj = {
             "_id": collec_id,
