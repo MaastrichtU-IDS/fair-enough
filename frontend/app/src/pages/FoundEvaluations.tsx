@@ -105,8 +105,10 @@ export default function Evaluation() {
   // const id = open ? 'simple-popper' : undefined;
 
   const getEvaluations  = (subjectUrl: string) => {
+    const subject_filter = (subjectUrl) ? `(subject: "` + subjectUrl + `")` : ""
+    console.log("subject_filter", subject_filter);
     const graphqlQuery = `{
-      evaluations(subject: "` + subjectUrl + `") {
+      evaluations` + subject_filter + ` {
         score
         scoreMax
         createdAt
@@ -156,13 +158,11 @@ export default function Evaluation() {
     // Get the edit URL param if provided
     // const params = new URLSearchParams(location.search + location.hash);
     // let urlToEvaluate = params.get('evaluate');
-    if (searchParams.get("uri")) {
-      // @ts-ignore
-      const evals = getEvaluations(searchParams.get("uri"))
-      updateState({
-        urlToEvaluate: searchParams.get("uri"),
-      })
-    }
+    // @ts-ignore
+    const evals = getEvaluations(searchParams.get("uri"))
+    updateState({
+      urlToEvaluate: searchParams.get("uri"),
+    })
 
     // TODO: search evals
 
@@ -424,6 +424,15 @@ export default function Evaluation() {
   return(
     <Container className='mainContainer'>
 
+      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+        Evaluations found
+        { state.urlToEvaluate &&
+          <>
+            &nbsp;for {state.urlToEvaluate}
+          </>
+        }
+      </Typography>
+
       {/* <Card style={{
         display: state.showReleaseMsg ? 'flow' : 'none', textAlign: 'center',
         backgroundColor: '#e8f5e9',
@@ -451,29 +460,6 @@ export default function Evaluation() {
         </CardContent>
       </Card> */}
 
-      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-        {/* ⚖️ Evaluate how FAIR a resource is 🔗 */}
-        🎯 Evaluate how <Tooltip
-          title={<Typography>🔍️ Findable<br/>
-            📬️ Accessible<br/>
-            ⚙️ Interoperable<br/>
-            ♻️ Reusable</Typography>}
-        >
-          <span>
-            FAIR
-          </span>
-        </Tooltip> a resource is
-
-        <Tooltip
-          title={<Typography>🔍️ Findable<br/>
-            📬️ Accessible<br/>
-            ⚙️ Interoperable<br/>
-            ♻️ Reusable</Typography>}
-        >
-          <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>
-        </Tooltip>
-      </Typography>
-
       {/* {auth && auth.userData &&
         <div>
           <strong>Logged in! 🎉</strong><br />
@@ -481,10 +467,33 @@ export default function Evaluation() {
         </div>
       } */}
 
+      {/* Display the Data table listing the Evaluations */}
+      {state.evaluationsList.length > 0 &&
+        <div style={{ height: 600, width: '100%' }}>
+          {/* {console.log(state.evaluationsList)} */}
+          <DataGrid
+            columns={columns}
+            rows={state.evaluationsList}
+            // {...state.evaluationsList}
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            sortModel={sortModel}
+            onSortModelChange={(model) => setSortModel(model)}
+            style={{backgroundColor: '#fff'}}
+          />
+        </div>
+      }
+
+
       {/* Form to provide the URL to evaludate */}
       <form onSubmit={handleSubmit} style={{textAlign: 'left'}}>
 
-        <Typography variant='body1' style={{marginBottom: theme.spacing(3)}}>
+        <Typography variant="h4" style={{textAlign: 'center', marginTop: theme.spacing(4), marginBottom: theme.spacing(2)}}>
+          Run a new evaluation
+        </Typography>
+
+        <Typography variant='body1' style={{marginBottom: theme.spacing(2)}}>
           1. Choose the collection of FAIR Maturity Indicators (aka. FAIR Metrics tests) to validate your resource against:
         </Typography>
 
@@ -518,15 +527,16 @@ export default function Evaluation() {
           })}
         </Box>
 
-        <Typography variant='body1' style={{marginBottom: theme.spacing(1)}}>
-          2. Provide the URL to the resource, or digital object, you want to evaluate <Tooltip
-          title={<Typography>
-            🔗 The best is to a URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online.
-            <br/>But DOI and handles are also accepted by some collections
-          </Typography>}
-        >
-          <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>
-        </Tooltip>
+        <Typography variant='body1' style={{marginBottom: theme.spacing(2)}}>
+          2. Provide the URL to the resource, or digital object, you want to evaluate
+          <Tooltip title={
+            <Typography>
+              🔗 The best is to a URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online.
+              <br/>But DOI and handles are also accepted by some collections
+            </Typography>}
+          >
+            <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>
+          </Tooltip>
         </Typography>
 
         <TextField
@@ -576,24 +586,6 @@ export default function Evaluation() {
           ⚠️&nbsp;&nbsp;{state.errorMessage}
         </Card>
       </Box>
-
-      {/* Display the Data table listing the Evaluations */}
-      {state.evaluationsList.length > 0 &&
-        <div style={{ height: 600, width: '100%' }}>
-          {/* {console.log(state.evaluationsList)} */}
-          <DataGrid
-            columns={columns}
-            rows={state.evaluationsList}
-            // {...state.evaluationsList}
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            sortModel={sortModel}
-            onSortModelChange={(model) => setSortModel(model)}
-            style={{backgroundColor: '#fff'}}
-          />
-        </div>
-      }
     </Container>
   )
 }

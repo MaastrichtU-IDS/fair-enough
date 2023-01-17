@@ -7,9 +7,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/HelpOutlined';
 // import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Popper, ClickAwayListener, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
-// import EvaluationIcon from '@mui/icons-material/Send';
+import EvaluationIcon from '@mui/icons-material/Search';
 // import EvaluationIcon from '@mui/icons-material/PlaylistAddCheck';
-import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+// import EvaluationIcon from '@mui/icons-material/NetworkCheck';
 import UserContext from '../UserContext';
 
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
@@ -463,7 +463,7 @@ export default function Evaluation() {
           style={{marginTop: theme.spacing(2), marginBottom: theme.spacing(1), textTransform: 'none'}}
           startIcon={<EvaluationIcon />}
           color="secondary" >
-            Start the evaluation
+            Search for evaluations
         </Button>
         {user.id &&
           <Typography variant='body2' color='primary' style={{marginBottom: theme.spacing(3)}}>
