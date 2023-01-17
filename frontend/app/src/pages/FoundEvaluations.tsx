@@ -105,10 +105,16 @@ export default function Evaluation() {
   // const id = open ? 'simple-popper' : undefined;
 
   const getEvaluations  = (subjectUrl: string) => {
-    const subject_filter = (subjectUrl) ? `(subject: "` + subjectUrl + `")` : ""
-    console.log("subject_filter", subject_filter);
+    let search_filter = ""
+    try {
+      const url = new URL(subjectUrl);
+      search_filter = (subjectUrl) ? `(subject: "` + subjectUrl + `")` : ""
+    } catch (_) {
+      search_filter = (subjectUrl) ? `(title: "` + subjectUrl + `")` : ""
+    }
+    console.log("search_filter", search_filter);
     const graphqlQuery = `{
-      evaluations` + subject_filter + ` {
+      evaluations` + search_filter + ` {
         score
         scoreMax
         createdAt
@@ -117,8 +123,10 @@ export default function Evaluation() {
         author
         scorePercent
         id
+        title
       }
     }`
+
     axios.post(settings.graphqlUrl, { query: graphqlQuery })
       .then((res: any) => {
         console.log('HISTORY', res.data);
@@ -378,7 +386,7 @@ export default function Evaluation() {
         </>)
     },
     {
-      field: 'score_percent', headerName: 'Completion', flex: 0.3,
+      field: 'scorePercent', headerName: 'Completion', flex: 0.3,
       renderCell: (params: GridRenderCellParams) => (
         <>
           {params.value as string}%
@@ -425,7 +433,17 @@ export default function Evaluation() {
     <Container className='mainContainer'>
 
       <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-        Evaluations found
+        {state.evaluationsList.length < 1 &&
+          <>
+            ⚠️ No evaluations found
+          </>
+        }
+        {state.evaluationsList.length > 0 &&
+          <>
+            Evaluations found
+          </>
+        }
+
         { state.urlToEvaluate &&
           <>
             &nbsp;for {state.urlToEvaluate}

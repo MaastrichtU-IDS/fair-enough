@@ -80,6 +80,7 @@ class EvaluationModel:
     results: List[TestResults]
     created_at: Optional[str]
     author: Optional[str]
+    title: Optional[str]
     # license: Optional[str]
     # results: Optional[List[EvaluationResults]]
     # contains: str
@@ -120,6 +121,7 @@ class Query:
             subject: Optional[str] = None,
             collection: Optional[str] = None,
             author: Optional[str] = None,
+            title: Optional[str] = None,
             maxScore: Optional[int] = None,
             minScore: Optional[int] = None,
             # maxBonus: Optional[int] = None,
@@ -135,6 +137,8 @@ class Query:
             # if id and id != eval['_id']:
             #     continue
             if subject and subject != eval['subject']:
+                continue
+            if title and title.lower() not in eval['name'].lower():
                 continue
             if collection and collection != eval['collection']:
                 continue
@@ -179,21 +183,25 @@ class Query:
 
                         if test_url in filter_tests.keys():
                             if score == filter_tests[test_url]:
-                                filter_success += 1 
-            
+                                filter_success += 1
+
             if filterTests:
                 # If filter tests enabled, check if we have as many success as we have tests
                 if filter_success < len(filterTests):
                     continue
 
             del eval['contains']
-            
+            print(eval)
+
             if 'license' in eval.keys():
                 del eval['license']
             if 'metadata' in eval.keys():
                 del eval['metadata']
             if 'name' in eval.keys():
+                eval['title'] = eval['name']
                 del eval['name']
+            else:
+                eval['title'] = ""
             # eval['contains'] = json.dumps(eval['contains'], indent=2)
             if 'author' not in eval.keys():
                 eval['author'] = ""

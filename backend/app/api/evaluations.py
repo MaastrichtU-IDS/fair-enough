@@ -90,7 +90,7 @@ async def create_evaluation(
                 if test_res[0]['http://semanticscience.org/resource/metadata']:
                     # TODO: handle this better with a function
                     if 'title' in test_res[0]['http://semanticscience.org/resource/metadata'].keys():
-                        if not 'title' in eval['metadata'].keys():
+                        if 'title' not in eval['metadata'].keys():
                             eval['metadata']['title'] = []
                         if isinstance(test_res[0]['http://semanticscience.org/resource/metadata']['title'], str):
                             test_res[0]['http://semanticscience.org/resource/metadata']['title'] = [test_res[0]['http://semanticscience.org/resource/metadata']['title']]
