@@ -4,25 +4,10 @@ WORKDIR /app/
 
 RUN apt-get update && apt-get install -y curl
 
-# Install Poetry
-# ENV POETRY_VERSION=1.2.0
-# RUN curl -sSL https://install.python-poetry.org | python - --version $POETRY_VERSION
-# ENV PATH=/root/.local/bin:$PATH
-# RUN poetry config virtualenvs.create false
-
-## Recommended by some guy on SO
-# RUN poetry config virtualenvs.in-project true --local
-
-
-## Old way (was working well in prod, but stopped working magically locally)
-ENV POETRY_VERSION=1.1.13
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
-    cd /usr/local/bin && \
-    ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
-
-## Some issues about installing dumby dumb dumber poetry in docker
-# https://github.com/python-poetry/poetry/discussions/1879
+# Install Poetry (remove POETRY_VERSION= to get the latest version)
+ENV PATH=/root/.local/bin:$PATH
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.3.2 python3 -
+RUN poetry config virtualenvs.create false
 
 
 # Copy poetry.lock* in case it doesn't exist in the repo
