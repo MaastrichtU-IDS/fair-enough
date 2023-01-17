@@ -96,7 +96,7 @@ async def create_evaluation(
                             test_res[0]['http://semanticscience.org/resource/metadata']['title'] = [test_res[0]['http://semanticscience.org/resource/metadata']['title']]
                         eval['metadata']['title'] = list(set(eval['metadata']['title'] + test_res[0]['http://semanticscience.org/resource/metadata']['title']))
                         if len(eval['metadata']['title']) > 0:
-                            eval['name'] = f"{eval['name']} - {eval['metadata']['title'][0]}"
+                            eval['name'] = f"{eval['metadata']['title'][0]} - {eval['name']}"
 
                         # if 'title' in eval['metadata'].keys():
                         #     if isinstance(eval['metadata']['title'], list) and len(eval['metadata']['title']) > 0:
@@ -232,20 +232,21 @@ async def show_evaluation(id: str, accept: Optional[str] = Header(None)) -> dict
 
     evaluation = await db["evaluations"].find_one({"_id": id})
 
-    if not evaluation is None:
-        if accept.startswith('text/html'):
-            return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
+    if evaluation is not None:
+        if accept:
+            if accept.startswith('text/html'):
+                return RedirectResponse(url=f'{settings.FRONTEND_URL}/evaluations/{str(id)}')
 
-        if accept.startswith('text/turtle'):
-            g = Graph()
-            g.parse(data=json.dumps(evaluation), format="json-ld")
-            # curl -L -H "Accept: text/turtle" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
-            return PlainTextResponse(g.serialize(format='turtle'), media_type='text/turtle')
-        if accept.startswith('application/rdf+xml') or accept.startswith('text/xhtml+xml'):
-            g = Graph()
-            g.parse(data=json.dumps(evaluation), format="json-ld")
-            # curl -L -H "Accept: application/rdf+xml" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
-            return PlainTextResponse(g.serialize(format='application/rdf+xml'), media_type='application/rdf+xml')
+            if accept.startswith('text/turtle'):
+                g = Graph()
+                g.parse(data=json.dumps(evaluation), format="json-ld")
+                # curl -L -H "Accept: text/turtle" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
+                return PlainTextResponse(g.serialize(format='turtle'), media_type='text/turtle')
+            if accept.startswith('application/rdf+xml') or accept.startswith('text/xhtml+xml'):
+                g = Graph()
+                g.parse(data=json.dumps(evaluation), format="json-ld")
+                # curl -L -H "Accept: application/rdf+xml" http://localhost/evaluations/48e21fbc6d3a130e9c716d8a0aa67cb7cd2e4346
+                return PlainTextResponse(g.serialize(format='application/rdf+xml'), media_type='application/rdf+xml')
         return JSONResponse(content=evaluation, media_type='application/ld+json')
         # return evaluation
     raise HTTPException(status_code=404, detail=f"Evaluation {id} not found")
