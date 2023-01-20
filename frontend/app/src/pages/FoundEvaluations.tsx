@@ -114,7 +114,7 @@ export default function Evaluation() {
     let search_filter = ""
     try {
       const url = new URL(subjectUrl);
-      search_filter = (subjectUrl) ? `(subject: "` + subjectUrl + `")` : ""
+      search_filter = (subjectUrl) ? `(subjects: ["` + subjectUrl + `"])` : ""
     } catch (_) {
       search_filter = (subjectUrl) ? `(title: "` + subjectUrl + `")` : ""
     }

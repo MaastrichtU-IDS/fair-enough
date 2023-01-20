@@ -122,7 +122,7 @@ class Query:
     @strawberry.field
     async def evaluations(self, info: Info,
         # id: Optional[str] = None,
-        subject: Optional[str] = None,
+        subjects: Optional[List[str]] = None,
         collection: Optional[str] = None,
         author: Optional[str] = None,
         title: Optional[str] = None,
@@ -134,13 +134,16 @@ class Query:
         minPercent: Optional[int] = None,
         filterTests: Optional[List[TestFiltered]] = None,
     ) -> List[EvaluationModel]:
-        # db = info.context["db"]
         db = get_db()
 
-        # evaluations = await db["evaluations"].find().to_list(1000)
         filter_eval: Any = {}
-        if subject:
-            filter_eval["subject"] = subject
+        if subjects and len(subjects) < 2:
+            filter_eval["subject"] = subjects[0]
+        elif subjects and len(subjects) > 1:
+            filter_eval["$or"] = []
+            for sub in subjects:
+                filter_eval["$or"].append({"subject": sub})
+
         if collection:
             filter_eval["collection"] = collection
         if title:
