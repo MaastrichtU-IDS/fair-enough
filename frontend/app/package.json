@@ -5,7 +5,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "dev": "rm -rf .expo && NODE_OPTIONS=--openssl-legacy-provider EXPO_API_URL=http://localhost expo web",
-    "dev-prod": "rm -rf .expo && EXPO_API_URL=https://api.fair-enough.semanticscience.org expo web",
+    "dev-prod": "rm -rf .expo && EXPO_API_URL=https://api.fair-enough.semanticscience.org NODE_OPTIONS=--openssl-legacy-provider expo web",
     "eject": "expo eject",
     "build": "expo build:web",
     "build-prod": "EXPO_API_URL=https://api.fair-enough.semanticscience.org expo build:web",
