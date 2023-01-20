@@ -77,6 +77,7 @@ export default function Evaluation() {
     // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
     timelineChart: {},
+    showTimeline: false,
     adviceLogs: [],
     evaluationRunning: false,
     evaluationsList: [],
@@ -176,7 +177,9 @@ export default function Evaluation() {
   const buildTimelineChart  = (evaluations: any) => {
     console.log("TIMELINE EVALS", evaluations)
     const collections = {}
+    const subjects = new Set()
     evaluations.map((evaluation: any) => {
+      subjects.add(evaluation["subject"])
       const collec = evaluation["collection"]
       if (!collections[collec]) {
         collections[collec] = {
@@ -192,6 +195,9 @@ export default function Evaluation() {
         y: evaluation["scorePercent"]
       })
     })
+    if (subjects.size == 1) {
+      updateState({showTimeline: true})
+    }
     const x_labels = []
     Object.values(collections).map((collec: any) => {
       collec["data"].map((evaluation: any) => {
@@ -422,9 +428,9 @@ export default function Evaluation() {
     {
       field: 'subject', headerName: 'Resource URI', flex: 0.9,
       renderCell: (params: GridRenderCellParams) => (
-        <>
-          {getUrlHtml(params.value as string)}
-        </>)
+        <Link reloadDocument to={'/evaluations?uri=' + params.value as string}>
+          {params.value as string}
+        </Link>)
     },
     {
       field: 'title', headerName: 'Resource title', flex: 0.9,
@@ -515,7 +521,7 @@ export default function Evaluation() {
         }
       </Typography>
 
-      {state.urlToEvaluate && state.timelineChart['data'] &&
+      {state.urlToEvaluate && state.showTimeline && state.timelineChart['data'] &&
         <Box
         sx={{
           margin: { xs: "0", md: theme.spacing(0, 10) },

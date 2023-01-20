@@ -79,13 +79,13 @@ export default function Evaluation() {
   // useLocation hook to get URL params
   let location = useLocation();
   let evaluationResults: any = null;
-  let evalHistory: any = null;
+  // let evalHistory: any = null;
   let resourceMetadata: any = null;
   let metricsTestsMap: any = null;
   let evalArray: any = null;
   const [state, setState] = React.useState({
     evaluationResults: evaluationResults,
-    evalHistory: evalHistory,
+    // evalHistory: evalHistory,
     metricsTestsMap: metricsTestsMap,
     evalArray: evalArray,
     adviceLogs: [],
@@ -151,27 +151,27 @@ export default function Evaluation() {
           evalArray: evalArray,
         })
 
-        const graphqlQuery = `{
-          evaluations(subject: "` + evalResults['subject'] + `") {
-            score
-            scoreMax
-            createdAt
-            subject
-            collection
-            author
-            scorePercent
-            id
-          }
-        }`
-        axios.post(settings.graphqlUrl, { query: graphqlQuery })
-          .then((res: any) => {
-            console.log('HISTORY', res.data);
-            if (res.data.data && res.data.data.evaluations) {
-              updateState({
-                evalHistory: res.data.data.evaluations,
-              })
-            }
-          })
+        // const graphqlQuery = `{
+        //   evaluations(subject: "` + evalResults['subject'] + `") {
+        //     score
+        //     scoreMax
+        //     createdAt
+        //     subject
+        //     collection
+        //     author
+        //     scorePercent
+        //     id
+        //   }
+        // }`
+        // axios.post(settings.graphqlUrl, { query: graphqlQuery })
+        //   .then((res: any) => {
+        //     console.log('HISTORY', res.data);
+        //     if (res.data.data && res.data.data.evaluations) {
+        //       updateState({
+        //         evalHistory: res.data.data.evaluations,
+        //       })
+        //     }
+        //   })
 
         axios.get(settings.restUrl + '/metrics')
           .then((res: any) => {
@@ -450,7 +450,9 @@ export default function Evaluation() {
             </script>
           </Helmet>
           <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(4)}}>
-            {getUrlHtml(state.evaluationResults['subject'])}
+            <Link to={'/evaluations?uri=' + state.evaluationResults['subject']}>
+              {state.evaluationResults['subject']}
+            </Link>
           </Typography>
           {state.evaluationResults['@id'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
@@ -605,13 +607,12 @@ export default function Evaluation() {
           </Button>
 
           {/* Display the Data table listing the Evaluations */}
-          {state.evalHistory && state.evalHistory.length > 0 &&
+          {/* {state.evalHistory && state.evalHistory.length > 0 &&
           <>
             <Typography variant="h5" style={{marginTop: theme.spacing(6), marginBottom: theme.spacing(3)}}>
               All evaluations for {getUrlHtml(state.evaluationResults['subject'])}
             </Typography>
             <div style={{ height: 600, width: '100%' }}>
-              {/* {console.log(state.evaluationsList)} */}
               <DataGrid
                 columns={columns}
                 rows={state.evalHistory}
@@ -624,7 +625,7 @@ export default function Evaluation() {
                 style={{backgroundColor: '#fff'}}
               />
             </div>
-          </>}
+          </>} */}
 
 
         </>
