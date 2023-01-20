@@ -5,13 +5,14 @@ import { Helmet } from "react-helmet";
 import { useTheme } from '@mui/material/styles';
 import { makeStyles, withStyles } from '@mui/styles';
 // import { makeStyles, useTheme, withStyles } from '@mui/styles';
-import { Typography, Container, Button, Paper, Box, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem } from "@mui/material";
+import { Typography, Container, Button, Paper, Box, IconButton, Chip, Tooltip, TextField, CircularProgress, Grid, Select, MenuItem } from "@mui/material";
 import { LinearProgress, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DownloadJsonIcon from '@mui/icons-material/GetApp';
 import PassIcon from '@mui/icons-material/CheckCircle';
 import FailIcon from '@mui/icons-material/Error';
 import EvaluationIcon from '@mui/icons-material/NetworkCheck';
+import ExternalLinkIcon from '@mui/icons-material/OpenInNew';
 import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid';
 import axios from 'axios';
 import {settings} from '../settings'
@@ -453,6 +454,13 @@ export default function Evaluation() {
             <Link to={'/evaluations?uri=' + state.evaluationResults['subject']}>
               {state.evaluationResults['subject']}
             </Link>
+            <Tooltip title="Go to the resource URL">
+              <a href={state.evaluationResults['subject']} target="_blank">
+                <IconButton color='primary' style={{marginRight: theme.spacing(1)}}>
+                  <ExternalLinkIcon />
+                </IconButton>
+              </a>
+            </Tooltip>
           </Typography>
           {state.evaluationResults['@id'] &&
             <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
@@ -473,6 +481,13 @@ export default function Evaluation() {
               By {getUrlHtml(state.evaluationResults['author'])}
             </Typography>
           }
+
+          <Typography variant="body1" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+            See&nbsp;
+            <Link to={'/evaluations?uri=' + state.evaluationResults['subject']}>
+              other evaluations for {state.evaluationResults['subject']}
+            </Link>
+          </Typography>
 
           {state.evaluationResults['metadata'] && Object.keys(state.evaluationResults['metadata']).length > 0 &&
             <Paper className={classes.paperPadding}>
