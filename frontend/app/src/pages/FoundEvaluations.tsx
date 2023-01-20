@@ -515,7 +515,7 @@ export default function Evaluation() {
         }
       </Typography>
 
-      {state.timelineChart['data'] &&
+      {state.urlToEvaluate && state.timelineChart['data'] &&
         <Box
         sx={{
           margin: { xs: "0", md: theme.spacing(0, 10) },
