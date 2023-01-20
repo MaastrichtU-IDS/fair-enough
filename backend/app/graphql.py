@@ -161,9 +161,6 @@ class Query:
                 filter_eval["score_percent"]["$lt"] = maxPercent
             if minPercent:
                 filter_eval["score_percent"]["$gt"] = minPercent
-        print("filter_eval!!!")
-        print(filter_eval)
-        # evaluations = await db["evaluations"].find(filter_eval)
         evaluations = db["evaluations"].aggregate([
             {'$match': filter_eval},
             # {'$group': {'_id':''}}
