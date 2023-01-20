@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": false,
     "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx",
     "lib": ["dom", "esnext", "es6"],
@@ -7,7 +8,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noImplicitThis": true,
     "strictNullChecks": true
   }

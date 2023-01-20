@@ -17,10 +17,14 @@ import { DataGrid, GridToolbar, GridColumns, GridRenderCellParams, GridSortModel
 
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-// import { Doughnut } from 'react-chartjs-2';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { settings } from '../settings'
 // import { useAuth } from 'oidc-react';
+
+import { Line } from 'react-chartjs-2';
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
+// import 'chartjs-plugin-labels';
+import 'chart.js/auto';
+
 
 export default function Evaluation() {
   const theme = useTheme();
@@ -72,6 +76,7 @@ export default function Evaluation() {
     // urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
     // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
+    timelineChart: {},
     adviceLogs: [],
     evaluationRunning: false,
     evaluationsList: [],
@@ -133,6 +138,7 @@ export default function Evaluation() {
         if (res.data.data && res.data.data.evaluations) {
           updateState({
             evaluationsList: res.data.data.evaluations,
+            timelineChart: buildTimelineChart(res.data.data.evaluations)
           })
           return res.data.data.evaluations
         } else {
@@ -157,6 +163,64 @@ export default function Evaluation() {
     //     })
     //   })
 
+  }
+
+  const chartColors = [
+    '#81d4fa', // blue
+    '#ffcc80', // orange
+    '#a5d6a7', // green
+    '#b39ddb', // purple
+    '#ef5350' // red
+  ]
+
+  const buildTimelineChart  = (evaluations: any) => {
+    console.log("TIMELINE EVALS", evaluations)
+    const collections = {}
+    evaluations.map((evaluation: any) => {
+      const collec = evaluation["collection"]
+      if (!collections[collec]) {
+        collections[collec] = {
+          label: collec,
+          data: [],
+          backgroundColor: chartColors[Object.keys(collections).length % chartColors.length],
+          borderColor: chartColors[Object.keys(collections).length % chartColors.length],
+          borderWidth: 3
+        }
+      }
+      collections[collec]["data"].push({
+        x: evaluation["createdAt"].substring(0, evaluation["createdAt"].indexOf("T")),
+        y: evaluation["scorePercent"]
+      })
+    })
+    const x_labels = []
+    Object.values(collections).map((collec: any) => {
+      collec["data"].map((evaluation: any) => {
+        x_labels.push(evaluation["x"])
+      })
+    })
+    x_labels.sort()
+
+    const config = {
+      type: 'line',
+      data: {
+        labels: x_labels,
+        datasets: Object.values(collections)
+      },
+      options: {
+        // elements: {
+        //   point:{
+        //     radius: 0,
+        //     hitRadius: 8
+        //   }
+        // },
+        // scales: {
+        //   y: {
+        //     beginAtZero: true
+        //   }
+        // }
+      }
+    };
+    return config;
   }
 
 
@@ -451,43 +515,23 @@ export default function Evaluation() {
         }
       </Typography>
 
-      {/* <Card style={{
-        display: state.showReleaseMsg ? 'flow' : 'none', textAlign: 'center',
-        backgroundColor: '#e8f5e9',
-        marginBottom: theme.spacing(3)
-      }}>
-        <CardHeader
-          action={
-            <IconButton aria-label="settings" onClick={() => {updateState({showReleaseMsg: false})}}>
-              <CloseIcon />
-            </IconButton>
-          }
-          title="🍾 New Release"
-          // subheader='Endpoints are tested to make sure they are active. They are extracted from queries metadata and the LOD. We automatically import all SPARQL queries in YASGUI for the endpoint you select'
-          style={{paddingBottom: '0px'}}
-        />
-        <CardContent style={{paddingTop: theme.spacing(1), paddingBottom: theme.spacing(2)}}>
-          <Typography>
-            The service has evolved to support the specifications used by the <a href='https://github.com/FAIRMetrics/Metrics' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIRMetrics working group</a>.
-            This means you can run the exact same suite of metrics tests as with the <a href='https://fairsharing.github.io/FAIR-Evaluator-FrontEnd' target="_blank" rel="noopener noreferrer" className={classes.link}>FAIR Evaluator</a>, or easily register new metrics tests deployed in external APIs.
-          </Typography>
-          <Typography>
-            Thanks a lot everyone for your contributions to making research more FAIR, and feel free to <a href='https://github.com/MaastrichtU-IDS/fair-enough/issues' target="_blank" rel="noopener noreferrer" className={classes.link}>create issues</a>,
-            or contact vincent.emonet@maastrichtuniversity.nl for remarks or requests 💌
-          </Typography>
-        </CardContent>
-      </Card> */}
-
-      {/* {auth && auth.userData &&
-        <div>
-          <strong>Logged in! 🎉</strong><br />
-          <button onClick={() => auth.signOut()}>Log out!</button>
-        </div>
-      } */}
+      {state.timelineChart['data'] &&
+        <Box
+        sx={{
+          margin: { xs: "0", md: theme.spacing(0, 10) },
+        }}
+        >
+          <Line
+            style={{maxHeight: "350px"}}
+            data={state.timelineChart['data']}
+            options={state.timelineChart['options']}
+          />
+        </Box>
+      }
 
       {/* Display the Data table listing the Evaluations */}
       {state.evaluationsList.length > 0 &&
-        <div style={{ height: 600, width: '100%' }}>
+        <div style={{ height: 600, width: '100%', marginTop: theme.spacing(4) }}>
           {/* {console.log(state.evaluationsList)} */}
           <DataGrid
             columns={columns}
