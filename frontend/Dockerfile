@@ -17,7 +17,8 @@ ARG ORCID_CLIENT_SECRET
 ARG OAUTH_REDIRECT_FRONTEND
 ENV API_URL=http://localhost
 WORKDIR /app
-RUN yarn install --frozen-lockfile
+# RUN yarn install --frozen-lockfile
+RUN yarn
 RUN yarn build:prod
 
 
