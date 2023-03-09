@@ -234,7 +234,10 @@ export default function Evaluation() {
     event.preventDefault();
     var element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state.evaluationResults, null, 4)));
-    element.setAttribute('download', 'evaluation.json');
+    // filename = subject URI + collection + date
+    const filename = `${state.evaluationResults['subject'].replace(/https?:\/\//, "").replace(/[\/\.#]/gm, "_").trim()}-${state.evaluationResults.collection}-${state.evaluationResults['created_at'].substring(0, state.evaluationResults['created_at'].indexOf('T')).replaceAll("-", "_")}.json`
+
+    element.setAttribute('download', filename);
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();

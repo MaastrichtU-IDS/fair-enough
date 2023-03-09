@@ -5,6 +5,11 @@ docker-stack.yml
 .expo
 node_modules
 
+.yarn/
+.pnp*.[cm]js
+.yarnrc.yml
+pnpm-lock.yaml
+
 /frontend/public
 
 .env

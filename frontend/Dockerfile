@@ -17,7 +17,7 @@ ARG OAUTH_REDIRECT_FRONTEND
 ENV API_URL=http://localhost
 WORKDIR /app
 RUN yarn install --frozen-lockfile
-RUN yarn build-prod
+RUN yarn build:prod
 
 
 ## Build and run the server
@@ -30,7 +30,7 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
-COPY server.ts package.json yarn.lock ./ 
+COPY server.ts package.json yarn.lock ./
 RUN chown -R nodejs:nodejs /app
 
 COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules

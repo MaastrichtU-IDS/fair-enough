@@ -502,58 +502,6 @@ export default function Evaluation() {
   return(
     <Container className='mainContainer'>
 
-      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-        {state.evaluationsList.length < 1 &&
-          <>
-            ⚠️ No evaluations found
-          </>
-        }
-        {state.evaluationsList.length > 0 &&
-          <>
-            Evaluations found
-          </>
-        }
-
-        { state.urlToEvaluate &&
-          <>
-            &nbsp;for {state.urlToEvaluate}
-          </>
-        }
-      </Typography>
-
-      {state.urlToEvaluate && state.showTimeline && state.timelineChart['data'] &&
-        <Box
-        sx={{
-          margin: { xs: "0", md: theme.spacing(0, 10) },
-        }}
-        >
-          <Line
-            style={{maxHeight: "350px"}}
-            data={state.timelineChart['data']}
-            options={state.timelineChart['options']}
-          />
-        </Box>
-      }
-
-      {/* Display the Data table listing the Evaluations */}
-      {state.evaluationsList.length > 0 &&
-        <div style={{ height: 600, width: '100%', marginTop: theme.spacing(4) }}>
-          {/* {console.log(state.evaluationsList)} */}
-          <DataGrid
-            columns={columns}
-            rows={state.evaluationsList}
-            // {...state.evaluationsList}
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            sortModel={sortModel}
-            onSortModelChange={(model) => setSortModel(model)}
-            style={{backgroundColor: '#fff'}}
-          />
-        </div>
-      }
-
-
       {/* Form to provide the URL to evaludate */}
       <form onSubmit={handleSubmit} style={{textAlign: 'left'}}>
 
@@ -635,6 +583,57 @@ export default function Evaluation() {
           </Typography>
         }
       </form>
+
+      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+        {state.evaluationsList.length < 1 &&
+          <>
+            ⚠️ No evaluations found
+          </>
+        }
+        {state.evaluationsList.length > 0 &&
+          <>
+            Evaluations found
+          </>
+        }
+
+        { state.urlToEvaluate &&
+          <>
+            &nbsp;for {state.urlToEvaluate}
+          </>
+        }
+      </Typography>
+
+      {state.urlToEvaluate && state.showTimeline && state.timelineChart['data'] &&
+        <Box
+        sx={{
+          margin: { xs: "0", md: theme.spacing(0, 10) },
+        }}
+        >
+          <Line
+            style={{maxHeight: "350px"}}
+            data={state.timelineChart['data']}
+            options={state.timelineChart['options']}
+          />
+        </Box>
+      }
+
+      {/* Display the Data table listing the Evaluations */}
+      {state.evaluationsList.length > 0 &&
+        <div style={{ height: 600, width: '100%', marginTop: theme.spacing(4) }}>
+          {/* {console.log(state.evaluationsList)} */}
+          <DataGrid
+            columns={columns}
+            rows={state.evaluationsList}
+            // {...state.evaluationsList}
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            sortModel={sortModel}
+            onSortModelChange={(model) => setSortModel(model)}
+            style={{backgroundColor: '#fff'}}
+          />
+        </div>
+      }
 
       <Box style={{margin: theme.spacing(4, 0)}}>
         {state.evaluationRunning &&

@@ -1,5 +1,10 @@
 doap-rdf/
 
+.yarn/
+.pnp*.[cm]js
+.yarnrc.yml
+pnpm-lock.yaml
+
 # OSX
 #
 .DS_Store
