@@ -36,7 +36,7 @@
     "react-helmet": "^6.1.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
     "react-native-web": "^0.18.10",
-    "react-router-dom": "^18.2.0",
+    "react-router-dom": "^18.1.0",
     "react-router-native": "^6.6.2",
     "react-simple-oauth2-login": "^0.5.1"
   },
