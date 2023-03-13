@@ -37,7 +37,8 @@ RUN chown -R nodejs:nodejs /app
 
 COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=build-react --chown=nodejs:nodejs /app/web-build ./public
-
+# Make sure robots.txt is served by node
+COPY ./app/assets/robots.txt ./public/robots.txt
 
 USER nodejs
 
