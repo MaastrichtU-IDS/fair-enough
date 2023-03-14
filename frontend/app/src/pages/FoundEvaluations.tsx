@@ -515,8 +515,8 @@ export default function Evaluation() {
           2. Provide the URL to the resource, or digital object, you want to evaluate
           <Tooltip title={
             <Typography>
-              🔗 The best is to a URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online.
-              <br/>But DOI and handles are also accepted by some collections
+              🔗 The best is to use an URL, aka. URI, as it is the most standard and unambiguous protocol for identifying a resource online.
+              <br/>But DOI and handles are also accepted by most tests collections
             </Typography>}
           >
             <HelpIcon color="action" style={{marginLeft: theme.spacing(1)}}/>
