@@ -26,7 +26,7 @@ Frontend built with [React](https://reactjs.org) and [Material UI](https://mui.c
 
 Create a `.env` file with your development settings in the root folder of this repository (you can copy `.env.sample`):
 
-```
+```bash
 ORCID_CLIENT_ID=APP-XXX
 ORCID_CLIENT_SECRET=XXXX
 FRONTEND_URL=http://localhost:19006

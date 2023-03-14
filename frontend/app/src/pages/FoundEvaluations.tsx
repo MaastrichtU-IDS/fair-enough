@@ -73,6 +73,7 @@ export default function Evaluation() {
   let fairDoughnutConfig: any = null;
   const [state, setState] = React.useState({
     urlToEvaluate: "",
+    urlToSearch: "",
     // urlToEvaluate: "https://doi.org/10.1594/PANGAEA.908011",
     // urlToEvaluate: "https://doi.org/10.1038/sdata.2016.18",
     evaluationResults: evaluationResults,
@@ -233,16 +234,13 @@ export default function Evaluation() {
 
   // Run on page init
   React.useEffect(() => {
-    // Get the edit URL param if provided
-    // const params = new URLSearchParams(location.search + location.hash);
-    // let urlToEvaluate = params.get('evaluate');
-    // @ts-ignore
-    const evals = getEvaluations(searchParams.get("uri"))
+    const urlToSearch = searchParams.get("uri") || ""
+    // Get evals using GraphQL
+    getEvaluations(urlToSearch)
     updateState({
-      urlToEvaluate: searchParams.get("uri"),
+      urlToSearch: urlToSearch,
+      urlToEvaluate: urlToSearch,
     })
-
-    // TODO: search evals
 
     if (state.collectionsList.length < 1) {
       axios.get(settings.restUrl + '/collections', {
@@ -260,36 +258,6 @@ export default function Evaluation() {
         })
     }
 
-    // Get the list of evaluations from API
-    // if (state.evaluationsList.length < 1) {
-    //   axios.get(settings.restUrl + '/evaluations', {
-    //     headers: {'Content-Type': 'application/json'},
-    //   })
-    //     .then((res: any) => {
-    //       let evaluationsList: any = []
-    //       res.data.map((evaluation: any, key: number) => {
-    //         evaluation['id'] = evaluation['_id']
-    //         evaluation['score_percent'] = evaluation['score_percent']
-    //         evaluation['score'] = evaluation['score'] + '/' + evaluation['score_max']
-    //         evaluation['subject'] = evaluation['subject']
-    //         evaluation['collection'] = evaluation['collection']
-    //         evaluation['created'] = evaluation['created_at']
-    //         evaluation['author'] = evaluation['author']
-    //         // evaluation['bonus_percent'] = evaluation['bonus']
-    //         evaluation['bonus_percent'] = 0
-    //         evaluationsList.push(evaluation)
-    //       })
-    //       updateState({ evaluationsList: evaluationsList })
-    //       updateState({ evaluationRunning: false })
-    //     })
-    //     .catch(function (error) {
-    //       updateState({
-    //         openError: 'inline',
-    //         evaluationRunning: false,
-    //         errorMessage: 'Error when retrieving the evaluations, please retry. If it persists, it means the server is probably having some issues! 😱'
-    //       })
-    //     })
-    // }
   }, [])
 
   const colors: any = {
@@ -584,26 +552,47 @@ export default function Evaluation() {
         }
       </form>
 
-      <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-        {state.evaluationsList.length < 1 &&
-          <>
-            ⚠️ No evaluations found
-          </>
-        }
-        {state.evaluationsList.length > 0 &&
-          <>
-            Evaluations found
-          </>
-        }
 
-        { state.urlToEvaluate &&
+      <Box style={{margin: theme.spacing(4, 0)}}>
+        {state.evaluationRunning &&
           <>
-            &nbsp;for {state.urlToEvaluate}
+            <Typography>
+              An evaluation can take up to 1 minute depending on the URL evaluated, and the collection used.
+            </Typography>
+            <Typography>
+              If you leave this page the evaluation will not stop, and you will be able to find it in the list below when it is done.
+            </Typography>
+            <CircularProgress style={{marginTop: '20px'}} />
           </>
         }
-      </Typography>
+        <Card elevation={4}
+            style={{background: "#e57373", padding: '15px', fontFamily: "Open Sans", fontSize: 12}}
+            sx={{ display: state.openError }}>
+          ⚠️&nbsp;&nbsp;{state.errorMessage}
+        </Card>
+      </Box>
 
-      {state.urlToEvaluate && state.showTimeline && state.timelineChart['data'] &&
+      {state.urlToSearch &&
+        <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+          {state.evaluationsList.length < 1 &&
+            <>
+              ⚠️ No evaluations found
+            </>
+          }
+          {state.evaluationsList.length > 0 &&
+            <>
+              Evaluations found for {state.urlToSearch}
+            </>
+          }
+        </Typography>
+      }
+      {!state.urlToSearch &&
+        <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
+          Latest evaluations
+        </Typography>
+      }
+
+      {state.urlToSearch && state.showTimeline && state.timelineChart['data'] &&
         <Box
         sx={{
           margin: { xs: "0", md: theme.spacing(0, 10) },
@@ -635,24 +624,6 @@ export default function Evaluation() {
         </div>
       }
 
-      <Box style={{margin: theme.spacing(4, 0)}}>
-        {state.evaluationRunning &&
-          <>
-            <Typography>
-              An evaluation can take up to 1 minute depending on the URL evaluated, and the collection used.
-            </Typography>
-            <Typography>
-              If you leave this page the evaluation will not stop, and you will be able to find it in the list below when it is done.
-            </Typography>
-            <CircularProgress style={{marginTop: '20px'}} />
-          </>
-        }
-        <Card elevation={4}
-            style={{background: "#e57373", padding: '15px', fontFamily: "Open Sans", fontSize: 12}}
-            sx={{ display: state.openError }}>
-          ⚠️&nbsp;&nbsp;{state.errorMessage}
-        </Card>
-      </Box>
     </Container>
   )
 }
