@@ -474,7 +474,7 @@ export default function Evaluation() {
       <form onSubmit={handleSubmit} style={{textAlign: 'left'}}>
 
         <Typography variant="h4" style={{textAlign: 'center', marginTop: theme.spacing(4), marginBottom: theme.spacing(2)}}>
-          Run a new evaluation
+          🧪 Run a new evaluation
         </Typography>
 
         <Typography variant='body1' style={{marginBottom: theme.spacing(2)}}>
@@ -581,14 +581,14 @@ export default function Evaluation() {
           }
           {state.evaluationsList.length > 0 &&
             <>
-              Evaluations found for {state.urlToSearch}
+              📚️ Evaluations found for {state.urlToSearch}
             </>
           }
         </Typography>
       }
       {!state.urlToSearch &&
         <Typography variant="h4" style={{textAlign: 'center', marginBottom: theme.spacing(3)}}>
-          Latest evaluations
+          🗞️ Latest evaluations
         </Typography>
       }
 
