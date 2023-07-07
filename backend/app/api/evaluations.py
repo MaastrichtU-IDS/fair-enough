@@ -164,7 +164,7 @@ async def create_evaluation(
 async def list_evaluations():
     db = get_db()
     # full_evals = await db["evaluations"].find().to_list()
-    evals = await db["evaluations"].find().to_list(10000)
+    evals = await db["evaluations"].find().to_list(1000)
 
     # Do not return large fields like data to make it faster for the frontend
     partial_evals = []
