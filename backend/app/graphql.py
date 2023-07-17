@@ -166,7 +166,7 @@ class Query:
                 filter_eval["score_percent"]["$gt"] = minPercent
         evaluations = db["evaluations"].aggregate([
             {'$match': filter_eval},
-            {'$sort': { 'createdAt': -1 }}
+            {'$sort': { 'createdAt': 1 }}
             # {'$group': {'_id':''}}
         ], allowDiskUse=True)
         eval_list = []
