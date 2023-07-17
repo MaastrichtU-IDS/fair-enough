@@ -220,4 +220,8 @@ class Query:
             if 'duration' not in eval.keys():
                 eval['duration'] = ""
             eval_list.append(EvaluationModel(**eval))
+            # TODO: quick fix to return a max of 2000 evaluations and avoid overloading
+            # We should add proper pagination though
+            if len(eval_list) >= 2000:
+                break
         return eval_list
