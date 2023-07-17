@@ -168,7 +168,8 @@ class Query:
             {'$match': filter_eval},
             {'$sort': { 'created_at': -1 }},
             {'$limit': 1000}
-            # {'$group': {'_id':''}}
+            # TODO: quick fix to return a max of 1000 evaluations and avoid overloading
+            # We should add proper pagination though
         ], allowDiskUse=True)
         eval_list = []
         async for eval in evaluations:
@@ -222,8 +223,4 @@ class Query:
             if 'duration' not in eval.keys():
                 eval['duration'] = ""
             eval_list.append(EvaluationModel(**eval))
-            # TODO: quick fix to return a max of 2000 evaluations and avoid overloading
-            # We should add proper pagination though
-            if len(eval_list) >= 2000:
-                break
         return eval_list
